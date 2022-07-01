@@ -16,6 +16,7 @@ class Boot extends Phaser.Scene {
 	preload ()
 	{
 		//TODO
+		//This is a test commit!
 	}
 
 	create ()
@@ -51,7 +52,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.tps = 100;
 		this.fall_ticks = 400;
-		this.hit_window 
+		this.hit_window
 		this.clock;
 
 		//TODO
@@ -92,7 +93,7 @@ class GonDDR extends Phaser.Scene {
 
 		//update position of arrows
 
-		//check if 
+		//check if
 	},
 
 
