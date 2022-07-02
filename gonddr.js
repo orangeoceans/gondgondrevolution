@@ -14,6 +14,7 @@ class Boot extends Phaser.Scene {
 	preload () {
 		this.load.spritesheet('arrows', 'assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 		this.load.spritesheet('hit_frame', 'assets/hit_frame.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
+		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
 	}
 
 
@@ -60,9 +61,12 @@ class GonDDR extends Phaser.Scene {
 
 		// Create game objects
 		this.hit_frame = this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0);
+
 		this.arrows = [];
 		this.arrows.push(new Arrow(this, 100, ARROW_START_Y, 0, Directions.Up, 0));
 		this.add.existing(this.arrows[this.arrows.length-1]);
+
+		this.gondola = this.add.sprite(GONDOLA_X, GONDOLA_Y, 'gondola', Gondola_Poses.Neutral);
 
 		// Create keyboard keys
 		this.arrow_keys['Up'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -87,7 +91,8 @@ class GonDDR extends Phaser.Scene {
 
 		let this_tick = this.time_to_tick(time);
 		this.update_arrows(this_tick);
-		this.update_feedback(this_tick)
+		this.update_feedback(this_tick);
+		this.update_gondola();
 	}
 
 
@@ -215,6 +220,19 @@ class GonDDR extends Phaser.Scene {
 			}
 		}
 	}
+
+	update_gondola () {
+		let arrow_key_down = false;
+		for (const [direction, arrow_key] of Object.entries(this.arrow_keys)) {
+			if (arrow_key.isDown) {
+				this.gondola.setFrame(Gondola_Poses[direction]);
+				arrow_key_down = true;
+			}
+		}
+		if (!arrow_key_down) {
+			this.gondola.setFrame(Gondola_Poses.Neutral);
+		}
+	}
 }
 
 class Feedback extends Phaser.GameObjects.Text {
@@ -231,5 +249,18 @@ var config = {
     height: 640,
     scene: [ Boot, GonDDR ]
 };
+
+const Gondola_Poses = {
+	Up:      0,
+	Right:   1,
+	Down:    2,
+	Left:    3,
+	Neutral: 4
+}
+
+const GONDOLA_WIDTH  = 296;
+const GONDOLA_HEIGHT = 395;
+const GONDOLA_X 	 = 480;
+const GONDOLA_Y      = 320;
 
 var game = new Phaser.Game(config);
