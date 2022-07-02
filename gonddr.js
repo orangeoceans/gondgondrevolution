@@ -3,7 +3,7 @@ class Boot extends Phaser.Scene {
 	constructor () {
 		super('boot');
 	}
-	
+
 
 	init () {
 		let element = document.createElement('style');
@@ -39,7 +39,7 @@ class GonDDR extends Phaser.Scene {
 		this.combo;       // TODO
 		this.score;       // TODO
 
-		this.tps = 100; // Ticks per second. 
+		this.tps = 100; // Ticks per second.
 						// A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
 						// Speed, position, and timing of arrows are measured in ticks.
 						// Adjust this change the speed of the song.
@@ -76,7 +76,9 @@ class GonDDR extends Phaser.Scene {
 			frames: this.anims.generateFrameNumbers('hit_frame', { frames: [ 1, 0 ] }),
 			frameRate: 8,
 			repeat: 0
-		}); 
+		});
+
+		this.feedback_array = [];
 
 	}
 
@@ -85,7 +87,7 @@ class GonDDR extends Phaser.Scene {
 
 		let this_tick = this.time_to_tick(time);
 		this.update_arrows(this_tick);
-		
+		this.update_feedback(this_tick)
 	}
 
 
@@ -100,6 +102,45 @@ class GonDDR extends Phaser.Scene {
 		return Math.floor(this.tps * ts_ms / 1000.);
 	}
 
+	update_feedback(this_tick) {
+
+		console.log(this.feedback_array.length)
+		// Iterate through feedback text
+		this.feedback_array.filter((item, i) => {
+			var current_feedback = this.feedback_array[i];
+
+			// Destroy feedback that is too old
+			if(this_tick - current_feedback.start_tick > 10) {
+				current_feedback.destroy();
+				console.log("Destroyed text!")
+				return false;
+			}
+
+			// Otherwise make the text rise
+			else {
+				current_feedback.y -= 5;
+				return true;
+			}
+		});
+	}
+
+	create_feedback_text(this_tick, offset) {
+		console.log(offset);
+
+		var feedback = this.add.text(200, 300, '', {
+				fontSize: '32px',
+				fill: '#00F'
+		});
+
+		if(offset <= 5) { feedback.setText("Perfect"); }
+		else if(offset <= 10) { feedback.setText("Great"); }
+		else if(offset <= 15) { feedback.setText("Okay"); }
+		else if(offset <= 20) { feedback.setText("Poor"); }
+		else if(offset > 20 ) { feedback.setText("Bad"); }
+		else { this.feedback.setText("Miss"); }
+
+		this.feedback_array.push(feedback)
+	}
 
 	// Create, move, destroy, and register hits on arrows for this loop
 	update_arrows (this_tick) {
@@ -138,10 +179,18 @@ class GonDDR extends Phaser.Scene {
 				for (var i = 0; i < this.arrows.length; i++) { // Loop through arrows
 					if (Directions[direction] == this.arrows[i].direction) { // Check if arrow matches direction
 						if (this.hit_window_start < this.arrows[i].y && this.arrows[i].y < this.hit_window_end) { // Check if arrow in hit window
+
 							this.arrows[i].has_hit = true;
 							this.arrows[i].visible = false;
+
 							key_hit = true;
 							this.hit_frame.play('hit_frame_flash');
+
+							var offset = this.hit_window_start - this.arrows[i].y + ARROW_SIZE;
+							console.log(this.hit_window_start)
+							console.log(this.arrows[i].y)
+							this.create_feedback_text(this_tick, Math.abs(offset))
+
 							break; // Each key press should hit only one arrow, so break
 						}
 					}
