@@ -13,6 +13,7 @@ class Boot extends Phaser.Scene {
 
 	preload () {
 		this.load.spritesheet('arrows','assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
+		this.load.spritesheet('hit_frame', 'assets/hit_frame.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 	}
 
 
@@ -29,6 +30,7 @@ class GonDDR extends Phaser.Scene {
 
 		super('gonddr');
 
+		this.hit_frame;   // Sprite of hit window
 		this.arrows;      // Currently active arrows
 		this.song_script; // Hash of strings; maps a tick to a string encoding the arrow(s) to create.
 		this.gondola;
@@ -41,9 +43,11 @@ class GonDDR extends Phaser.Scene {
 						// Adjust this change the speed of the song.
 		this.fall_ticks = 400.;
 						// # of ticks for a standard arrow to fall from the top to bottom of the screen.
-		this.hit_window;
-						// Margin in ticks that a player's button press registers as a hit
-		this.start_time;
+		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE;
+		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE;
+						// Margin in pixels that a player's button press registers as a hit
+
+		this.arrow_keys = {};
 
 		//TODO
 	}
@@ -56,13 +60,22 @@ class GonDDR extends Phaser.Scene {
 
 	create () {
 
-		this.start_time = Date.now();
+		this.hit_frame = this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0);
 		this.arrows = [];
-		this.arrows.push(new Arrow(this, 100, ARROW_START, 0, Directions.Up, 0));
+		this.arrows.push(new Arrow(this, 100, ARROW_START_Y, 0, Directions.Up, 0));
 		this.add.existing(this.arrows[this.arrows.length-1]);
 
-		//this.input.on('', function () {
-		//}, this)
+		this.arrow_keys['Up'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+		this.arrow_keys['Right'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+		this.arrow_keys['Down'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+		this.arrow_keys['Left'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+
+		this.anims.create({
+			key: 'hit_frame_flash',
+			frames: this.anims.generateFrameNumbers('hit_frame', { frames: [ 0, 1, 0 ] }),
+			frameRate: 8,
+			repeat: 0
+		});
 
 	}
 
@@ -89,24 +102,49 @@ class GonDDR extends Phaser.Scene {
 
 		//if song_script[this_tick] == this_tick + fall_ticks
 		if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) {
-			this.arrows.push(new Arrow(this, 100, ARROW_START, this_tick, (this.arrows[this.arrows.length-1].direction+1)%4, 0));
+			this.arrows.push(new Arrow(this, 100, ARROW_START_Y, this_tick, (this.arrows[this.arrows.length-1].direction+1)%4, 0));
 			this.add.existing(this.arrows[this.arrows.length-1]);
-			console.log(this.arrows.length);
 		}
 
 		for (var i = this.arrows.length-1; i >= 0; i--) {
 
 			let elapsed_ticks = this_tick - this.arrows[i].start_tick;
-			this.arrows[i].y = ARROW_START + ((elapsed_ticks/this.fall_ticks) * ARROW_DIST);
+			this.arrows[i].y = ARROW_START_Y + ((elapsed_ticks/this.fall_ticks) * ARROW_DIST_TOTAL);
 
-			if (this.arrows[i].y > ARROW_END) {
+			if (this.arrows[i].y > ARROW_END_Y) {
 				let arrow_to_destroy = this.arrows.splice(i, 1);
 				arrow_to_destroy[0].destroy();
 			}
-		}
-		//update position of arrows
 
-		//check if 
+			if (this.arrows[i].y > this.hit_window_end && !this.arrows[i].has_hit) {
+				console.log('PENALTY MISSED ${this_tick}');
+			}
+		}
+
+		for (const [direction, input_key] of Object.entries(this.arrow_keys)) {
+			if (Phaser.Input.Keyboard.JustDown(input_key)) {
+
+				let key_hit = false;
+				for (var i = 0; i < this.arrows.length; i++) {
+					if (Directions[direction] == this.arrows[i].direction) {
+						if (this.hit_window_start < this.arrows[i].y && this.arrows[i].y < this.hit_window_end) {
+							this.arrows[i].has_hit = true;
+							key_hit = true;
+							this.hit_frame.play('hit_frame_flash');
+							break;
+						}
+					}
+				}
+				if (!key_hit) {
+					console.log('PENALTY INCORRECT ${this_tick}');
+				}
+
+			}
+		}
+	}
+
+	check_arrow_hit () {
+
 	}
 
 //arrow class fields: 	direction, type, hit_tick, has_hit
@@ -138,10 +176,13 @@ var config = {
     scene: [ Boot, GonDDR ]
 };
 
-const ARROW_SIZE  = 50;
-const ARROW_START = -ARROW_SIZE;
-const ARROW_END   = config.height + ARROW_SIZE;
-const ARROW_DIST  = ARROW_END - ARROW_START;
+const ARROW_SIZE    = 50;
+const ARROW_START_Y = -ARROW_SIZE;
+const ARROW_END_Y   = config.height + ARROW_SIZE;
+const ARROW_HIT_Y   = config.height - 100
+
+const ARROW_DIST_TOTAL  = ARROW_END_Y - ARROW_START_Y;
+const ARROW_DIST_TO_HIT = ARROW_HIT_Y - ARROW_START_Y;
 
 
 var game = new Phaser.Game(config);
