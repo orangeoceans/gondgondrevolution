@@ -118,9 +118,8 @@ class GonDDR extends Phaser.Scene {
 
 			// Otherwise make the text rise
 			else {
-				console.log(current_feedback.alpha);
 				current_feedback.y -= 2;
-				if(this_tick - current_feedback.start_tick > 25 and current_feedback.alpha > 0) {
+				if(this_tick - current_feedback.start_tick > 25 && current_feedback.alpha > 0) {
 					current_feedback.alpha -= 0.075;
 				}
 				return true;
@@ -128,7 +127,7 @@ class GonDDR extends Phaser.Scene {
 		});
 	}
 
-	create_feedback_text(this_tick, offset) {
+	create_feedback_hit(this_tick, offset) {
 
 		var feedback = new Feedback(this, 200, 300, '', {
 				fontSize: '32px',
@@ -141,9 +140,19 @@ class GonDDR extends Phaser.Scene {
 		else if(offset <= 10) { feedback.setText("Great"); }
 		else if(offset <= 15) { feedback.setText("Okay"); }
 		else if(offset <= 20) { feedback.setText("Poor"); }
-		else if(offset > 20 ) { feedback.setText("Bad"); }
-		else { this.feedback.setText("Miss"); }
+		else { feedback.setText("Bad"); }
 
+		this.feedback_array.push(feedback)
+	}
+
+	create_feedback_error(this_tick, offset) {
+
+		var feedback = new Feedback(this, 200, 300, 'Miss', {
+				fontSize: '32px',
+				fill: '#00F'
+		}, this_tick);
+
+		this.add.existing(feedback);
 		this.feedback_array.push(feedback)
 	}
 
@@ -173,6 +182,7 @@ class GonDDR extends Phaser.Scene {
 			if (this.arrows[i].y > this.hit_window_end && !this.arrows[i].has_hit && !this.arrows[i].has_missed) {
 				console.log('PENALTY MISSED ${this_tick}');
 				this.arrows[i].has_missed = true;
+				this.create_feedback_error(this_tick);
 			}
 		}
 
@@ -192,9 +202,7 @@ class GonDDR extends Phaser.Scene {
 							this.hit_frame.play('hit_frame_flash');
 
 							var offset = this.hit_window_start - this.arrows[i].y + ARROW_SIZE;
-							console.log(this.hit_window_start)
-							console.log(this.arrows[i].y)
-							this.create_feedback_text(this_tick, Math.abs(offset))
+							this.create_feedback_hit(this_tick, Math.abs(offset));
 
 							break; // Each key press should hit only one arrow, so break
 						}
@@ -202,6 +210,7 @@ class GonDDR extends Phaser.Scene {
 				}
 				if (!key_hit) { // If the key is pressed but had no matching arrow in the hit window, it's incorrect
 					console.log('PENALTY INCORRECT ${this_tick}');
+					this.create_feedback_error(this_tick);
 				}
 			}
 		}
