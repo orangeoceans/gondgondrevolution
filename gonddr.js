@@ -110,9 +110,8 @@ class GonDDR extends Phaser.Scene {
 
 			console.log(current_feedback.start_tick);
 			// Destroy feedback that is too old
-			if(this_tick - current_feedback.start_tick > 60) {
+			if(this_tick - current_feedback.start_tick > 75) {
 				current_feedback.destroy();
-				console.log("Destroyed text!");
 				console.log(this.feedback_array.length);
 				return false;
 			}
@@ -121,7 +120,7 @@ class GonDDR extends Phaser.Scene {
 			else {
 				console.log(current_feedback.alpha);
 				current_feedback.y -= 2;
-				if(this_tick - current_feedback.start_tick > 25) {
+				if(this_tick - current_feedback.start_tick > 25 and current_feedback.alpha > 0) {
 					current_feedback.alpha -= 0.075;
 				}
 				return true;
@@ -130,14 +129,12 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	create_feedback_text(this_tick, offset) {
-		console.log(offset);
 
 		var feedback = new Feedback(this, 200, 300, '', {
 				fontSize: '32px',
 				fill: '#00F'
 		}, this_tick);
 
-		console.log("Feedback initialized")
 		this.add.existing(feedback);
 
 		if(offset <= 5) { feedback.setText("Perfect"); }
