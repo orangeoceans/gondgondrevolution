@@ -1,38 +1,28 @@
 class Boot extends Phaser.Scene {
 
-	constructor () {
+	constructor () 
+	{
 		super('boot');
 	}
+	
 
 	init ()
 	{
-		Let element = document.createElement('style')
-
+		let element = document.createElement('style');
 		document.head.appendChild(element);
-
-		element.sheet.insertRule() //TODO
 	}
+
 
 	preload ()
 	{
-		//TODO
+		this.load.spritesheet('arrows','assets/arrows.png', {frameWidth: 50, frameHeight: 50});
 	}
+
 
 	create ()
 	{
-
-		Let scene = this.scene;
-
-		WebFont.load({
-			custom: {
-				families: [ 'bebas' ]
-			},
-			active: function ()
-			{
-				scene.start('gonddr')
-			}
-		})
-
+		let scene = this.scene;
+		scene.start('gonddr');
 	}
 
 }
@@ -41,7 +31,7 @@ class GonDDR extends Phaser.Scene {
 
 	constructor ()
 	{
-		super('game');
+		super('gonddr');
 
 		this.arrows;      // Currently active arrows
 		this.song_script; // Hash of strings; maps a tick to a string encoding the arrow(s) to create.
@@ -62,49 +52,46 @@ class GonDDR extends Phaser.Scene {
 		//TODO
 	}
 
-	init ()
+
+	preload ()
 	{
+		
+	}
+
+
+	create ()
+	{
+		this.add.sprite(100, 100, 'arrows', 1);
+
+		//this.input.on('', function () {
+		//}, this)
 
 	}
 
-	preload: function()
-	{
+
+	//read_song_file: function()
+	//{
 		//TODO
-	},
+	//},
 
-
-	create: function()
-	{
-
-		this.input.on('', function () {
-
-
-		}, this)
-
-
-	},
-
-
-	read_song_file: function()
-	{
-		//TODO
-	},
-
-	update_arrows: function(this_tick)
-	{
+	//update_arrows: function(this_tick)
+	//{
 		//if song_script[this_tick] == this_tick + fall_ticks
 		//   create arrow(s)
 
 		//update position of arrows
 
 		//check if 
-	},
-
-
-
+	//},
 
 //arrow class fields: 	direction, type, hit_tick, has_hit
-
-
-
 }
+
+var config = {
+    type: Phaser.AUTO,
+    width: 640,
+    height: 640,
+    scene: [ Boot, GonDDR ]
+};
+
+var game = new Phaser.Game(config);
