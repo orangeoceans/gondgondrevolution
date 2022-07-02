@@ -1,26 +1,22 @@
 class Boot extends Phaser.Scene {
 
-	constructor () 
-	{
+	constructor () {
 		super('boot');
 	}
 	
 
-	init ()
-	{
+	init () {
 		let element = document.createElement('style');
 		document.head.appendChild(element);
 	}
 
 
-	preload ()
-	{
-		this.load.spritesheet('arrows','assets/arrows.png', {frameWidth: 50, frameHeight: 50});
+	preload () {
+		this.load.spritesheet('arrows','assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 	}
 
 
-	create ()
-	{
+	create () {
 		let scene = this.scene;
 		scene.start('gonddr');
 	}
@@ -29,8 +25,8 @@ class Boot extends Phaser.Scene {
 
 class GonDDR extends Phaser.Scene {
 
-	constructor ()
-	{
+	constructor () {
+
 		super('gonddr');
 
 		this.arrows;      // Currently active arrows
@@ -43,29 +39,36 @@ class GonDDR extends Phaser.Scene {
 						// A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
 						// Speed, position, and timing of arrows are measured in ticks.
 						// Adjust this change the speed of the song.
-		this.fall_ticks = 400;
+		this.fall_ticks = 400.;
 						// # of ticks for a standard arrow to fall from the top to bottom of the screen.
 		this.hit_window;
 						// Margin in ticks that a player's button press registers as a hit
-		this.clock;
+		this.start_time;
 
 		//TODO
 	}
 
 
-	preload ()
-	{
+	preload () {
 		
 	}
 
 
-	create ()
-	{
-		this.add.sprite(100, 100, 'arrows', 1);
+	create () {
+
+		this.start_time = Date.now();
+		this.arrows = [];
+		this.arrows.push(new Arrow(this, 100, ARROW_START, 0, Directions.Up, 0));
+		this.add.existing(this.arrows[this.arrows.length-1]);
 
 		//this.input.on('', function () {
 		//}, this)
 
+	}
+
+	update (time) {
+		let this_tick = this.time_to_tick(time);
+		this.update_arrows(this_tick);
 	}
 
 
@@ -74,18 +77,59 @@ class GonDDR extends Phaser.Scene {
 		//TODO
 	//},
 
-	//update_arrows: function(this_tick)
-	//{
-		//if song_script[this_tick] == this_tick + fall_ticks
-		//   create arrow(s)
 
+	time_to_tick (ts_ms) {
+		return Math.floor(this.tps * ts_ms / 1000.);
+	}
+
+
+	update_arrows (this_tick) {
+
+		// console.log(this_tick - this.arrows[this.arrows.length-1].start_tick);
+
+		//if song_script[this_tick] == this_tick + fall_ticks
+		if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) {
+			this.arrows.push(new Arrow(this, 100, ARROW_START, this_tick, Directions.Up, 0));
+			this.add.existing(this.arrows[this.arrows.length-1]);
+			console.log(this.arrows.length);
+		}
+
+		for (var i = this.arrows.length-1; i >= 0; i--) {
+
+			let elapsed_ticks = this_tick - this.arrows[i].start_tick;
+			this.arrows[i].y = ARROW_START + ((elapsed_ticks/this.fall_ticks) * ARROW_DIST);
+
+			if (this.arrows[i].y > ARROW_END) {
+				let arrow_to_destroy = this.arrows.splice(i, 1);
+				arrow_to_destroy[0].destroy();
+			}
+		}
 		//update position of arrows
 
 		//check if 
-	//},
+	}
 
 //arrow class fields: 	direction, type, hit_tick, has_hit
 }
+
+
+class Arrow extends Phaser.GameObjects.Sprite {
+	constructor(scene, x, y, start_tick, direction, hit_tick) {
+		super(scene, x, y, 'arrows', direction);
+
+		this.start_tick = start_tick;
+		this.direction = direction;
+		this.hit_tick = hit_tick;
+		this.has_hit = false;
+	}
+}
+
+const Directions = {
+	Up:    0,
+	Right: 1,
+	Down:  2,
+	Left:  3
+};
 
 var config = {
     type: Phaser.AUTO,
@@ -93,5 +137,11 @@ var config = {
     height: 640,
     scene: [ Boot, GonDDR ]
 };
+
+const ARROW_SIZE  = 50;
+const ARROW_START = -ARROW_SIZE;
+const ARROW_END   = config.height + ARROW_SIZE;
+const ARROW_DIST  = ARROW_END - ARROW_START;
+
 
 var game = new Phaser.Game(config);
