@@ -121,7 +121,9 @@ class GonDDR extends Phaser.Scene {
 			else {
 				console.log(current_feedback.alpha);
 				current_feedback.y -= 2;
-				current_feedback.alpha -= 0.03;
+				if(this_tick - current_feedback.start_tick > 25) {
+					current_feedback.alpha -= 0.075;
+				}
 				return true;
 			}
 		});
