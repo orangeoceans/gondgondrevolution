@@ -104,21 +104,24 @@ class GonDDR extends Phaser.Scene {
 
 	update_feedback(this_tick) {
 
-		console.log(this.feedback_array.length)
 		// Iterate through feedback text
-		this.feedback_array.filter((item, i) => {
+		this.feedback_array = this.feedback_array.filter((item, i) => {
 			var current_feedback = this.feedback_array[i];
 
+			console.log(current_feedback.start_tick);
 			// Destroy feedback that is too old
-			if(this_tick - current_feedback.start_tick > 10) {
+			if(this_tick - current_feedback.start_tick > 60) {
 				current_feedback.destroy();
-				console.log("Destroyed text!")
+				console.log("Destroyed text!");
+				console.log(this.feedback_array.length);
 				return false;
 			}
 
 			// Otherwise make the text rise
 			else {
-				current_feedback.y -= 5;
+				console.log(current_feedback.alpha);
+				current_feedback.y -= 2;
+				current_feedback.alpha -= 0.03;
 				return true;
 			}
 		});
@@ -127,10 +130,13 @@ class GonDDR extends Phaser.Scene {
 	create_feedback_text(this_tick, offset) {
 		console.log(offset);
 
-		var feedback = this.add.text(200, 300, '', {
+		var feedback = new Feedback(this, 200, 300, '', {
 				fontSize: '32px',
 				fill: '#00F'
-		});
+		}, this_tick);
+
+		console.log("Feedback initialized")
+		this.add.existing(feedback);
 
 		if(offset <= 5) { feedback.setText("Perfect"); }
 		else if(offset <= 10) { feedback.setText("Great"); }
@@ -203,6 +209,13 @@ class GonDDR extends Phaser.Scene {
 	}
 }
 
+class Feedback extends Phaser.GameObjects.Text {
+	constructor(scene, x, y, text, params, start_tick) {
+		super(scene, x, y, text, params);
+
+		this.start_tick = start_tick;
+	}
+}
 
 // Arrow class, with some extra info on top of sprite
 class Arrow extends Phaser.GameObjects.Sprite {
