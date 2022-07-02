@@ -89,7 +89,7 @@ class GonDDR extends Phaser.Scene {
 
 		//if song_script[this_tick] == this_tick + fall_ticks
 		if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) {
-			this.arrows.push(new Arrow(this, 100, ARROW_START, this_tick, Directions.Up, 0));
+			this.arrows.push(new Arrow(this, 100, ARROW_START, this_tick, (this.arrows[this.arrows.length-1].direction+1)%4, 0));
 			this.add.existing(this.arrows[this.arrows.length-1]);
 			console.log(this.arrows.length);
 		}
