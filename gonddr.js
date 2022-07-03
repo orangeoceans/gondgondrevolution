@@ -45,7 +45,7 @@ class GonDDR extends Phaser.Scene {
 						// A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
 						// Speed, position, and timing of arrows are measured in ticks.
 						// Adjust this change the speed of the song.
-		this.fall_ticks = 400.;
+		this.fall_ticks = 4000.;
 						// # of ticks for a standard arrow to fall from the top to bottom of the screen.
 		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE;
 		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE;
@@ -130,50 +130,33 @@ class GonDDR extends Phaser.Scene {
 		});
 	}
 
-	create_feedback_hit(this_tick, offset) {
 
-		let coin_x = Math.floor(Math.random() * 2)
-		if(!coin_x) {coin_x = -1;}
+	add_feedback_generic(x, y, this_tick, text, jitter_x = 0, jitter_y = 0, fill = "#00F", fontsize = "32px") {
 
-		let jitter_x = Math.random() * 25 * coin_x;
-
-		let feedback = new Feedback(this, 425 + jitter_x, 75, '', {
-				fontSize: '32px',
-				fill: '#00F'
-		}, this_tick);
-
+		let feedback = new Feedback(this, x, y, this_tick, text, {
+				fontSize: fontsize,
+				fill: fill
+		}, jitter_x, jitter_y);
 		this.add.existing(feedback);
+		this.feedback_array.push(feedback);
 
-		if(offset <= 5) { feedback.setText("Perfect"); }
-		else if(offset <= 10) { feedback.setText("Great"); }
-		else if(offset <= 15) { feedback.setText("Okay"); }
-		else if(offset <= 20) { feedback.setText("Poor"); }
-		else { feedback.setText("Bad"); }
-
-		this.feedback_array.push(feedback)
 	}
 
-	create_feedback_error(this_tick, offset) {
+	add_feedback_hit(this_tick, text) {
 
-		var feedback = new Feedback(this, 200, 300, 'Miss', {
-				fontSize: '32px',
-				fill: '#00F'
-		}, this_tick);
-
-		this.add.existing(feedback);
-		this.feedback_array.push(feedback)
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, text, 
+			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, FEEDBACK_COLOR_DEFAULT, FEEDBACK_FONTSIZE_DEFAULT);
 	}
 
-	create_feedback_combo(this_tick, number) {
+	add_feedback_error(this_tick) {
 
-		var feedback = new Feedback(this, 320, 320, `COMBO ${number}`, {
-				fontSize: '32px',
-				fill: '#00F'
-		}, this_tick);
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, "MISS", 
+			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, "#F00", FEEDBACK_FONTSIZE_DEFAULT);
+	}
 
-		this.add.existing(feedback);
-		this.feedback_array.push(feedback)
+	add_feedback_combo(this_tick, number) {
 
+		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, this_tick, `COMBO ${number}`, 0, 0, "#0F0", "40px");
 	}
 
 	// Create, move, destroy, and register hits on arrows for this loop
@@ -235,10 +218,11 @@ class GonDDR extends Phaser.Scene {
 				for (var i = 0; i < this.arrows.length; i++) { // Loop through arrows
 					if (Directions[direction] == this.arrows[i].direction) { // Check if arrow matches direction
 						if (this.hit_window_start < this.arrows[i].y && this.arrows[i].y < this.hit_window_end) { // Check if arrow in hit window
-
-							this.handle_hit(this_tick, this.arrows[i]);
-							key_hit = true;
-							break; // Each key press should hit only one arrow, so break
+							if (!this.arrows[i].has_hit) {
+								this.handle_hit(this_tick, this.arrows[i]);
+								key_hit = true;
+								break; // Each key press should hit only one arrow, so break
+							}
 						}
 					}
 				}
@@ -262,40 +246,44 @@ class GonDDR extends Phaser.Scene {
 		}
 	}
 
+	get_hit_rank (hit_distance) {
+		for (const rank of Hit_Ranks) {
+			if (hit_distance <= rank.Distance) {
+				return rank;
+			}
+		}
+	}
+
 	handle_hit (this_tick, arrow) {
 		arrow.has_hit = true;
 		arrow.visible = false;
-		this.hit_frame.play('hit_frame_flash');
-		var offset = this.hit_window_start - arrow.y + ARROW_SIZE;
-		this.create_feedback_hit(this_tick, Math.abs(offset));
+		this.hit_frame.play('hit_frame_flash');		
 
 		this.combo++;
 		if (this.combo >= 1) {
 			console.log(`COMBO ${this.combo}`);
-			this.create_feedback_combo(this_tick, this.combo);
+			this.add_feedback_combo(this_tick, this.combo);
 		}
+
+		var hit_distance = Math.abs(ARROW_HIT_Y - arrow.y);
+		let rank = this.get_hit_rank(hit_distance);
+		this.add_feedback_hit(this_tick, rank.Text);
 	}
 
 	handle_miss (this_tick, arrow = null) {
 		this.combo = 0;
 		if (arrow === null) {
 			console.log(`PENALTY INCORRECT ${this_tick}`);
-			this.create_feedback_error(this_tick);
+			this.add_feedback_error(this_tick);
 		} else {
 			console.log(`PENALTY MISSED ${this_tick}`);
 			arrow.has_missed = true;
-			this.create_feedback_error(this_tick);
+			this.add_feedback_error(this_tick);
 		}
 	}
 }
 
-class Feedback extends Phaser.GameObjects.Text {
-	constructor(scene, x, y, text, params, start_tick) {
-		super(scene, x, y, text, params);
 
-		this.start_tick = start_tick;
-	}
-}
 
 var config = {
     type: Phaser.AUTO,
