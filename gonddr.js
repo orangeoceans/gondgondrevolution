@@ -15,12 +15,12 @@ class Boot extends Phaser.Scene {
 		this.load.spritesheet('arrows', 'assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 		this.load.spritesheet('hit_frame', 'assets/hit_frame.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
+		this.load.json('testdance', 'testdance.json');
 	}
 
 
 	create () {
 		let scene = this.scene;
-
 		// Start the actual game!
 		scene.start('gonddr');
 	}
@@ -52,12 +52,13 @@ class GonDDR extends Phaser.Scene {
 
 		this.arrow_keys = {};
 						// Phaser keyboard key objects for the arrow keys/WASD?
-
 		//TODO
+
 	}
 
-
 	create () {
+
+		this.dance = this.cache.json.get('testdance');
 
 		// Create game objects
 		this.hit_frame = this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0);
@@ -88,7 +89,6 @@ class GonDDR extends Phaser.Scene {
 
 	// Main game loop
 	update (time) {
-
 		let this_tick = this.time_to_tick(time);
 		this.update_arrows(this_tick);
 		this.update_feedback(this_tick);
@@ -166,9 +166,24 @@ class GonDDR extends Phaser.Scene {
 
 		// Create new arrow
 		//if song_script[this_tick] == this_tick + fall_ticks
-		if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) { // For now, generate arrows at regular intervals
+		/*if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) { // For now, generate arrows at regular intervals
 			this.arrows.push(new Arrow(this, 100, ARROW_START_Y, this_tick, (this.arrows[this.arrows.length-1].direction+1)%4, 0)); // Push new arrow to array
 			this.add.existing(this.arrows[this.arrows.length-1]); // Add new arrow to Phaser scene
+		}*/
+
+		// Get next arrow
+		if (this.dance["song"].length != 0) {
+			var next_arrow = this.dance["song"][0];
+			console.log(next_arrow);
+			if(this_tick > next_arrow["tick"] - 100) {
+
+				console.log(this_tick)
+				this.dance["song"].shift();
+				next_arrow["arrows"].forEach((item, i) => {
+					this.arrows.push(new Arrow(this, 100, ARROW_START_Y, this_tick, next_arrow["arrows"][0].direction, 0)); // Push new arrow to array
+					this.add.existing(this.arrows[this.arrows.length-1])
+				}); // Add new arrow to Phaser scene
+			}
 		}
 
 		// Move arrow, mark as missed when leaving hit window, destroy arrows when leaving screen
@@ -181,6 +196,7 @@ class GonDDR extends Phaser.Scene {
 			if (this.arrows[i].y > ARROW_END_Y) {
 				let arrow_to_destroy = this.arrows.splice(i, 1);
 				arrow_to_destroy[0].destroy();
+				continue;
 			}
 
 			// Mark arrow as missed
