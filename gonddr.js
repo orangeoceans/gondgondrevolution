@@ -39,13 +39,14 @@ class GonDDR extends Phaser.Scene {
 		this.gondola;     // TODO
 		this.combo = 0;       // TODO
 		this.score = 0;       // TODO
+		this.score_text;
 
 		this.bpm;       // Beats per minute TODO
 		this.tps = 100; // Ticks per second.
 						// A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
 						// Speed, position, and timing of arrows are measured in ticks.
 						// Adjust this change the speed of the song.
-		this.fall_ticks = 4000.;
+		this.fall_ticks = 400.;
 						// # of ticks for a standard arrow to fall from the top to bottom of the screen.
 		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE;
 		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE;
@@ -66,6 +67,13 @@ class GonDDR extends Phaser.Scene {
 		this.arrows = [];
 
 		this.gondola = this.add.sprite(GONDOLA_X, GONDOLA_Y, 'gondola', Gondola_Poses.Neutral);
+
+		this.score_text = this.add.text(SCORE_X, SCORE_Y, '0', {
+				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
+				fill: FEEDBACK_COLOR_DEFAULT,
+				align: 'right'
+		});
+		this.score_text.setOrigin(1,1);
 
 		// Create keyboard keys
 		this.arrow_keys['Up'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -267,6 +275,13 @@ class GonDDR extends Phaser.Scene {
 
 		var hit_distance = Math.abs(ARROW_HIT_Y - arrow.y);
 		let rank = this.get_hit_rank(hit_distance);
+
+		if (rank.Breaks_combo){
+			this.combo = 0;
+		}
+		this.score += rank.Score * Math.pow(Math.ceil(this.combo/4), rank.Combo_power)
+		this.score_text.text = `${this.score}`
+
 		this.add_feedback_hit(this_tick, rank.Text);
 	}
 
@@ -304,5 +319,8 @@ const GONDOLA_WIDTH  = 296;
 const GONDOLA_HEIGHT = 395;
 const GONDOLA_X 	 = 480;
 const GONDOLA_Y      = 320;
+
+const SCORE_X = config.width - 10;
+const SCORE_Y = config.height - 10;
 
 var game = new Phaser.Game(config);
