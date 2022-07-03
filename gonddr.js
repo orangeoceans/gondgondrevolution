@@ -35,10 +35,10 @@ class GonDDR extends Phaser.Scene {
 
 		this.hit_frame;   // Sprite of hit window
 		this.arrows;      // Currently active arrows
-		this.song_script; // Hash of strings; maps a tick to a string encoding the arrow(s) to create.
-		this.gondola;     // TODO
-		this.combo = 0;       // TODO
-		this.score = 0;       // TODO
+		this.dance;
+		this.gondola;
+		this.combo = 0;
+		this.score = 0;
 		this.score_text;
 
 		this.bpm;       // Beats per minute TODO
@@ -46,8 +46,11 @@ class GonDDR extends Phaser.Scene {
 						// A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
 						// Speed, position, and timing of arrows are measured in ticks.
 						// Adjust this change the speed of the song.
-		this.fall_ticks = 400.;
+		this.fall_speed_ppt = 1.2; // Fall speed of each arrow, in pixels per tick
+		this.fall_to_hit_ticks = ARROW_DIST_TO_HIT / this.fall_speed_ppt;
 						// # of ticks for a standard arrow to fall from the top to bottom of the screen.
+		this.fall_to_bottom_ticks = ARROW_DIST_TOTAL / this.fall_speed_ppt;
+
 		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE;
 		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE;
 						// Margin in pixels that a player's button press registers as a hit
@@ -167,34 +170,19 @@ class GonDDR extends Phaser.Scene {
 		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, this_tick, `COMBO ${number}`, 0, 0, "#0F0", "40px");
 	}
 
+
 	// Create, move, destroy, and register hits on arrows for this loop
 	update_arrows (this_tick) {
 
-		// Create new arrow
-		//if song_script[this_tick] == this_tick + fall_ticks
-		/*if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) { // TEMPORARY: For now, generate arrows at regular intervals
-			let new_direction = (this.arrows[this.arrows.length-1].direction+1)%4; // TEMPORARY
-			let new_direction_text = Object.keys(Directions).find(key => Directions[key] === new_direction); // TEMPORARY (?)
-			this.arrows.push(new Arrow(this, ARROW_X[new_direction_text], ARROW_START_Y, this_tick, new_direction, 0)); // Push new arrow to array
-			this.add.existing(this.arrows[this.arrows.length-1]); // Add new arrow to Phaser scene
-		}*/
-
 		// Get next arrow
 		if (this.dance["song"].length != 0) {
-			var next_arrow = this.dance["song"][0];
-			//console.log(next_arrow);
-			if(this_tick > next_arrow["tick"] - 100) {
+			let next_arrow = this.dance["song"][0];
+			if (this_tick >= next_arrow["tick"] - this.fall_to_hit_ticks) {
 
-				//console.log(this_tick)
 				this.dance["song"].shift();
 				next_arrow["arrows"].forEach((arrow, i) => {
-					console.log(arrow);
-					let new_direction = arrow.direction;
-					let new_direction_text = Object.keys(Directions).find(key => Directions[key] === new_direction); // TEMPORARY (?)
-					this.arrows.push(new Arrow(this, ARROW_X[new_direction_text], ARROW_START_Y, this_tick, new_direction, 0)); // Push new arrow to array
-					console.log(new_direction_text);
-					console.log(arrow.direction);
-					this.add.existing(this.arrows[this.arrows.length-1])
+					this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
+					this.add.existing(this.arrows[this.arrows.length-1]);
 				}); // Add new arrow to Phaser scene
 			}
 		}
@@ -203,7 +191,7 @@ class GonDDR extends Phaser.Scene {
 		for (var i = this.arrows.length-1; i >= 0; i--) {
 
 			let elapsed_ticks = this_tick - this.arrows[i].start_tick;
-			this.arrows[i].y = ARROW_START_Y + ((elapsed_ticks/this.fall_ticks) * ARROW_DIST_TOTAL);
+			this.arrows[i].y = ARROW_START_Y + ((elapsed_ticks/this.fall_to_bottom_ticks) * ARROW_DIST_TOTAL);
 
 			// Destroy arrow if out of screen
 			if (this.arrows[i].y > ARROW_END_Y) {

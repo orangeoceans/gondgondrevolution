@@ -15,14 +15,18 @@ const Directions = {
 	Up:    0,
 	Right: 1,
 	Down:  2,
-	Left:  3
+	Left:  3,
+	0:     "Up",
+	1:     "Right",
+	2:     "Down", 
+	3:     "Left"
 };
 
 const ARROW_X = {
-	Left: 75,
-	Down: 125,
-	Up:   175,
-	Right:225
+	3: 75,
+	2: 125,
+	0: 175,
+	1: 225
 }
 
 const ARROW_SIZE    = 50;
