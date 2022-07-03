@@ -12,9 +12,17 @@ class Boot extends Phaser.Scene {
 
 	// Preload assets from disk
 	preload () {
+		this.load.spritesheet('intro_bg', 'assets/intro_bg.png', {frameWidth: WINDOW_WIDTH, frameHeight: WINDOW_HEIGHT});
+
 		this.load.spritesheet('arrows', 'assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 		this.load.spritesheet('hit_frame', 'assets/hit_frame.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
+
+		this.load.image('press_start', 'assets/press_start.png');
+		this.load.image('ggr_logo', 'assets/ggr_logo.png');
+		this.load.image('pink_tile', 'assets/pink_tile.png');
+		this.load.image('black_bg', 'assets/black_bg.png');
+
 		this.load.json('testdance', 'testdance.json');
 	}
 
@@ -22,7 +30,7 @@ class Boot extends Phaser.Scene {
 	create () {
 		let scene = this.scene;
 		// Start the actual game!
-		scene.start('gonddr');
+		scene.start('intro');
 	}
 
 }

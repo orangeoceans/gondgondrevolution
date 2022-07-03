@@ -4,6 +4,8 @@ class GonDDR extends Phaser.Scene {
 
 		super('gonddr');
 
+		this.start_time;
+
 		this.hit_frame;   // Sprite of hit window
 		this.arrows;      // Currently active arrows
 		this.dance;
@@ -33,6 +35,8 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	create () {
+
+		this.start_time = Date.now();
 
 		this.dance = this.cache.json.get('testdance');
 
@@ -68,8 +72,9 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	// Main game loop
-	update (time) {
-		let this_tick = this.time_to_tick(time);
+	update () {
+		let time_ms = Date.now() - this.start_time;
+		let this_tick = this.time_to_tick(time_ms);
 		this.update_arrows(this_tick);
 		this.update_feedback(this_tick);
 		this.update_gondola();
