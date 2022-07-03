@@ -14,7 +14,7 @@ class Boot extends Phaser.Scene {
 	preload () {
 		this.load.spritesheet('arrows', 'assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 		this.load.spritesheet('hit_frame', 'assets/hit_frame.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
-		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
+		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT});
 	}
 
 
@@ -40,6 +40,7 @@ class GonDDR extends Phaser.Scene {
 		this.combo;       // TODO
 		this.score;       // TODO
 
+		this.bpm;       // Beats per minute TODO
 		this.tps = 100; // Ticks per second.
 						// A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
 						// Speed, position, and timing of arrows are measured in ticks.
@@ -63,7 +64,7 @@ class GonDDR extends Phaser.Scene {
 		this.hit_frame = this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0);
 
 		this.arrows = [];
-		this.arrows.push(new Arrow(this, 100, ARROW_START_Y, 0, Directions.Up, 0));
+		this.arrows.push(new Arrow(this, ARROW_X.Up, ARROW_START_Y, 0, Directions.Up, 0));
 		this.add.existing(this.arrows[this.arrows.length-1]);
 
 		this.gondola = this.add.sprite(GONDOLA_X, GONDOLA_Y, 'gondola', Gondola_Poses.Neutral);
@@ -166,8 +167,10 @@ class GonDDR extends Phaser.Scene {
 
 		// Create new arrow
 		//if song_script[this_tick] == this_tick + fall_ticks
-		if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) { // For now, generate arrows at regular intervals
-			this.arrows.push(new Arrow(this, 100, ARROW_START_Y, this_tick, (this.arrows[this.arrows.length-1].direction+1)%4, 0)); // Push new arrow to array
+		if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) { // TEMPORARY: For now, generate arrows at regular intervals
+			let new_direction = (this.arrows[this.arrows.length-1].direction+1)%4; // TEMPORARY
+			let new_direction_text = Object.keys(Directions).find(key => Directions[key] === new_direction); // TEMPORARY (?)
+			this.arrows.push(new Arrow(this, ARROW_X[new_direction_text], ARROW_START_Y, this_tick, new_direction, 0)); // Push new arrow to array
 			this.add.existing(this.arrows[this.arrows.length-1]); // Add new arrow to Phaser scene
 		}
 
