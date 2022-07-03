@@ -18,6 +18,13 @@ const Directions = {
 	Left:  3
 };
 
+const ARROW_X = {
+	Left: 75,
+	Down: 125,
+	Up:   175,
+	Right:225
+}
+
 const ARROW_SIZE    = 50;
 const ARROW_START_Y = -ARROW_SIZE;
 const ARROW_END_Y   = config.height + ARROW_SIZE;

@@ -1,0 +1,10 @@
+{
+    "song": [
+      { "tick": 500,  "arrows": [ {"direction":0}, {"direction":1} ] },
+      { "tick": 750,  "arrows": [ {"direction":2} ] },
+      { "tick": 1000, "arrows": [ {"direction":2} ] },
+      { "tick": 1250, "arrows": [ {"direction":3} ] },
+      { "tick": 1500, "arrows": [ {"direction":2} ] },
+      { "tick": 1750, "arrows": [ {"direction":1} ] }
+    ]
+}

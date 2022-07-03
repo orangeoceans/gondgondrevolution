@@ -40,6 +40,7 @@ class GonDDR extends Phaser.Scene {
 		this.combo;       // TODO
 		this.score;       // TODO
 
+		this.bpm;       // Beats per minute TODO
 		this.tps = 100; // Ticks per second.
 						// A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
 						// Speed, position, and timing of arrows are measured in ticks.
@@ -62,10 +63,7 @@ class GonDDR extends Phaser.Scene {
 
 		// Create game objects
 		this.hit_frame = this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0);
-
 		this.arrows = [];
-		this.arrows.push(new Arrow(this, 100, ARROW_START_Y, 0, Directions.Up, 0));
-		this.add.existing(this.arrows[this.arrows.length-1]);
 
 		this.gondola = this.add.sprite(GONDOLA_X, GONDOLA_Y, 'gondola', Gondola_Poses.Neutral);
 
@@ -113,11 +111,11 @@ class GonDDR extends Phaser.Scene {
 		this.feedback_array = this.feedback_array.filter((item, i) => {
 			var current_feedback = this.feedback_array[i];
 
-			console.log(current_feedback.start_tick);
+			//console.log(current_feedback.start_tick);
 			// Destroy feedback that is too old
 			if(this_tick - current_feedback.start_tick > 75) {
 				current_feedback.destroy();
-				console.log(this.feedback_array.length);
+				//console.log(this.feedback_array.length);
 				return false;
 			}
 
@@ -166,21 +164,28 @@ class GonDDR extends Phaser.Scene {
 
 		// Create new arrow
 		//if song_script[this_tick] == this_tick + fall_ticks
-		/*if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) { // For now, generate arrows at regular intervals
-			this.arrows.push(new Arrow(this, 100, ARROW_START_Y, this_tick, (this.arrows[this.arrows.length-1].direction+1)%4, 0)); // Push new arrow to array
+		/*if (this_tick - this.arrows[this.arrows.length-1].start_tick >= 200) { // TEMPORARY: For now, generate arrows at regular intervals
+			let new_direction = (this.arrows[this.arrows.length-1].direction+1)%4; // TEMPORARY
+			let new_direction_text = Object.keys(Directions).find(key => Directions[key] === new_direction); // TEMPORARY (?)
+			this.arrows.push(new Arrow(this, ARROW_X[new_direction_text], ARROW_START_Y, this_tick, new_direction, 0)); // Push new arrow to array
 			this.add.existing(this.arrows[this.arrows.length-1]); // Add new arrow to Phaser scene
 		}*/
 
 		// Get next arrow
 		if (this.dance["song"].length != 0) {
 			var next_arrow = this.dance["song"][0];
-			console.log(next_arrow);
+			//console.log(next_arrow);
 			if(this_tick > next_arrow["tick"] - 100) {
 
-				console.log(this_tick)
+				//console.log(this_tick)
 				this.dance["song"].shift();
-				next_arrow["arrows"].forEach((item, i) => {
-					this.arrows.push(new Arrow(this, 100, ARROW_START_Y, this_tick, next_arrow["arrows"][0].direction, 0)); // Push new arrow to array
+				next_arrow["arrows"].forEach((arrow, i) => {
+					console.log(arrow);
+					let new_direction = arrow.direction;
+					let new_direction_text = Object.keys(Directions).find(key => Directions[key] === new_direction); // TEMPORARY (?)
+					this.arrows.push(new Arrow(this, ARROW_X[new_direction_text], ARROW_START_Y, this_tick, new_direction, 0)); // Push new arrow to array
+					console.log(new_direction_text);
+					console.log(arrow.direction);
 					this.add.existing(this.arrows[this.arrows.length-1])
 				}); // Add new arrow to Phaser scene
 			}
