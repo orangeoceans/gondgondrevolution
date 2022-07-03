@@ -37,8 +37,8 @@ class GonDDR extends Phaser.Scene {
 		this.arrows;      // Currently active arrows
 		this.song_script; // Hash of strings; maps a tick to a string encoding the arrow(s) to create.
 		this.gondola;     // TODO
-		this.combo;       // TODO
-		this.score;       // TODO
+		this.combo = 0;       // TODO
+		this.score = 0;       // TODO
 
 		this.bpm;       // Beats per minute TODO
 		this.tps = 100; // Ticks per second.
@@ -164,6 +164,18 @@ class GonDDR extends Phaser.Scene {
 		this.feedback_array.push(feedback)
 	}
 
+	create_feedback_combo(this_tick, number) {
+
+		var feedback = new Feedback(this, 320, 320, `COMBO ${number}`, {
+				fontSize: '32px',
+				fill: '#00F'
+		}, this_tick);
+
+		this.add.existing(feedback);
+		this.feedback_array.push(feedback)
+
+	}
+
 	// Create, move, destroy, and register hits on arrows for this loop
 	update_arrows (this_tick) {
 
@@ -211,9 +223,7 @@ class GonDDR extends Phaser.Scene {
 
 			// Mark arrow as missed
 			if (this.arrows[i].y > this.hit_window_end && !this.arrows[i].has_hit && !this.arrows[i].has_missed) {
-				console.log('PENALTY MISSED ${this_tick}');
-				this.arrows[i].has_missed = true;
-				this.create_feedback_error(this_tick);
+				this.handle_miss(this_tick, this.arrows[i]);
 			}
 		}
 
@@ -226,22 +236,14 @@ class GonDDR extends Phaser.Scene {
 					if (Directions[direction] == this.arrows[i].direction) { // Check if arrow matches direction
 						if (this.hit_window_start < this.arrows[i].y && this.arrows[i].y < this.hit_window_end) { // Check if arrow in hit window
 
-							this.arrows[i].has_hit = true;
-							this.arrows[i].visible = false;
-
+							this.handle_hit(this_tick, this.arrows[i]);
 							key_hit = true;
-							this.hit_frame.play('hit_frame_flash');
-
-							var offset = this.hit_window_start - this.arrows[i].y + ARROW_SIZE;
-							this.create_feedback_hit(this_tick, Math.abs(offset));
-
 							break; // Each key press should hit only one arrow, so break
 						}
 					}
 				}
 				if (!key_hit) { // If the key is pressed but had no matching arrow in the hit window, it's incorrect
-					console.log('PENALTY INCORRECT ${this_tick}');
-					this.create_feedback_error(this_tick);
+					this.handle_miss(this_tick);
 				}
 			}
 		}
@@ -257,6 +259,32 @@ class GonDDR extends Phaser.Scene {
 		}
 		if (!arrow_key_down) {
 			this.gondola.setFrame(Gondola_Poses.Neutral);
+		}
+	}
+
+	handle_hit (this_tick, arrow) {
+		arrow.has_hit = true;
+		arrow.visible = false;
+		this.hit_frame.play('hit_frame_flash');
+		var offset = this.hit_window_start - arrow.y + ARROW_SIZE;
+		this.create_feedback_hit(this_tick, Math.abs(offset));
+
+		this.combo++;
+		if (this.combo >= 1) {
+			console.log(`COMBO ${this.combo}`);
+			this.create_feedback_combo(this_tick, this.combo);
+		}
+	}
+
+	handle_miss (this_tick, arrow = null) {
+		this.combo = 0;
+		if (arrow === null) {
+			console.log(`PENALTY INCORRECT ${this_tick}`);
+			this.create_feedback_error(this_tick);
+		} else {
+			console.log(`PENALTY MISSED ${this_tick}`);
+			arrow.has_missed = true;
+			this.create_feedback_error(this_tick);
 		}
 	}
 }
