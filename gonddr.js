@@ -132,7 +132,12 @@ class GonDDR extends Phaser.Scene {
 
 	create_feedback_hit(this_tick, offset) {
 
-		var feedback = new Feedback(this, 200, 300, '', {
+		let coin_x = Math.floor(Math.random() * 2)
+		if(!coin_x) {coin_x = -1;}
+
+		let jitter_x = Math.random() * 25 * coin_x;
+
+		let feedback = new Feedback(this, 425 + jitter_x, 75, '', {
 				fontSize: '32px',
 				fill: '#00F'
 		}, this_tick);
