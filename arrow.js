@@ -31,8 +31,8 @@ const ARROW_X = {
 
 const ARROW_SIZE    = 50;
 const ARROW_START_Y = -ARROW_SIZE;
-const ARROW_END_Y   = config.height + ARROW_SIZE;
-const ARROW_HIT_Y   = config.height - 100
+const ARROW_END_Y   = WINDOW_HEIGHT + ARROW_SIZE;
+const ARROW_HIT_Y   = WINDOW_HEIGHT - 100
 
 const ARROW_DIST_TOTAL  = ARROW_END_Y - ARROW_START_Y;
 const ARROW_DIST_TO_HIT = ARROW_HIT_Y - ARROW_START_Y;

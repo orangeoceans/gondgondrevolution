@@ -27,6 +27,11 @@ const FEEDBACK_COMBO_Y = 280;
 const FEEDBACK_JITTER_X = 50;
 const FEEDBACK_JITTER_Y = 50;
 
+const FEEDBACK_LIFETIME = 100;
+const FEEDBACK_RISE_SPEED = 2;
+const FEEDBACK_FADE_START_TICK = 50;
+const FEEDBACK_FADE_SPEED = 0.075;
+
 const Hit_Ranks = [
 	{Distance: 5,    Text: "Perfect", Score: 1000, Breaks_combo: false, Combo_power: 2},
 	{Distance: 10,   Text: "Great", Score: 800, Breaks_combo: false, Combo_power: 1},

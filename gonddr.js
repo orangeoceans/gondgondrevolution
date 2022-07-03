@@ -1,32 +1,3 @@
-class Boot extends Phaser.Scene {
-
-	constructor () {
-		super('boot');
-	}
-
-
-	init () {
-		let element = document.createElement('style');
-		document.head.appendChild(element);
-	}
-
-	// Preload assets from disk
-	preload () {
-		this.load.spritesheet('arrows', 'assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
-		this.load.spritesheet('hit_frame', 'assets/hit_frame.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
-		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
-		this.load.json('testdance', 'testdance.json');
-	}
-
-
-	create () {
-		let scene = this.scene;
-		// Start the actual game!
-		scene.start('gonddr');
-	}
-
-}
-
 class GonDDR extends Phaser.Scene {
 
 	constructor () {
@@ -124,7 +95,7 @@ class GonDDR extends Phaser.Scene {
 
 			//console.log(current_feedback.start_tick);
 			// Destroy feedback that is too old
-			if(this_tick - current_feedback.start_tick > 75) {
+			if(this_tick - current_feedback.start_tick > FEEDBACK_LIFETIME) {
 				current_feedback.destroy();
 				//console.log(this.feedback_array.length);
 				return false;
@@ -132,9 +103,9 @@ class GonDDR extends Phaser.Scene {
 
 			// Otherwise make the text rise
 			else {
-				current_feedback.y -= 2;
-				if(this_tick - current_feedback.start_tick > 25 && current_feedback.alpha > 0) {
-					current_feedback.alpha -= 0.075;
+				current_feedback.y -= FEEDBACK_RISE_SPEED;
+				if(this_tick - current_feedback.start_tick > FEEDBACK_FADE_START_TICK && current_feedback.alpha > 0) {
+					current_feedback.alpha -= FEEDBACK_FADE_SPEED;
 				}
 				return true;
 			}
@@ -286,15 +257,6 @@ class GonDDR extends Phaser.Scene {
 	}
 }
 
-
-
-var config = {
-    type: Phaser.AUTO,
-    width: 640,
-    height: 640,
-    scene: [ Boot, GonDDR ]
-};
-
 const Gondola_Poses = {
 	Up:      0,
 	Right:   1,
@@ -308,7 +270,5 @@ const GONDOLA_HEIGHT = 395;
 const GONDOLA_X 	 = 480;
 const GONDOLA_Y      = 320;
 
-const SCORE_X = config.width - 10;
-const SCORE_Y = config.height - 10;
-
-var game = new Phaser.Game(config);
+const SCORE_X = WINDOW_WIDTH - 10;
+const SCORE_Y = WINDOW_HEIGHT - 10;
