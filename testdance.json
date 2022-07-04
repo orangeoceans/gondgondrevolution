@@ -1,5 +1,11 @@
 {
+    "properties": {
+      "starting_bpm": 140,
+      "beats_per_bar": 4
+    },
+
     "song": [
+      { "beat": 0,  "arrows": [], "bpm": 140},
       { "beat": 4,  "arrows": [ {"direction":0}] },
       { "beat": 5,  "arrows": [ {"direction":1}, {"direction":2} ] },
       { "beat": 6,  "arrows": [ {"direction":3} ] },
