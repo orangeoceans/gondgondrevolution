@@ -9,52 +9,40 @@ class GonDDR extends Phaser.Scene {
 		this.song;
 		this.song_idx;
 
-		this.hit_frame;   // Sprite of hit window
 		this.arrows;      // Currently active arrows
-		this.song;
+
+		this.hit_frame;   // Sprite of hit window
 		this.gondola;
+
 		this.combo = 0;
 		this.score = 0;
 		this.score_text;
 
-
-		this.tps = 100;    // Ticks per second;
+		this.tps = 100;   // Ticks per second;
 
 		/* A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
-		   Speed, position, and timing of arrows are measured in ticks.
-		   Adjust this change the speed of the song. */
+		   Speed, position, and timing of arrows are measured in ticks. */
 
+		// Margin in pixels that a player's button press registers as a hit
 		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE;
 		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE;
-						// Margin in pixels that a player's button press registers as a hit
 
+		// TODO: Phaser keyboard key objects for the arrow keys/WASD?
 		this.arrow_keys = {};
-						// Phaser keyboard key objects for the arrow keys/WASD?
-		//TODO
 
 	}
 
 
 	create () {
 
-		this.init_song();
-
+		// TODO: Start time is actually when the song starts playback; may not be immediate?
 		this.start_time = Date.now();
 
+		this.init_song();
+		this.init_arrow_properties();
+		this.init_game_objects();
 
-		// Create game objects
-		this.hit_frame = this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0);
 		this.arrows = [];
-
-		this.gondola = this.add.sprite(GONDOLA_X, GONDOLA_Y, 'gondola', Gondola_Poses.Neutral);
-		this.gondola.alpha=0;
-
-		this.score_text = this.add.text(SCORE_X, SCORE_Y, '0', {
-				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
-				fill: FEEDBACK_COLOR_DEFAULT,
-				align: 'right'
-		});
-		this.score_text.setOrigin(1,1);
 
 		// Create keyboard keys
 		this.arrow_keys['Up'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
@@ -88,7 +76,7 @@ class GonDDR extends Phaser.Scene {
 		this.update_gondola();
 	}
 
-
+	// Load song data, set BPM and time signature
 	init_song() {
 		this.song = this.cache.json.get('testdance');
 		this.song_idx = 0;
@@ -100,7 +88,9 @@ class GonDDR extends Phaser.Scene {
 
 		console.log("BPM: " + this.bpm + " Beats per bar: " + this.bpb);
 		console.log("Ticks per beat: " + this.tpb);
+	}
 
+	init_arrow_properties() {
 		this.fall_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
 		console.log("Fall speed: " + this.fall_speed_ppt);
 
@@ -109,7 +99,23 @@ class GonDDR extends Phaser.Scene {
 
 		// # of ticks for a standard arrow to fall from the top to bottom of the screen.
 		this.fall_to_bottom_ticks = ARROW_DIST_TOTAL / this.fall_speed_ppt;
+	}
 
+	// Create game objects
+	init_game_objects() {
+
+		// Create sprites
+		this.hit_frame = this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0);
+		this.gondola = this.add.sprite(GONDOLA_X, GONDOLA_Y, 'gondola', Gondola_Poses.Neutral);
+		this.gondola.alpha=0;
+
+		// Draw score info
+		this.score_text = this.add.text(SCORE_X, SCORE_Y, '0', {
+				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
+				fill: FEEDBACK_COLOR_DEFAULT,
+				align: 'right'
+		});
+		this.score_text.setOrigin(1,1);
 	}
 
 	// Convert time in milliseconds to ticks
