@@ -17,12 +17,23 @@ class GonDDR extends Phaser.Scene {
 		this.score = 0;
 		this.score_text;
 
-		this.bpm;       // Beats per minute TODO
-		this.tps = 100; // Ticks per second.
-						// A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
-						// Speed, position, and timing of arrows are measured in ticks.
-						// Adjust this change the speed of the song.
-		this.fall_speed_ppt = 1.2; // Fall speed of each arrow, in pixels per tick
+		this.bpm = 140;    // Beats per minute (TODO: PLACEHOLDER)
+		this.bps = 140/60; // Beats per second
+		this.tps = 100;    // Ticks per second;
+		this.bpb = 4;      // Beats per bar (determines fall time)
+
+		/* A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
+		   Speed, position, and timing of arrows are measured in ticks.
+		   Adjust this change the speed of the song. */
+
+	  this.tpb = this.tps/this.bps // Ticks per beat
+		console.log("Ticks per beat: " + this.tpb);
+
+
+
+		this.fall_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * 4); // Fall speed of each arrow, in pixels per tick
+		console.log(this.fall_speed_ppt);
+
 		this.fall_to_hit_ticks = ARROW_DIST_TO_HIT / this.fall_speed_ppt;
 						// # of ticks for a standard arrow to fall from the top to bottom of the screen.
 		this.fall_to_bottom_ticks = ARROW_DIST_TOTAL / this.fall_speed_ppt;
@@ -41,6 +52,8 @@ class GonDDR extends Phaser.Scene {
 	create () {
 
 		this.start_time = Date.now();
+		this.window_start = 0;
+		this.beat = 0;
 
 		this.dance = this.cache.json.get('testdance');
 		this.dance_idx = 0;
@@ -82,7 +95,11 @@ class GonDDR extends Phaser.Scene {
 	// Main game loop
 	update () {
 		let time_ms = Date.now() - this.start_time;
+
 		let this_tick = this.time_to_tick(time_ms);
+
+		this.increment_beats(this_tick);
+
 		this.update_arrows(this_tick);
 		this.update_feedback(this_tick);
 		this.update_gondola();
@@ -99,6 +116,32 @@ class GonDDR extends Phaser.Scene {
 	time_to_tick (ts_ms) {
 		return Math.floor(this.tps * ts_ms / 1000.);
 	}
+
+	increment_beats(this_tick) {
+		if (this_tick >= this.window_start + this.tpb) {
+			this.beat += 1;
+			this.window_start = this_tick;
+		}
+		console.log("Current beat: " + this.beat);
+
+		this.handle_beat(this_tick);
+	}
+
+	handle_beat(this_tick) {
+			if (this.dance_idx < this.dance["song"].length) {
+				let next_arrow = this.dance["song"][this.dance_idx];
+				if (this.beat == next_arrow["beat"] - 4) { // TEMPORARY? Arrows take 4 beats to fall
+
+					this.dance_idx++;
+					next_arrow["arrows"].forEach((arrow, i) => {
+						this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
+						this.add.existing(this.arrows[this.arrows.length-1]);
+					}); // Add new arrow to Phaser scene
+				}
+			}
+
+	}
+
 
 	update_feedback(this_tick) {
 
@@ -139,13 +182,13 @@ class GonDDR extends Phaser.Scene {
 
 	add_feedback_hit(this_tick, text) {
 
-		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, text, 
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, text,
 			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, FEEDBACK_COLOR_DEFAULT, FEEDBACK_FONTSIZE_DEFAULT);
 	}
 
 	add_feedback_error(this_tick) {
 
-		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, "MISS", 
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, "MISS",
 			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, "#F00", FEEDBACK_FONTSIZE_DEFAULT);
 	}
 
@@ -159,7 +202,7 @@ class GonDDR extends Phaser.Scene {
 	update_arrows (this_tick) {
 
 		// Get next arrow
-		if (this.dance_idx < this.dance["song"].length) {
+	/*	if (this.dance_idx < this.dance["song"].length) {
 			let next_arrow = this.dance["song"][this.dance_idx];
 			if (this_tick >= next_arrow["tick"] - this.fall_to_hit_ticks) {
 
@@ -170,7 +213,7 @@ class GonDDR extends Phaser.Scene {
 					this.add.existing(this.arrows[this.arrows.length-1]);
 				}); // Add new arrow to Phaser scene
 			}
-		}
+		}*/
 
 		// Move arrow, mark as missed when leaving hit window, destroy arrows when leaving screen
 		for (var i = this.arrows.length-1; i >= 0; i--) {
@@ -186,7 +229,7 @@ class GonDDR extends Phaser.Scene {
 				if (this.dance_idx >= this.dance["song"].length && this.arrows.length == 0) {
 					this.end_dance();
 				}
-				
+
 				continue;
 			}
 
@@ -243,7 +286,7 @@ class GonDDR extends Phaser.Scene {
 	handle_hit (this_tick, arrow) {
 		arrow.has_hit = true;
 		arrow.visible = false;
-		this.hit_frame.play('hit_frame_flash');		
+		this.hit_frame.play('hit_frame_flash');
 
 		this.combo++;
 		if (this.combo >= 1) {
@@ -282,14 +325,14 @@ class GonDDR extends Phaser.Scene {
 			this.score_text.visible = false;
         	this.scene.transition({
 				target: 'endscreen',
-				duration: 1200,					
+				duration: 1200,
 				moveBelow: true,
 				data: {score: this.score}
 			});
 		}
-		this.time.delayedCall(500, 
+		this.time.delayedCall(500,
 			function() {
-				do_checkerboard(this, 'gonddr', transition_to_endscreen, this); 
+				do_checkerboard(this, 'gonddr', transition_to_endscreen, this);
 			}, [], this
 		);
 	}

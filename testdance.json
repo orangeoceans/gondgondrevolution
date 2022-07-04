@@ -1,13 +1,14 @@
 {
     "song": [
-      { "tick": 600,  "arrows": [ {"direction":0}] },
-      { "tick": 700,  "arrows": [ {"direction":1}, {"direction":2} ] },
-      { "tick": 800,  "arrows": [ {"direction":3} ] },
-      { "tick": 900,  "arrows": [ {"direction":0}, {"direction":1} ] },
-      { "tick": 1000,  "arrows": [ {"direction":2} ] },
-      { "tick": 1100, "arrows": [ {"direction":2} ] },
-      { "tick": 1200, "arrows": [ {"direction":3} ] },
-      { "tick": 1300, "arrows": [ {"direction":2} ] },
-      { "tick": 1400, "arrows": [ {"direction":1} ] }
+      { "beat": 4,  "arrows": [ {"direction":0}] },
+      { "beat": 5,  "arrows": [ {"direction":1}, {"direction":2} ] },
+      { "beat": 6,  "arrows": [ {"direction":3} ] },
+      { "beat": 7,  "arrows": [ {"direction":0}, {"direction":1} ] },
+      { "beat": 8,  "arrows": [ {"direction":2} ] },
+      { "beat": 9, "arrows": [ {"direction":2} ] },
+      { "beat": 10, "arrows": [ {"direction":3} ] },
+      { "beat": 11, "arrows": [ {"direction":2} ] },
+      { "beat": 12, "arrows": [ {"direction":1} ] },
+      { "beat": 13, "arrows": [ {"direction":2}, {"direction":3} ] }
     ]
 }
