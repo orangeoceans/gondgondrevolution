@@ -31,11 +31,13 @@ class GonDDR extends Phaser.Scene {
 
 
 
-		this.fall_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * 4); // Fall speed of each arrow, in pixels per tick
-		console.log(this.fall_speed_ppt);
+		this.fall_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
+		console.log("Fall speed: " + this.fall_speed_ppt);
 
 		this.fall_to_hit_ticks = ARROW_DIST_TO_HIT / this.fall_speed_ppt;
 						// # of ticks for a standard arrow to fall from the top to bottom of the screen.
+		console.log("Ticks to hit: " + this.fall_to_hit_ticks);
+
 		this.fall_to_bottom_ticks = ARROW_DIST_TOTAL / this.fall_speed_ppt;
 
 		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE;
@@ -118,20 +120,15 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	increment_beats(this_tick) {
-		if (this_tick >= this.window_start + this.tpb) {
-			this.beat += 1;
-			this.window_start = this_tick;
-		}
+		this.beat = this_tick/this.tpb;
 		console.log("Current beat: " + this.beat);
-
 		this.handle_beat(this_tick);
 	}
 
 	handle_beat(this_tick) {
 			if (this.dance_idx < this.dance["song"].length) {
 				let next_arrow = this.dance["song"][this.dance_idx];
-				if (this.beat == next_arrow["beat"] - 4) { // TEMPORARY? Arrows take 4 beats to fall
-
+				if (this.beat >= next_arrow["beat"] - this.fall_to_hit_ticks / this.tpb) {
 					this.dance_idx++;
 					next_arrow["arrows"].forEach((arrow, i) => {
 						this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
