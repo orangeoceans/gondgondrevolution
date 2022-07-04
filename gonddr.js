@@ -6,6 +6,9 @@ class GonDDR extends Phaser.Scene {
 
 		this.start_time;
 
+		this.dance;
+		this.dance_idx;
+
 		this.hit_frame;   // Sprite of hit window
 		this.arrows;      // Currently active arrows
 		this.dance;
@@ -34,17 +37,20 @@ class GonDDR extends Phaser.Scene {
 
 	}
 
+
 	create () {
 
 		this.start_time = Date.now();
 
 		this.dance = this.cache.json.get('testdance');
+		this.dance_idx = 0;
 
 		// Create game objects
 		this.hit_frame = this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0);
 		this.arrows = [];
 
 		this.gondola = this.add.sprite(GONDOLA_X, GONDOLA_Y, 'gondola', Gondola_Poses.Neutral);
+		this.gondola.alpha=0;
 
 		this.score_text = this.add.text(SCORE_X, SCORE_Y, '0', {
 				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
@@ -68,6 +74,8 @@ class GonDDR extends Phaser.Scene {
 		});
 
 		this.feedback_array = [];
+
+		this.tweens.add({ targets:this.gondola, alpha:1, duration:1, delay:10});
 
 	}
 
@@ -151,11 +159,12 @@ class GonDDR extends Phaser.Scene {
 	update_arrows (this_tick) {
 
 		// Get next arrow
-		if (this.dance["song"].length != 0) {
-			let next_arrow = this.dance["song"][0];
+		if (this.dance_idx < this.dance["song"].length) {
+			let next_arrow = this.dance["song"][this.dance_idx];
 			if (this_tick >= next_arrow["tick"] - this.fall_to_hit_ticks) {
 
-				this.dance["song"].shift();
+				//this.dance["song"].shift();
+				this.dance_idx++;
 				next_arrow["arrows"].forEach((arrow, i) => {
 					this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
 					this.add.existing(this.arrows[this.arrows.length-1]);
@@ -173,6 +182,11 @@ class GonDDR extends Phaser.Scene {
 			if (this.arrows[i].y > ARROW_END_Y) {
 				let arrow_to_destroy = this.arrows.splice(i, 1);
 				arrow_to_destroy[0].destroy();
+
+				if (this.dance_idx >= this.dance["song"].length && this.arrows.length == 0) {
+					this.end_dance();
+				}
+				
 				continue;
 			}
 
@@ -259,6 +273,25 @@ class GonDDR extends Phaser.Scene {
 			arrow.has_missed = true;
 			this.add_feedback_error(this_tick);
 		}
+	}
+
+	end_dance () {
+		function transition_to_endscreen() {
+			this.gondola.visible = false;
+			this.hit_frame.visible = false;
+			this.score_text.visible = false;
+        	this.scene.transition({
+				target: 'endscreen',
+				duration: 1200,					
+				moveBelow: true,
+				data: {score: this.score}
+			});
+		}
+		this.time.delayedCall(500, 
+			function() {
+				do_checkerboard(this, 'gonddr', transition_to_endscreen, this); 
+			}, [], this
+		);
 	}
 }
 

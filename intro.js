@@ -48,18 +48,29 @@ class Intro extends Phaser.Scene {
 		this.ggr_logo.alpha = 0;
 		this.ggr_logo.scaleX = 3;
 		this.ggr_logo.scaleY = 0;
+
+		function transition_to_gonddr() {
+			this.ggr_logo.visible = false;
+        	this.scene.transition({
+				target: 'gonddr',
+				duration: 1200,					
+				moveBelow: true
+			});
+		}
 		this.logo_fadein = this.tweens.add({
-				targets: this.ggr_logo,
-				alpha: 1,
-				scaleX: 1,
-				scaleY: 1,
-				delay: 350,
-				duration: 800,
-				ease: 'Linear',
-				paused: true,
-				callbackScope: this,
-				completeDelay: 2000,
-				onComplete: function (tween, targets) { this.do_checkerboard(); }
+			targets: this.ggr_logo,
+			alpha: 1,
+			scaleX: 1,
+			scaleY: 1,
+			delay: 750,
+			duration: 800,
+			ease: 'Linear',
+			paused: true,
+			callbackScope: this,
+			completeDelay: 2000,
+			onComplete: function (tween, targets) { 
+				do_checkerboard(this, 'gonddr', transition_to_gonddr, this); 
+			}
 		});
 		
 		this.input.keyboard.on('keydown_UP', function (event) {
@@ -76,57 +87,52 @@ class Intro extends Phaser.Scene {
 		}, this);
 
 	}
+}
 
-	do_checkerboard() {
-		var tiles = this.add.group({ key: 'pink_tile', repeat: 99, setScale: { x: 0, y: 0 } });
+function do_checkerboard(_this, target_scene_key, yoyo_func = null, yoyo_func_context = null) {
+	var tiles = _this.add.group({ key: 'pink_tile', repeat: 99, setScale: { x: 0, y: 0 } });
 
-	    Phaser.Actions.GridAlign(tiles.getChildren(), {
-	        width: 10,
-	        cellWidth: 64,
-	        cellHeight: 64,
-	        x: 32,
-	        y: 32
-	    });
+    Phaser.Actions.GridAlign(tiles.getChildren(), {
+        width: 10,
+        cellWidth: 64,
+        cellHeight: 64,
+        x: 32,
+        y: 32
+    });
 
-	    var _this = this;
-	    var i = 0;
-	    var j = 0;
+    var i = 0;
+    var j = 0;
 
-	    tiles.children.iterate(function (child) {
+    tiles.children.iterate(function (child) {
 
-	    	let tween_params = {
-	            targets: child,
-	            scaleX: 1,
-	            scaleY: 1,
-	            angle: 180,
-	            _ease: 'Sine.easeInOut',
-	            ease: 'Power2',
-	            duration: 500,
-	            delay: i * 50,
-	            repeat: 0,
-	            yoyo: true,
-	            hold: 300,
-	        }
+    	let tween_params = {
+            targets: child,
+            scaleX: 1,
+            scaleY: 1,
+            //angle: 180,
+            _ease: 'Sine.easeInOut',
+            ease: 'Power2',
+            duration: 500,
+            delay: i * 50,
+            repeat: 0,
+            yoyo: true,
+            hold: 300,
+        }
 
-	        if (j==0) {
-	        	console.log(j);
-	        	tween_params.onYoyo = function (tween, targets) {
-	            	_this.ggr_logo.visible = false;
-	            	_this.scene.transition({
-						target: 'gonddr',
-						duration: 1200,					
-						moveBelow: true
-					});
-	            }
-	        }
+        if (j==0) {
 
-	        let new_tween = _this.tweens.add(tween_params);
+        	if (yoyo_func) {
+	        	tween_params.onYoyo = yoyo_func;
+	        	tween_params.onYoyoScope = yoyo_func_context;
+        	}
+        }
 
-	        i++;
-	        j++;
-	        if (i % 10 === 0) {i = 0;}
-	    })
-	}
+        let new_tween = _this.tweens.add(tween_params);
+
+        i++;
+        j++;
+        if (i % 10 === 0) {i = 0;}
+    })
 }
 
 PRESS_START_Y = 280;
