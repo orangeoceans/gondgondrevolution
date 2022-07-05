@@ -11,6 +11,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.arrows;      // Currently active arrows
 
+		this.background;
 		this.hit_frame;   // Sprite of hit window
 		this.gondola;
 		this.dance_pad;
@@ -103,10 +104,12 @@ class GonDDR extends Phaser.Scene {
 	// Create game objects
 	init_game_objects() {
 
+		this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
+
 		// Create sprites
 		this.hit_frame = this.add_starting_visual( this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0) );
 
-		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y-40, 'dance_pad') );
+		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y-DANCE_PAD_OFFSET, 'dance_pad') );
 
 		this.gondola = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y + Gondola_Offsets.Neutral, 'gondola', Gondola_Poses.Neutral) );
 		this.gondola.setOrigin(0.5,1);
@@ -133,20 +136,6 @@ class GonDDR extends Phaser.Scene {
 		game_object.alpha=0;
 		this.tweens.add({ targets:game_object, alpha:1, duration:1, delay:10});
 		return game_object;
-	}
-
-	handle_beat(this_tick) {
-	    let beat = tick_to_beat(this_tick, this.tpb);
-		if (this.song_idx < this.song["song"].length) {
-			let next_arrow = this.song["song"][this.song_idx];
-			if (beat >= next_arrow["beat"] - this.fall_to_hit_ticks / this.tpb) {
-				this.song_idx++;
-				next_arrow["arrows"].forEach((arrow, i) => {
-					this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
-					this.add.existing(this.arrows[this.arrows.length-1]);
-				}); // Add new arrow to Phaser scene
-			}
-		}
 	}
 
 	update_feedback(this_tick) {
@@ -289,6 +278,20 @@ class GonDDR extends Phaser.Scene {
 		}
 	}
 
+	handle_beat(this_tick) {
+	    let beat = tick_to_beat(this_tick, this.tpb);
+		if (this.song_idx < this.song["song"].length) {
+			let next_arrow = this.song["song"][this.song_idx];
+			if (beat >= next_arrow["beat"] - this.fall_to_hit_ticks / this.tpb) {
+				this.song_idx++;
+				next_arrow["arrows"].forEach((arrow, i) => {
+					this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
+					this.add.existing(this.arrows[this.arrows.length-1]);
+				}); // Add new arrow to Phaser scene
+			}
+		}
+	}
+
 	handle_hit (this_tick, arrow) {
 		arrow.has_hit = true;
 		arrow.visible = false;
@@ -296,7 +299,6 @@ class GonDDR extends Phaser.Scene {
 
 		this.combo++;
 		if (this.combo >= 1) {
-			console.log(`COMBO ${this.combo}`);
 			this.add_feedback_combo(this_tick, this.combo);
 		}
 
@@ -315,10 +317,8 @@ class GonDDR extends Phaser.Scene {
 	handle_miss (this_tick, arrow = null) {
 		this.combo = 0;
 		if (arrow === null) {
-			console.log(`PENALTY INCORRECT ${this_tick}`);
 			this.add_feedback_error(this_tick);
 		} else {
-			console.log(`PENALTY MISSED ${this_tick}`);
 			arrow.has_missed = true;
 			this.add_feedback_error(this_tick);
 		}
@@ -338,6 +338,7 @@ class GonDDR extends Phaser.Scene {
 			});
 		}
 
+		this.background.end(100);
 		this.time.delayedCall(500,
 			function() {
 				do_checkerboard(this, transition_to_endscreen, this);
@@ -366,6 +367,7 @@ const GONDOLA_WIDTH  = 273;
 const GONDOLA_HEIGHT = 362;
 const GONDOLA_X 	 = 480;
 const GONDOLA_Y      = 480;
+const DANCE_PAD_OFFSET = 40;
 
 const SCORE_X = WINDOW_WIDTH - 10;
 const SCORE_Y = WINDOW_HEIGHT - 10;

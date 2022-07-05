@@ -15,6 +15,6 @@
       { "beat": 10, "arrows": [ {"direction":3} ] },
       { "beat": 11, "arrows": [ {"direction":2} ] },
       { "beat": 12, "arrows": [ {"direction":1} ] },
-      { "beat": 13, "arrows": [ {"direction":2}, {"direction":3} ] }
+      { "beat": 20, "arrows": [ {"direction":2}, {"direction":3} ] }
     ]
 }
