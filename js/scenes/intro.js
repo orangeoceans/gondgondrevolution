@@ -69,7 +69,7 @@ class Intro extends Phaser.Scene {
 			callbackScope: this,
 			completeDelay: 2000,
 			onComplete: function (tween, targets) { 
-				do_checkerboard(this, 'gonddr', transition_to_gonddr, this); 
+				do_checkerboard(this, transition_to_gonddr, this); 
 			}
 		});
 		
@@ -80,7 +80,7 @@ class Intro extends Phaser.Scene {
 				scaleX: 1.5,
 				scaleY: 1.5,
 				duration: 300,
-				ease: 'Linear'
+				ease: 'Sine.easeInOut'
 			});
 			this.intro_fadeout.play();
 			this.logo_fadein.play();
@@ -89,7 +89,7 @@ class Intro extends Phaser.Scene {
 	}
 }
 
-function do_checkerboard(_this, target_scene_key, yoyo_func = null, yoyo_func_context = null) {
+function do_checkerboard(_this, yoyo_func = null, yoyo_func_context = null) {
 	var tiles = _this.add.group({ key: 'pink_tile', repeat: 99, setScale: { x: 0, y: 0 } });
 
     Phaser.Actions.GridAlign(tiles.getChildren(), {
@@ -117,6 +117,7 @@ function do_checkerboard(_this, target_scene_key, yoyo_func = null, yoyo_func_co
             repeat: 0,
             yoyo: true,
             hold: 300,
+            onComplete: child.destroy
         }
 
         if (j==0) {

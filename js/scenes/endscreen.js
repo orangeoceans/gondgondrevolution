@@ -56,7 +56,7 @@ class Endscreen extends Phaser.Scene {
 				moveBelow: true
 			});
 		}
-		do_checkerboard(this, 'gonddr', transition_to_gonddr, this); 
+		do_checkerboard(this, transition_to_gonddr, this); 
 	}
 }
 

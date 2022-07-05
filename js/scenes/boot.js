@@ -16,12 +16,13 @@ class Boot extends Phaser.Scene {
 
 		this.load.spritesheet('arrows', 'assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
 		this.load.spritesheet('hit_frame', 'assets/hit_frame.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
-		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
+		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: 273, frameHeight: GONDOLA_HEIGHT})
 
 		this.load.image('press_start', 'assets/press_start.png');
 		this.load.image('ggr_logo', 'assets/ggr_logo.png');
 		this.load.image('pink_tile', 'assets/pink_tile.png');
 		this.load.image('black_bg', 'assets/black_bg.png');
+		this.load.image('dance_pad', 'assets/dance_pad.png');
 
 		this.load.json('testdance', 'testdance.json');
 	}
