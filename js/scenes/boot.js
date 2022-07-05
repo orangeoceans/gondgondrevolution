@@ -29,6 +29,8 @@ class Boot extends Phaser.Scene {
 		this.load.audio('disc_buzz', ['assets/sfx/disc_buzz_002.wav']);
 		this.load.audio('voice_ggr', ['assets/sfx/voice_ggr_002.wav']);
 
+		this.load.audio('wu_wei', ['assets/bgm/wu_wei.mp3']);
+
 		this.load.json('testdance', 'testdance.json');
 	}
 

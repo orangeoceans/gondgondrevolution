@@ -38,11 +38,14 @@ class GonDDR extends Phaser.Scene {
 	create () {
 
 		// TODO: Start time is actually when the song starts playback; may not be immediate?
-		this.start_time = Date.now();
+		this.start_time;
+		this.music = this.sound.add("wu_wei", 1)
+		this.music_started = false;
 
 		this.init_song();
 		this.init_arrow_properties();
-		this.init_game_objects();
+
+		this.create_title();
 
 		this.arrows = [];
 
@@ -52,20 +55,17 @@ class GonDDR extends Phaser.Scene {
 		this.arrow_keys['Down'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
 		this.arrow_keys['Left'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
-		// Create animations
-		this.anims.create({
-			key: 'hit_frame_flash',
-			frames: this.anims.generateFrameNumbers('hit_frame', { frames: [ 1, 0 ] }),
-			frameRate: 8,
-			repeat: 0
-		});
-
 		this.feedback_array = [];
 
 	}
 
 	// Main game loop
 	update () {
+
+		if(!this.music_started) {
+			return;
+		}
+
 		let time_ms = Date.now() - this.start_time;
 
 		let this_tick = ms_to_tick(time_ms, this.tps);
@@ -77,6 +77,59 @@ class GonDDR extends Phaser.Scene {
 		this.update_arrows(this_tick);
 		this.update_feedback(this_tick);
 		this.update_gondola();
+	}
+
+	create_title() {
+
+		this.title = this.add.text(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., 'Lumic - Wu Wei (D.J. MAJiK mix)', {
+				fontSize: 24,
+				fill: FEEDBACK_COLOR_DEFAULT,
+				stroke: "ffffff",
+				strokeThickness: 2
+		});
+		this.title.setOrigin(0.5, 0.5);
+		this.title.alpha = 0;
+		this.title.scaleX = 3;
+
+		this.title_fadein = this.tweens.add({ targets:
+			this.title,
+			alpha: 1,
+			scaleX: 1,
+			scaleY: 1,
+			duration: 1000,
+			delay: 250,
+			ease: "Sine.easeInOut",
+			callbackScope: this,
+			completeDelay: 1000,
+			onComplete: function (tweens, targets) {
+				console.log("Fade in complete");
+				this.title_fadeout.play();
+			}
+		});
+
+		this.title_fadeout = this.tweens.add({
+			targets: this.title,
+			alpha: 0,
+			scaleX: 3,
+			scaleY: 1.5,
+			duration: 1000,
+			delay: 250,
+			ease: "Sine.easeInOut",
+			paused: true,
+			callbackScope: this,
+			completeDelay: 250,
+			onStart: function (tween, targets) {
+				console.log("Fade out start");
+			},
+			onComplete: function (tween, targets) {
+				console.log("Fade out complete");
+				this.init_game_objects();
+				this.start_time = Date.now();
+				this.music.play();
+				this.music_started = true;
+			}
+		});
+
 	}
 
 	// Load song data, set BPM and time signature
@@ -131,11 +184,20 @@ class GonDDR extends Phaser.Scene {
 				align: 'right'
 		}) );
 		this.score_text.setOrigin(1,1);
+
+		// Create animations
+		this.anims.create({
+			key: 'hit_frame_flash',
+			frames: this.anims.generateFrameNumbers('hit_frame', { frames: [ 1, 0 ] }),
+			frameRate: 8,
+			repeat: 0
+		});
+
 	}
 
-	add_starting_visual(game_object) {
+	add_starting_visual(game_object, onComplete) {
 		game_object.alpha=0;
-		this.tweens.add({ targets:game_object, alpha:1, duration:1, delay:10});
+		this.tweens.add({ targets:game_object, alpha:1, duration:1, delay:10, onComplete: onComplete});
 		return game_object;
 	}
 
