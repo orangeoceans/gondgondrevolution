@@ -5,6 +5,7 @@ class GonDDR extends Phaser.Scene {
 		super('gonddr');
 
 		this.start_time;
+		this.prev_tick_start;
 
 		this.song;
 		this.song_idx;
@@ -37,8 +38,6 @@ class GonDDR extends Phaser.Scene {
 
 	create () {
 
-		// TODO: Start time is actually when the song starts playback; may not be immediate?
-		this.start_time;
 		this.music = this.sound.add("wu_wei", 1)
 		this.music_started = false;
 
@@ -67,16 +66,49 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		let time_ms = Date.now() - this.start_time;
-
 		let this_tick = ms_to_tick(time_ms, this.tps);
 
 		if (!this.background) {
 			this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
 		}
+
+		if(this.bpm != this.target_bpm) {
+
+			console.log("Current BPM: " + this.bpm);
+			console.log("Target BPM: "  + this.target_bpm);
+			console.log("Change rate: "  + this.bpm_change_per_beat);
+
+			if((this.bpm > this.target_bpm && this.bpm_change_per_beat < 0) ||
+			   (this.bpm < this.target_bpm && this.bpm_change_per_beat > 0)) {
+
+				let elapsed_sec = (time_ms - this.prev_time_ms) / 1000;
+				let beat_duration_sec = this.bpm / 60;
+
+				console.log("Elapsed seconds: " + elapsed_sec);
+				console.log("Length of beat: "  + beat_duration_sec);
+
+				this.bpm += (this.bpm_change_per_beat / beat_duration_sec) * elapsed_sec;
+
+				console.log("New BPM: " + this.bpm);
+
+				//this.init_arrow_properties(); // TODO: Make SET method
+
+			} else { // Stabilize at target BPM
+				console.log("Threshold reached; setting BPM to target");
+				this.bpm = this.target_bpm;
+				this.bpm_change_per_beat = 0;
+				this.init_arrow_properties();
+			}
+		}
+
+		// TODO: Technically unsafe first loop!
+		this.prev_time_ms = time_ms
+
 		this.handle_beat(this_tick);
 		this.update_arrows(this_tick);
 		this.update_feedback(this_tick);
 		this.update_gondola();
+
 	}
 
 	create_title() {
@@ -124,7 +156,9 @@ class GonDDR extends Phaser.Scene {
 			onComplete: function (tween, targets) {
 				console.log("Fade out complete");
 				this.init_game_objects();
+
 				this.start_time = Date.now();
+
 				this.music.play();
 				this.music_started = true;
 			}
@@ -139,14 +173,18 @@ class GonDDR extends Phaser.Scene {
 
 		// Set starting BPM, beats per bar, and ticks per beat
 		this.bpm = this.song.properties.starting_bpm;  // Beats per minute
+		this.target_bpm = this.bpm;  // For BPM transitions
+		this.bpm_change_per_beat = 0;  // For BPM transitions
+
 		this.bpb = this.song.properties.beats_per_bar; // Beats per bar (determines fall time)
-		this.tpb = this.tps/(this.bpm/60)              // Ticks per beat
 
 		console.log("BPM: " + this.bpm + " Beats per bar: " + this.bpb);
-		console.log("Ticks per beat: " + this.tpb);
 	}
 
 	init_arrow_properties() {
+		this.tpb = this.tps/(this.bpm/60) // Ticks per beat
+		console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
+
 		this.fall_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
 		console.log("Fall speed: " + this.fall_speed_ppt);
 
@@ -257,20 +295,6 @@ class GonDDR extends Phaser.Scene {
 	// Create, move, destroy, and register hits on arrows for this loop
 	update_arrows (this_tick) {
 
-		// Get next arrow
-	/*	if (this.song_idx < this.song["song"].length) {
-			let next_arrow = this.song["song"][this.song_idx];
-			if (this_tick >= next_arrow["tick"] - this.fall_to_hit_ticks) {
-
-				//this.song["song"].shift();
-				this.song_idx++;
-				next_arrow["arrows"].forEach((arrow, i) => {
-					this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
-					this.add.existing(this.arrows[this.arrows.length-1]);
-				}); // Add new arrow to Phaser scene
-			}
-		}*/
-
 		// Move arrow, mark as missed when leaving hit window, destroy arrows when leaving screen
 		for (var i = this.arrows.length-1; i >= 0; i--) {
 
@@ -282,7 +306,7 @@ class GonDDR extends Phaser.Scene {
 				let arrow_to_destroy = this.arrows.splice(i, 1);
 				arrow_to_destroy[0].destroy();
 
-				if (this.song_idx >= this.song["song"].length && this.arrows.length == 0) {
+				if (this.song_idx >= this.song.beatmap.length && this.arrows.length == 0) {
 					this.end_dance();
 				}
 
@@ -342,15 +366,38 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	handle_beat(this_tick) {
-	    let beat = tick_to_beat(this_tick, this.tpb);
-		if (this.song_idx < this.song["song"].length) {
-			let next_arrow = this.song["song"][this.song_idx];
-			if (beat >= next_arrow["beat"] - this.fall_to_hit_ticks / this.tpb) {
+
+	  let current_beat = tick_to_beat(this_tick, this.tpb);
+
+		if (this.song_idx < this.song.beatmap.length) {
+			let beat_action = this.song.beatmap[this.song_idx];
+
+			if (current_beat >= beat_action.beat - this.fall_to_hit_ticks / this.tpb) {
 				this.song_idx++;
-				next_arrow["arrows"].forEach((arrow, i) => {
+
+				beat_action.arrows.forEach((arrow, i) => {
 					this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
 					this.add.existing(this.arrows[this.arrows.length-1]);
 				}); // Add new arrow to Phaser scene
+
+				if(beat_action.config != undefined) {
+					if(beat_action.config.bpm != undefined) {
+
+						let bpm_config = beat_action.config.bpm;
+
+						if(bpm_config.duration == 0) {
+							this.bpm = this.target_bpm = bpm_config.target;
+							this.bpm_change_per_beat = 0;
+							console.log("BPM changed: " + this.bpm);
+						} else {
+							this.target_bpm = bpm_config.target;
+							this.bpm_change_per_beat = (this.target_bpm - this.bpm) / bpm_config.duration;
+							console.log("BPM target: " + this.target_bpm);
+						}
+						this.init_arrow_properties(); // TODO: SET function
+					}
+				}
+
 			}
 		}
 	}

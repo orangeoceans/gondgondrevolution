@@ -4,7 +4,7 @@
       "beats_per_bar": 4
     },
 
-    "song": [
+    "beatmap": [
       { "beat": 8,  "arrows": [ {"direction":0}] },
       { "beat": 12,  "arrows": [ {"direction":1}, {"direction":2} ] },
       { "beat": 16,  "arrows": [ {"direction":3} ] },
@@ -13,16 +13,49 @@
       { "beat": 23, "arrows": [ {"direction":2} ] },
       { "beat": 24, "arrows": [ {"direction":3} ] },
       { "beat": 28, "arrows": [ {"direction":2} ] },
-      { "beat": 32, "arrows": [ {"direction":1} ],
+      { "beat": 36, "arrows": [ {"direction":2}, {"direction":3} ] },
+      { "beat": 37.5, "arrows": [ {"direction":2}, {"direction":3} ] },
+      { "beat": 39, "arrows": [ {"direction":2}, {"direction":3} ] },
+      { "beat": 52, "arrows": [ {"direction":1} ] },
+      { "beat": 53, "arrows": [ {"direction":0} ] },
+      { "beat": 54, "arrows": [ {"direction":3} ] },
+      { "beat": 55, "arrows": [ {"direction":1} ] },
+      { "beat": 56, "arrows": [ {"direction":2} ],
         "config": {
           "bpm": {
             "target": 136,
-            "duration": 10
-            }
+            "duration": 16
           }
+        }
       },
-      { "beat": 36, "arrows": [ {"direction":2}, {"direction":3} ] },
-      { "beat": 37.5, "arrows": [ {"direction":2}, {"direction":3} ] },
-      { "beat": 39, "arrows": [ {"direction":2}, {"direction":3} ] }
+      { "beat": 57, "arrows": [ {"direction":1} ] },
+      { "beat": 58, "arrows": [ {"direction":2} ] },
+      { "beat": 59, "arrows": [ {"direction":3} ] },
+      { "beat": 60, "arrows": [ {"direction":0} ] },
+      { "beat": 61, "arrows": [ {"direction":1} ] },
+      { "beat": 62, "arrows": [ {"direction":2} ] },
+      { "beat": 63, "arrows": [ {"direction":3} ] },
+      { "beat": 64, "arrows": [ {"direction":0} ] },
+      { "beat": 65, "arrows": [ {"direction":1} ] },
+      { "beat": 66, "arrows": [ {"direction":2} ] },
+      { "beat": 67, "arrows": [ {"direction":3} ] },
+      { "beat": 68, "arrows": [ {"direction":0} ] },
+      { "beat": 69, "arrows": [ {"direction":1} ] },
+      { "beat": 70, "arrows": [ {"direction":2} ] },
+      { "beat": 71, "arrows": [ {"direction":3} ] },
+      { "beat": 72, "arrows": [ {"direction":2} ],
+        "config": {
+          "bpm": {
+            "target": 146,
+            "duration": 0
+          }
+        }
+      },
+      { "beat": 74, "arrows": [ {"direction":0} ] },
+      { "beat": 75, "arrows": [ {"direction":1} ] },
+      { "beat": 76, "arrows": [ {"direction":2} ] },
+      { "beat": 77, "arrows": [ {"direction":3} ] },
+      { "beat": 78, "arrows": [ {"direction":2}, {"direction":3} ] },
+      { "beat": 79, "arrows": [ {"direction":2}, {"direction":3} ] }
     ]
 }
