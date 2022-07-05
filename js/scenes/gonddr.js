@@ -70,6 +70,9 @@ class GonDDR extends Phaser.Scene {
 
 		let this_tick = ms_to_tick(time_ms, this.tps);
 
+		if (!this.background) {
+			this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
+		}
 		this.handle_beat(this_tick);
 		this.update_arrows(this_tick);
 		this.update_feedback(this_tick);
@@ -103,8 +106,6 @@ class GonDDR extends Phaser.Scene {
 
 	// Create game objects
 	init_game_objects() {
-
-		this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
 
 		// Create sprites
 		this.hit_frame = this.add_starting_visual( this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0) );

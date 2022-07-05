@@ -11,10 +11,11 @@ class PurpleWave {
         this.rects = [];
         for (var i = 0; i < this.num_steps; i++) {
             this.rects[i] = this._this.add.image( -64, 0, 'pixel' );
-            this.rects[i].scaleX = WINDOW_WIDTH/10;
+            this.rects[i].scaleX = WINDOW_WIDTH/10 + 2; // Add margin of 2 to make sure rectangles properly overlap
             this.rects[i].scaleY = WINDOW_HEIGHT;
             this.rects[i].setOrigin(0,0);
             this.rects[i].tint = this.interpolate_color(i).color;
+            this.rects[i].depth = -1;
             //this.rects[i].alpha = 0;
             
             this._this.tweens.add({
