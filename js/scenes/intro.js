@@ -11,8 +11,10 @@ class Intro extends Phaser.Scene {
 		this.logo_fadein;
 	}
 
-
 	create() {
+
+		this.init_sounds();
+
 		this.intro_bg = this.add.sprite(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., 'intro_bg', 0);
 		this.anims.create({
 			key: 'gondola_blink',
@@ -28,9 +30,14 @@ class Intro extends Phaser.Scene {
 				scaleX: 1.5,
 				scaleY: 1.5,
 				duration: 800,
-				delay: 100,
+				delay: 500,
+				completeDelay: 250,
 				ease: 'Linear',
-				paused: true
+				paused: true,
+				callbackScope: this,
+				onStart: function (tween, targets) {
+					this.sounds.disc_buzz.play('', {"volume": 0.1});
+				}
 		});
 
 		this.press_start = this.add.image(WINDOW_WIDTH/2., PRESS_START_Y, 'press_start');
@@ -49,30 +56,34 @@ class Intro extends Phaser.Scene {
 		this.ggr_logo.scaleX = 3;
 		this.ggr_logo.scaleY = 0;
 
-		function transition_to_gonddr() {
+		this.transition_to_gonddr = function() {
 			this.ggr_logo.visible = false;
         	this.scene.transition({
 				target: 'gonddr',
-				duration: 1200,					
+				duration: 1200,
 				moveBelow: true
 			});
 		}
+
 		this.logo_fadein = this.tweens.add({
 			targets: this.ggr_logo,
 			alpha: 1,
 			scaleX: 1,
 			scaleY: 1,
-			delay: 750,
+			delay: 250,
 			duration: 800,
 			ease: 'Linear',
 			paused: true,
 			callbackScope: this,
-			completeDelay: 2000,
-			onComplete: function (tween, targets) { 
-				do_checkerboard(this, transition_to_gonddr, this); 
+			completeDelay: 2500,
+			onStart: function (tween, targets) {
+				this.sounds.voice_ggr.play();
+			},
+			onComplete: function (tween, targets) {
+				do_checkerboard(this, this.transition_to_gonddr, this);
 			}
 		});
-		
+
 		this.input.keyboard.on('keydown_UP', function (event) {
 			this.tweens.add({
 				targets: this.press_start,
@@ -82,14 +93,37 @@ class Intro extends Phaser.Scene {
 				duration: 300,
 				ease: 'Sine.easeInOut'
 			});
-			this.intro_fadeout.play();
-			this.logo_fadein.play();
+			this.sounds.button_click.play();
 		}, this);
 
+	}
+
+	init_sounds() {
+		this.sounds = {
+			"button_click": this.sound.add("button_click", 1),
+			"disc_buzz": this.sound.add("disc_buzz", 1),
+			"voice_ggr": this.sound.add("voice_ggr", 1)
+		}
+		this.sounds.button_click.on('ended', this.trigger_fadeout, this);
+		this.sounds.disc_buzz.on('ended', this.trigger_fadein, this);
+		this.sounds.voice_ggr.on('ended', this.trigger_checkerboard, this);
+	}
+
+	trigger_fadeout = () => {
+		this.intro_fadeout.play();
+	}
+
+	trigger_fadein = () => {
+		this.logo_fadein.play();
+	}
+
+	trigger_checkerboard = () => {
+		//do_checkerboard(this, this.transition_to_gonddr, this);
 	}
 }
 
 function do_checkerboard(_this, yoyo_func = null, yoyo_func_context = null) {
+
 	var tiles = _this.add.group({ key: 'pink_tile', repeat: 99, setScale: { x: 0, y: 0 } });
 
     Phaser.Actions.GridAlign(tiles.getChildren(), {

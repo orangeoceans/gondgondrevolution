@@ -25,6 +25,10 @@ class Boot extends Phaser.Scene {
 		this.load.image('dance_pad', 'assets/dance_pad.png');
 		this.load.image('pixel', 'assets/pixel.png');
 
+		this.load.audio('button_click', ['assets/sfx/button_click_001.wav']);
+		this.load.audio('disc_buzz', ['assets/sfx/disc_buzz_002.wav']);
+		this.load.audio('voice_ggr', ['assets/sfx/voice_ggr_002.wav']);
+
 		this.load.json('testdance', 'testdance.json');
 	}
 
