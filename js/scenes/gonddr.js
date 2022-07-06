@@ -9,6 +9,8 @@ class GonDDR extends Phaser.Scene {
 
 		this.song;
 		this.song_idx;
+		this.music;
+		this.music_started;
 
 		this.arrows;      // Currently active arrows
 
@@ -43,6 +45,9 @@ class GonDDR extends Phaser.Scene {
 
 		this.init_song();
 		this.init_arrow_properties();
+		this.init_game_objects();
+
+		this.cheer = this.sound.add("cheer", 1);
 
 		this.create_title();
 
@@ -112,58 +117,46 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	create_title() {
+		this.cheer.volume = 0
+		this.cheer.play({seek: 2})
+		this.tweens.add({
+			targets: this.cheer, volume: 0.8, duration: 1500, yoyo: true, hold:6000
+		})
 
-		this.title = this.add.text(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., 'Lumic - Wu Wei (D.J. MAJiK mix)', {
-				fontSize: 24,
-				fill: FEEDBACK_COLOR_DEFAULT,
-				stroke: "ffffff",
-				strokeThickness: 2
+		this.title_top = this.add.image(-1760,0,'song_title_blue');
+		this.title_top.setOrigin(0,0);
+		this.title_top.scaleY = 0;
+		this.tweens.add({
+			targets: this.title_top,
+			scaleY: 1, duration: 400, ease: 'Linear', delay: 500,
+			yoyo: true, hold: 4500, callbackScope: this,
+			onStart: function () {this.gondola.setFrame(Gondola_Poses.Happy);}
 		});
-		this.title.setOrigin(0.5, 0.5);
-		this.title.alpha = 0;
-		this.title.scaleX = 3;
-
-		this.title_fadein = this.tweens.add({ targets:
-			this.title,
-			alpha: 1,
-			scaleX: 1,
-			scaleY: 1,
-			duration: 1000,
-			delay: 250,
-			ease: "Sine.easeInOut",
-			callbackScope: this,
-			completeDelay: 1000,
+		this.tweens.add({
+			targets: this.title_top,
+			x: 0, duration: 5300, ease: 'Linear', delay: 500,
+			callbackScope: this, completeDelay: 1000,
 			onComplete: function (tweens, targets) {
-				console.log("Fade in complete");
-				this.title_fadeout.play();
-			}
-		});
-
-		this.title_fadeout = this.tweens.add({
-			targets: this.title,
-			alpha: 0,
-			scaleX: 3,
-			scaleY: 1.5,
-			duration: 1000,
-			delay: 250,
-			ease: "Sine.easeInOut",
-			paused: true,
-			callbackScope: this,
-			completeDelay: 250,
-			onStart: function (tween, targets) {
-				console.log("Fade out start");
-			},
-			onComplete: function (tween, targets) {
-				console.log("Fade out complete");
-				this.init_game_objects();
-
 				this.start_time = Date.now();
 
 				this.music.play();
 				this.music_started = true;
+				this.gondola.setFrame(Gondola_Poses.Neutral);
 			}
 		});
 
+		this.title_bot = this.add.image(0,WINDOW_HEIGHT,'song_title_pink');
+		this.title_bot.setOrigin(0,1);
+		this.title_bot.scaleY = 0;
+		this.tweens.add({
+			targets: this.title_bot,
+			scaleY: 1, duration: 400, ease: 'Linear', delay: 500,
+			yoyo: true, hold: 4500
+		});
+		this.tweens.add({
+			targets: this.title_bot,
+			x: -1760, duration: 5300, ease: 'Linear', delay: 500
+		});
 	}
 
 	// Load song data, set BPM and time signature
