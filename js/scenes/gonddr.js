@@ -31,7 +31,7 @@ class GonDDR extends Phaser.Scene {
 		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE;
 
 		// TODO: Phaser keyboard key objects for the arrow keys/WASD?
-		this.arrow_keys = {};
+		this.arrow_keys = [];
 
 	}
 
@@ -49,10 +49,10 @@ class GonDDR extends Phaser.Scene {
 		this.arrows = [];
 
 		// Create keyboard keys
-		this.arrow_keys['Up'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
-		this.arrow_keys['Right'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
-		this.arrow_keys['Down'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
-		this.arrow_keys['Left'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
+		this.arrow_keys[Directions.Up] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.UP);
+		this.arrow_keys[Directions.Right] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.RIGHT);
+		this.arrow_keys[Directions.Down] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.DOWN);
+		this.arrow_keys[Directions.Left] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
 		this.feedback_array = [];
 
@@ -201,7 +201,7 @@ class GonDDR extends Phaser.Scene {
 		// Create sprites
 		this.hit_frame = this.add_starting_visual( this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0) );
 
-		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y-DANCE_PAD_OFFSET, 'dance_pad') );
+		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X-DANCE_PAD_OFFSET_X, GONDOLA_Y-DANCE_PAD_OFFSET_Y, 'dance_pad') );
 
 		this.gondola = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y + Gondola_Offsets.Neutral, 'gondola', Gondola_Poses.Neutral) );
 		this.gondola.setOrigin(0.5,1);
@@ -320,9 +320,10 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		// Check if each pressed arrow key correctly hits an arrow
-		for (const [direction, arrow_key] of Object.entries(this.arrow_keys)) { // Loop through directions
-			if (Phaser.Input.Keyboard.JustDown(arrow_key)) { // JustDown(key) returns true only once per key press
+		for (var a = 0; a < this.arrow_keys.length; a++) {
+			let direction = Directions[a];
 
+			if (Phaser.Input.Keyboard.JustDown(this.arrow_keys[a])) { // JustDown(key) returns true only once per key press
 				let key_hit = false;
 				for (var i = 0; i < this.arrows.length; i++) { // Loop through arrows
 					if (Directions[direction] == this.arrows[i].direction) { // Check if arrow matches direction
@@ -343,18 +344,26 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	update_gondola () {
-		let arrow_key_down = false;
-		for (const [direction, arrow_key] of Object.entries(this.arrow_keys)) {
-			if (arrow_key.isDown) {
-				this.gondola.setFrame(Gondola_Poses[direction]);
-				this.gondola.y = GONDOLA_Y + Gondola_Offsets[direction];
-				arrow_key_down = true;
+		let direction_pressed = ""
+
+		for (var i = 0; i < this.arrow_keys.length; i++) {
+			if (this.arrow_keys[i].isDown) {
+				let direction = Directions[i];
+				if (!direction_pressed) {
+					direction_pressed += direction;
+				} else {
+					direction_pressed += direction;
+					break;
+				}
 			}
 		}
-		if (!arrow_key_down) {
-			this.gondola.setFrame(Gondola_Poses.Neutral);
-			this.gondola.y = GONDOLA_Y + Gondola_Offsets.Neutral;
+
+		if (!direction_pressed) {
+			direction_pressed = "Neutral";
 		}
+
+		this.gondola.setFrame(Gondola_Poses[direction_pressed]);
+		this.gondola.y = GONDOLA_Y + Gondola_Offsets[direction_pressed];
 	}
 
 	get_hit_rank (hit_distance) {
@@ -458,26 +467,41 @@ class GonDDR extends Phaser.Scene {
 }
 
 const Gondola_Poses = {
-	Up:      0,
-	Right:   1,
-	Down:    2,
-	Left:    3,
-	Neutral: 4
+	Neutral:   0,
+	Left:      1,
+	Right:     2,
+	Down:      3,
+	Up:        4,
+	UpRight:   5,
+	DownLeft:  6,
+	UpLeft:    7,
+	RightDown: 8,
+	RightLeft: 9,
+	UpDown:   10,
+	Happy:    11
 }
 
 const Gondola_Offsets = {
-	Up:      0,
-	Right:   -61,
-	Down:    -90,
-	Left:    -62,
-	Neutral: -95
+	Neutral:   -98,
+	Left:      -62,
+	Right:     -64,
+	Down:      -93,
+	Up:        -3,
+	UpRight:   -3,
+	DownLeft:  -50,
+	UpLeft:    0,
+	RightDown: -60,
+	RightLeft: -60,
+	UpDown:    0,
+	Happy:     -98
 }
 
-const GONDOLA_WIDTH  = 273;
-const GONDOLA_HEIGHT = 362;
-const GONDOLA_X 	 = 480;
+const GONDOLA_WIDTH  = 359;
+const GONDOLA_HEIGHT = 367;
+const GONDOLA_X 	 = 450;
 const GONDOLA_Y      = 480;
-const DANCE_PAD_OFFSET = 40;
+const DANCE_PAD_OFFSET_X = -30;
+const DANCE_PAD_OFFSET_Y = 40;
 
 const SCORE_X = WINDOW_WIDTH - 10;
 const SCORE_Y = WINDOW_HEIGHT - 10;
