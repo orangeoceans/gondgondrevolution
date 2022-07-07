@@ -38,6 +38,8 @@ class GonDDR extends Phaser.Scene {
 
 	create () {
 
+		this.prev_time_ms = Date.now()
+
 		this.music = this.sound.add("wu_wei", 1)
 		this.music_started = false;
 
@@ -55,6 +57,11 @@ class GonDDR extends Phaser.Scene {
 		this.arrow_keys['Left'] = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.LEFT);
 
 		this.feedback_array = [];
+
+		this.sounds = {
+			"voice_ready": this.sound.add("voice_ready", 1),
+			"voice_gondola": this.sound.add("voice_gondola", 1)
+		}
 
 	}
 
@@ -91,7 +98,7 @@ class GonDDR extends Phaser.Scene {
 
 				console.log("New BPM: " + this.bpm);
 
-				//this.init_arrow_properties(); // TODO: Make SET method
+				this.init_arrow_properties(); // TODO: Make SET method
 
 			} else { // Stabilize at target BPM
 				console.log("Threshold reached; setting BPM to target");
@@ -100,6 +107,9 @@ class GonDDR extends Phaser.Scene {
 				this.init_arrow_properties();
 			}
 		}
+
+		this.beat += ((this_tick - this.prev_tick) / 1000) * (this.bpm / 60);
+		console.log(this.beat)
 
 		// TODO: Technically unsafe first loop!
 		this.prev_time_ms = time_ms
@@ -367,12 +377,10 @@ class GonDDR extends Phaser.Scene {
 
 	handle_beat(this_tick) {
 
-	  let current_beat = tick_to_beat(this_tick, this.tpb);
-
 		if (this.song_idx < this.song.beatmap.length) {
 			let beat_action = this.song.beatmap[this.song_idx];
 
-			if (current_beat >= beat_action.beat - this.fall_to_hit_ticks / this.tpb) {
+			if (this.beat >= beat_action.beat - this.fall_to_hit_ticks / this.tpb) {
 				this.song_idx++;
 
 				beat_action.arrows.forEach((arrow, i) => {
@@ -381,25 +389,40 @@ class GonDDR extends Phaser.Scene {
 				}); // Add new arrow to Phaser scene
 
 				if(beat_action.config != undefined) {
-					if(beat_action.config.bpm != undefined) {
 
-						let bpm_config = beat_action.config.bpm;
+					beat_action.config.foreach( (param, i) => {
+						switch(param) {
+							case "bpm":
+								this.update_bpm(param);
+							case "sound":
+								this.play_timed_sound(param);
 
-						if(bpm_config.duration == 0) {
-							this.bpm = this.target_bpm = bpm_config.target;
-							this.bpm_change_per_beat = 0;
-							console.log("BPM changed: " + this.bpm);
-						} else {
-							this.target_bpm = bpm_config.target;
-							this.bpm_change_per_beat = (this.target_bpm - this.bpm) / bpm_config.duration;
-							console.log("BPM target: " + this.target_bpm);
 						}
-						this.init_arrow_properties(); // TODO: SET function
-					}
+					}, this);
+
 				}
 
 			}
 		}
+	}
+
+	play_timed_sound(sound_config) {
+		sound = sound_config.name;
+		this.sounds[sound].play();
+	}
+
+  update_bpm(bpm_config) {
+
+		if(bpm_config.duration == 0) {
+			this.bpm = this.target_bpm = bpm_config.target;
+			this.bpm_change_per_beat = 0;
+			console.log("BPM changed: " + this.bpm);
+		} else {
+			this.target_bpm = bpm_config.target;
+			this.bpm_change_per_beat = (this.target_bpm - this.bpm) / bpm_config.duration;
+			console.log("BPM target: " + this.target_bpm);
+		}
+		this.init_arrow_properties(); // TODO: SET function
 	}
 
 	handle_hit (this_tick, arrow) {

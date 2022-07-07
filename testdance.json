@@ -5,6 +5,8 @@
     },
 
     "beatmap": [
+      { "beat": 0,  "arrows": [], "config": { "sound": {"name": "voice_ready"} } },
+      { "beat": 4,  "arrows": [], "config": { "sound": {"name": "voice_gondola"} } },
       { "beat": 8,  "arrows": [ {"direction":0}] },
       { "beat": 12,  "arrows": [ {"direction":1}, {"direction":2} ] },
       { "beat": 16,  "arrows": [ {"direction":3} ] },
