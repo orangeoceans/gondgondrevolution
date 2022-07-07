@@ -38,22 +38,22 @@ class FeedbackImage extends Phaser.GameObjects.Image {
 const FEEDBACK_COLOR_DEFAULT = "#0FF";
 const FEEDBACK_FONTSIZE_DEFAULT = "32px";
 
-const FEEDBACK_HIT_X = WINDOW_WIDTH/4.;
-const FEEDBACK_HIT_Y = 2*WINDOW_HEIGHT/3.;
-const FEEDBACK_COMBO_X = 200;
-const FEEDBACK_COMBO_Y = 280;
-const FEEDBACK_JITTER_X = 50;
-const FEEDBACK_JITTER_Y = 50;
+const FEEDBACK_HIT_X = WINDOW_WIDTH/6.;
+const FEEDBACK_HIT_Y = 3*WINDOW_HEIGHT/5.;
+const FEEDBACK_COMBO_X = 2*WINDOW_WIDTH/6.;
+const FEEDBACK_COMBO_Y = FEEDBACK_HIT_Y ;
+const FEEDBACK_JITTER_X = 10;
+const FEEDBACK_JITTER_Y = 10;
 
 const FEEDBACK_LIFETIME = 100;
-const FEEDBACK_RISE_SPEED = 2;
-const FEEDBACK_FADE_START_TICK = 50;
-const FEEDBACK_FADE_SPEED = 0.075;
+const FEEDBACK_RISE_SPEED = 1;
+const FEEDBACK_FADE_START_TICK = 20;
+const FEEDBACK_FADE_SPEED = 0.1;
 
 const Hit_Ranks = [
-	{Distance: 5,    Text: "perfect", Score: 1000, Breaks_combo: false, Combo_power: 2},
-	{Distance: 10,   Text: "great", Score: 800, Breaks_combo: false, Combo_power: 1},
-	{Distance: 15,   Text: "ok", Score: 600, Breaks_combo: false, Combo_power: 1},
-	{Distance: 20,   Text: "poor", Score: 400, Breaks_combo: false, Combo_power: 0},
-	{Distance: 1000, Text: "bad", Score: 200, Breaks_combo: false, Combo_power: 0}
+	{Distance: 5,    Text: "perfect", Score: 10, Breaks_combo: false, Combo_power: 2},
+	{Distance: 10,   Text: "great", Score: 8, Breaks_combo: false, Combo_power: 1},
+	{Distance: 15,   Text: "ok", Score: 6, Breaks_combo: false, Combo_power: 1},
+	{Distance: 20,   Text: "poor", Score: 4, Breaks_combo: false, Combo_power: 0},
+	{Distance: 1000, Text: "bad", Score: 2, Breaks_combo: false, Combo_power: 0}
 ]

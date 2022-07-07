@@ -118,7 +118,11 @@ class GonDDR extends Phaser.Scene {
 		//console.log("Current timestamp: " + time_ms);
 		//console.log("Current BPS: " + (this.bpm / 60));
 		//console.log(((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60))
+		let prev_beat = this.beat;
 		this.beat = this.beat + (((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60));
+		if (Math.floor(this.beat) > Math.floor(prev_beat)) {
+			this.do_on_beat();
+		}
 		//console.log("Current interval (seconds): " + ((time_ms - this.prev_time_ms) / 1000));
 		//console.log("Current beat:" + this.beat);
 
@@ -185,6 +189,7 @@ class GonDDR extends Phaser.Scene {
 				this.start_time = Date.now();
 				this.prev_time_ms = Date.now() - this.start_time;
 				this.gondola.setFrame(Gondola_Poses.Neutral);
+				this.gondola_start_bounce.stop();
 			}
 		});
 
@@ -241,7 +246,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.gondola = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y + Gondola_Offsets.Neutral, 'gondola', Gondola_Poses.Neutral) );
 		this.gondola.setOrigin(0.5,1);
-		this.tweens.add({
+		this.gondola_start_bounce = this.tweens.add({
 			targets: this.gondola,
 			scaleX: 1.05,
 			scaleY: 0.9,
@@ -328,7 +333,7 @@ class GonDDR extends Phaser.Scene {
 
 	add_feedback_combo(this_tick, number) {
 
-		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, this_tick, `COMBO ${number}`, 0, 0, false, "#0F0", "40px");
+		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, this_tick, "combo", 0, 0, true);
 	}
 
 
@@ -480,7 +485,28 @@ class GonDDR extends Phaser.Scene {
 		})
 	}
 
-  update_bpm(bpm_config) {
+	do_on_beat() {
+		for (var i = 0; i < this.arrows.length; i++) {
+			this.tweens.add({
+				targets: this.arrows[i],
+				scaleX: 1.2,
+				scaleY: 1.2,
+				yoyo: true,
+				duration: 50,
+			});
+		};
+
+		this.tweens.add({
+			targets: this.gondola,
+			scaleX: 1.05,
+			scaleY: 0.9,
+			ease: 'Sine.easeInOut',
+			duration: beat_to_ms(0.5, this.bpm),
+			yoyo: true
+		});
+	}
+
+	update_bpm(bpm_config) {
 
 		if(bpm_config.duration == 0) {
 			this.bpm = this.target_bpm = bpm_config.target;
@@ -500,7 +526,7 @@ class GonDDR extends Phaser.Scene {
 		this.hit_frame.play('hit_frame_flash');
 
 		this.combo++;
-		if (this.combo >= 1) {
+		if (this.combo >= 4) {
 			this.add_feedback_combo(this_tick, this.combo);
 		}
 

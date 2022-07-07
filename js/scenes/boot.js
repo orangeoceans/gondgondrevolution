@@ -35,6 +35,7 @@ class Boot extends Phaser.Scene {
 		this.load.image('hit_poor', 'assets/hit_poor.png');
 		this.load.image('hit_bad', 'assets/hit_bad.png');
 		this.load.image('hit_miss', 'assets/hit_miss.png');
+		this.load.image('combo', 'assets/combo.png');
 
 		this.load.audio('button_click', ['assets/sfx/button_click_001.wav']);
 		this.load.audio('disc_buzz', ['assets/sfx/disc_buzz_002.wav']);
