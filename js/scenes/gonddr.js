@@ -180,7 +180,6 @@ class GonDDR extends Phaser.Scene {
 			},
 			onComplete: function (tween, targets) {
 				console.log("Fade out complete");
-				this.init_game_objects();
 				this.music.play();
 				this.music_started = true;
 				this.start_time = Date.now();
