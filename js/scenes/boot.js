@@ -24,13 +24,16 @@ class Boot extends Phaser.Scene {
 		this.load.image('black_bg', 'assets/black_bg.png');
 		this.load.image('dance_pad', 'assets/dance_pad.png');
 		this.load.image('pixel', 'assets/pixel.png');
+		this.load.image('song_title_blue', 'assets/song_title_blue.png');
+		this.load.image('song_title_pink', 'assets/song_title_pink.png');
 
 		this.load.audio('button_click', ['assets/sfx/button_click_001.wav']);
 		this.load.audio('disc_buzz', ['assets/sfx/disc_buzz_002.wav']);
 		this.load.audio('voice_ggr', ['assets/sfx/voice_ggr_003.wav']);
 		this.load.audio('voice_ready', ['assets/sfx/voice_ready_001.wav']);
 		this.load.audio('voice_gondola', ['assets/sfx/voice_gondola_001.wav']);
-
+		this.load.audio('cheer', ['assets/sfx/cheer.mp3']);
+		
 		this.load.audio('wu_wei', ['assets/bgm/wu_wei.mp3']);
 
 		this.load.json('testdance', 'testdance.json');

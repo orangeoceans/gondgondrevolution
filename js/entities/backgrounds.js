@@ -16,7 +16,6 @@ class PurpleWave {
             this.rects[i].setOrigin(0,0);
             this.rects[i].tint = this.interpolate_color(i).color;
             this.rects[i].depth = -1;
-            //this.rects[i].alpha = 0;
             
             this._this.tweens.add({
                 targets: this.rects[i],
