@@ -59,7 +59,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.feedback_array = [];
 
-		this.sounds = {
+		this.sfx = {
 			"voice_ready": this.sound.add("voice_ready", 1),
 			"voice_gondola": this.sound.add("voice_gondola", 1)
 		}
@@ -109,10 +109,15 @@ class GonDDR extends Phaser.Scene {
 			}
 		}
 
-
-		console.log(((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60))
+		//console.log("Previous timestamp: " + this.prev_time_ms);
+		//console.log("Current timestamp: " + time_ms);
+		//console.log("Current BPS: " + (this.bpm / 60));
+		//console.log(((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60))
 		this.beat = this.beat + (((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60));
-		this.prev_time_ms = time_ms;
+		//console.log("Current interval (seconds): " + ((time_ms - this.prev_time_ms) / 1000));
+		console.log("Current beat:" + this.beat);
+
+		this.prev_time_ms = time_ms
 
 		this.handle_beat(this_tick);
 		this.update_arrows(this_tick);
@@ -166,12 +171,10 @@ class GonDDR extends Phaser.Scene {
 			onComplete: function (tween, targets) {
 				console.log("Fade out complete");
 				this.init_game_objects();
-
-				this.start_time = Date.now();
-				this.prev_time_ms = Date.now() - this.start_time;
-
 				this.music.play();
 				this.music_started = true;
+				this.start_time = Date.now();
+				this.prev_time_ms = Date.now() - this.start_time;
 			}
 		});
 
@@ -391,16 +394,14 @@ class GonDDR extends Phaser.Scene {
 
 				if(beat_action.config != undefined) {
 
-					beat_action.config.foreach( (param, i) => {
+					for (const param in beat_action.config) {
 						switch(param) {
 							case "bpm":
-								this.update_bpm(param);
+								this.update_bpm(beat_action.config[param]);
 							case "sound":
-								this.play_timed_sound(param);
-
+								this.play_timed_sound(beat_action.config[param]);
 						}
-					}, this);
-
+					}
 				}
 
 			}
@@ -408,8 +409,9 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	play_timed_sound(sound_config) {
-		sound = sound_config.name;
-		this.sounds[sound].play();
+		let sound = sound_config.name;
+		this.sfx[sound].play();
+		console.log("SFX triggered")
 	}
 
   update_bpm(bpm_config) {
