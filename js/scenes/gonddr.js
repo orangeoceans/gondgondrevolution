@@ -38,9 +38,10 @@ class GonDDR extends Phaser.Scene {
 
 	create () {
 
-		this.prev_time_ms = Date.now()
+		this.prev_time_ms;
 
 		this.music = this.sound.add("wu_wei", 1)
+		this.beat = 0;
 		this.music_started = false;
 
 		this.init_song();
@@ -108,11 +109,10 @@ class GonDDR extends Phaser.Scene {
 			}
 		}
 
-		this.beat += ((this_tick - this.prev_tick) / 1000) * (this.bpm / 60);
-		console.log(this.beat)
 
-		// TODO: Technically unsafe first loop!
-		this.prev_time_ms = time_ms
+		console.log(((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60))
+		this.beat = this.beat + (((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60));
+		this.prev_time_ms = time_ms;
 
 		this.handle_beat(this_tick);
 		this.update_arrows(this_tick);
@@ -168,6 +168,7 @@ class GonDDR extends Phaser.Scene {
 				this.init_game_objects();
 
 				this.start_time = Date.now();
+				this.prev_time_ms = Date.now() - this.start_time;
 
 				this.music.play();
 				this.music_started = true;
