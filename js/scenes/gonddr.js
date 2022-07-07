@@ -133,10 +133,17 @@ class GonDDR extends Phaser.Scene {
 
 	create_title() {
 		this.cheer.volume = 0
-		this.cheer.play({seek: 2})
+		this.cheer.play({seek: 0.5})
 		this.tweens.add({
-			targets: this.cheer, volume: 0.8, duration: 1500, yoyo: true, hold:6000
-		})
+			targets: this.cheer, volume: 0.7, duration: 100,
+			callbackScope: this, 
+			onComplete: function (tweens, targets) {
+				this.tweens.add({
+					targets: this.cheer, volume: 0, duration: 1000, delay:9000
+				});
+			}
+		});
+
 
 		this.title_top = this.add.image(-1760,0,'song_title_blue');
 		this.title_top.setOrigin(0,0);
