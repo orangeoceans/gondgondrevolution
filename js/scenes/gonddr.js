@@ -299,12 +299,16 @@ class GonDDR extends Phaser.Scene {
 	}
 
 
-	add_feedback_generic(x, y, this_tick, text, jitter_x = 0, jitter_y = 0, fill = "#00F", fontsize = "32px") {
+	add_feedback_generic(x, y, this_tick, text, jitter_x = 0, jitter_y = 0, image = false, fill = "#00F", fontsize = "32px") {
 
-		let feedback = new Feedback(this, x, y, this_tick, text, {
-				fontSize: fontsize,
-				fill: fill
-		}, jitter_x, jitter_y);
+		if (image) {
+			var feedback = new FeedbackImage(this, x, y, this_tick, text, jitter_x, jitter_y);
+		} else {
+			var feedback = new FeedbackText(this, x, y, this_tick, text, {
+					fontSize: fontsize,
+					fill: fill
+			}, jitter_x, jitter_y);
+		}
 		this.add.existing(feedback);
 		this.feedback_array.push(feedback);
 
@@ -312,19 +316,19 @@ class GonDDR extends Phaser.Scene {
 
 	add_feedback_hit(this_tick, text) {
 
-		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, text,
-			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, FEEDBACK_COLOR_DEFAULT, FEEDBACK_FONTSIZE_DEFAULT);
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, `hit_${text}`,
+			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
 	}
 
 	add_feedback_error(this_tick) {
 
-		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, "MISS",
-			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, "#F00", FEEDBACK_FONTSIZE_DEFAULT);
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, "hit_miss",
+			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
 	}
 
 	add_feedback_combo(this_tick, number) {
 
-		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, this_tick, `COMBO ${number}`, 0, 0, "#0F0", "40px");
+		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, this_tick, `COMBO ${number}`, 0, 0, false, "#0F0", "40px");
 	}
 
 
@@ -442,6 +446,8 @@ class GonDDR extends Phaser.Scene {
 								this.update_bpm(beat_action.config[param]);
 							case "sound":
 								this.play_timed_sound(beat_action.config[param]);
+							case "image":
+								this.show_timed_image(beat_action.config[param], this_tick); 
 						}
 					}
 				}
@@ -454,8 +460,24 @@ class GonDDR extends Phaser.Scene {
 
 	play_timed_sound(sound_config) {
 		let sound = sound_config.name;
-		this.sfx[sound].play();
+		this.sfx[sound].play({volume: 1.5});
 		console.log("SFX triggered")
+	}
+
+	show_timed_image(image_config, this_tick) {
+		let timed_image = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., image_config.key);
+		timed_image.scaleX = 2;
+		timed_image.scaleY = 0;
+
+		this.tweens.add({
+			targets: timed_image,
+			scaleX: 1,
+			scaleY: 1,
+			duration: 100,
+			yoyo: true,
+			hold: image_config.duration,
+			onComplete: timed_image.destroy
+		})
 	}
 
   update_bpm(bpm_config) {
@@ -495,6 +517,9 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	handle_miss (this_tick, arrow = null) {
+		if (this.combo >= 4) {
+			this.cameras.main.shake(100);
+		}
 		this.combo = 0;
 		if (arrow === null) {
 			this.add_feedback_error(this_tick);
