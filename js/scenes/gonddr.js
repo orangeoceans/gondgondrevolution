@@ -44,7 +44,7 @@ class GonDDR extends Phaser.Scene {
 		game.events.on('focus', function () {
 			this.scene.resume();
 		}, this);
-		
+
 		this.music = this.sound.add("wu_wei", 1)
 		this.beat = 0;
 		this.music_started = false;
@@ -210,7 +210,7 @@ class GonDDR extends Phaser.Scene {
 	init_game_objects() {
 
 		// Create sprites
-		this.hit_frame = this.add_starting_visual( this.add.sprite(100, ARROW_HIT_Y, 'hit_frame', 0) );
+		this.hit_frame = this.add_starting_visual( this.add.sprite(WINDOW_WIDTH/2., ARROW_HIT_Y, 'hit_frame', 0) );
 
 		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X-DANCE_PAD_OFFSET_X, GONDOLA_Y-DANCE_PAD_OFFSET_Y, 'dance_pad') );
 

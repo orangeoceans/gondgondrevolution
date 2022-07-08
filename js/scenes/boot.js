@@ -15,7 +15,7 @@ class Boot extends Phaser.Scene {
 		this.load.spritesheet('intro_bg', 'assets/intro_bg.png', {frameWidth: WINDOW_WIDTH, frameHeight: WINDOW_HEIGHT});
 
 		this.load.spritesheet('arrows', 'assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
-		this.load.spritesheet('hit_frame', 'assets/hit_frame.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
+		this.load.spritesheet('hit_frame', 'assets/hit_frame_long.png', {frameWidth: ARROW_SIZE*15, frameHeight: ARROW_SIZE});
 		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
 
 		this.load.image('press_start', 'assets/press_start.png');
@@ -43,7 +43,7 @@ class Boot extends Phaser.Scene {
 		this.load.audio('voice_ready', ['assets/sfx/voice_ready_001.wav']);
 		this.load.audio('voice_gondola', ['assets/sfx/voice_gondola_001.wav']);
 		this.load.audio('cheer', ['assets/sfx/cheer.mp3']);
-		
+
 		this.load.audio('wu_wei', ['assets/bgm/wu_wei.mp3']);
 
 		this.load.json('testdance', 'testdance.json');
