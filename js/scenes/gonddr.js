@@ -140,7 +140,7 @@ class GonDDR extends Phaser.Scene {
 		this.cheer.play({seek: 0.5})
 		this.tweens.add({
 			targets: this.cheer, volume: 0.7, duration: 100,
-			callbackScope: this, 
+			callbackScope: this,
 			onComplete: function (tweens, targets) {
 				this.tweens.add({
 					targets: this.cheer, volume: 0, duration: 1000, delay:9000
@@ -371,7 +371,7 @@ class GonDDR extends Phaser.Scene {
 			if (Phaser.Input.Keyboard.JustDown(this.arrow_keys[a])) { // JustDown(key) returns true only once per key press
 				let key_hit = false;
 				for (var i = 0; i < this.arrows.length; i++) { // Loop through arrows
-					if (Directions[direction] == this.arrows[i].direction) { // Check if arrow matches direction
+					if (direction == Directions[this.arrows[i].direction]) { // Check if arrow matches direction
 						if (this.hit_window_start < this.arrows[i].y && this.arrows[i].y < this.hit_window_end) { // Check if arrow in hit window
 							if (!this.arrows[i].has_hit) {
 								this.handle_hit(this_tick, this.arrows[i]);
@@ -431,7 +431,7 @@ class GonDDR extends Phaser.Scene {
 				if (this.beat >= beat_action.beat - this.fall_to_hit_ticks / this.tpb) {
 					idx_adjust = 1;
 					beat_action.arrows.forEach((arrow, i) => {
-						this.arrows.push(new Arrow(this, ARROW_X[arrow.direction], ARROW_START_Y, this_tick, arrow.direction, 0)); // Push new arrow to array
+						this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, this_tick, Directions[arrow.direction], 0)); // Push new arrow to array
 						this.add.existing(this.arrows[this.arrows.length-1]);
 					}); // Add new arrow to Phaser scene
 				}
@@ -452,7 +452,7 @@ class GonDDR extends Phaser.Scene {
 							case "sound":
 								this.play_timed_sound(beat_action.config[param]);
 							case "image":
-								this.show_timed_image(beat_action.config[param], this_tick); 
+								this.show_timed_image(beat_action.config[param], this_tick);
 						}
 					}
 				}
