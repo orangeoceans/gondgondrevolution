@@ -8,6 +8,7 @@ class GonDDR extends Phaser.Scene {
 		this.song_idx;
 		this.music;
 		this.music_started;
+		this.dance_ended;
 
 		this.arrows;      // Currently active arrows
 
@@ -50,6 +51,7 @@ class GonDDR extends Phaser.Scene {
 		this.music = this.sound.add("wu_wei", 1)
 		this.beat = 0;
 		this.music_started = false;
+		this.dance_ended = false;
 
 		this.init_song();
 		this.set_arrow_speed();
@@ -246,16 +248,15 @@ class GonDDR extends Phaser.Scene {
 
 		this.static_arrows = []
 		for(var i = 0; i < 4; i++) {
-			this.static_arrows.push(new Arrow(this, ARROW_X[i], 75, i, 0));
+			this.static_arrows.push( this.add_starting_visual( this.add.existing(new Arrow(this, ARROW_X[i], 75, i, 0)), 0.5) );
 			this.static_arrows[i].alpha = 0.5;
-			this.add.existing(this.static_arrows[i])
 		}
 
 	}
 
-	add_starting_visual(game_object, onComplete) {
+	add_starting_visual(game_object, alpha=1) {
 		game_object.alpha=0;
-		this.tweens.add({ targets:game_object, alpha:1, duration:1, delay:10, onComplete: onComplete});
+		this.tweens.add({ targets:game_object, alpha:alpha, duration:1, delay:10});
 		return game_object;
 	}
 
@@ -372,7 +373,7 @@ class GonDDR extends Phaser.Scene {
 		}, this);
 
 		// If there are no more arrows, end the game
-		if (this.song_idx >= this.song.beatmap.length && this.arrows.length == 0) {
+		if (!this.dance_ended && this.song_idx >= this.song.beatmap.length && this.arrows.length == 0) {
 			this.end_dance();
 		}
 	}
@@ -431,7 +432,7 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	get_hit_rank (hit_distance) {
-		console.log(hit_distance);
+		//console.log(hit_distance);
 		for (const rank of Hit_Ranks) {
 			if (hit_distance <= rank.Distance) {
 				return rank;
@@ -462,8 +463,8 @@ class GonDDR extends Phaser.Scene {
 				if(beat_action.config != undefined) {
 
 					idx_adjust = 1;
-					console.log(beat_action.config);
-					console.log(this.beat);
+					//console.log(beat_action.config);
+					//console.log(this.beat);
 
 					for (const param in beat_action.config) {
 						switch(param) {
@@ -586,11 +587,17 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	end_dance () {
+		console.log("Ending dance.")
+		this.dance_ended = true;
+		this.music.stop();
 		function transition_to_endscreen() {
 			this.gondola.destroy();
 			this.dance_pad.destroy();
 			this.hit_frame.destroy();
 			this.score_text.destroy();
+			for (var i = 0; i < this.static_arrows.length; i++) {
+				this.static_arrows[i].destroy();
+			}
         	this.scene.transition({
 				target: 'endscreen',
 				duration: 1200,
