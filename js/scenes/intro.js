@@ -13,6 +13,14 @@ class Intro extends Phaser.Scene {
 
 	create() {
 
+		game.events.on('blur', function () {
+			this.scene.pause();
+		}, this);
+
+		game.events.on('focus', function () {
+		  this.scene.resume();
+		}, this);
+
 		this.init_sounds();
 
 		this.intro_bg = this.add.sprite(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., 'intro_bg', 0);

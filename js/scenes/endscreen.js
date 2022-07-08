@@ -16,6 +16,14 @@ class Endscreen extends Phaser.Scene {
 
 	create() {
 
+		game.events.on('blur', function () {
+			this.scene.pause();
+		}, this);
+
+		game.events.on('focus', function () {
+			this.scene.resume();
+		}, this);
+		
 		this.press_start = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT*0.75, 'press_start');
 		this.tweens.add({
 			targets: this.press_start,
@@ -28,7 +36,7 @@ class Endscreen extends Phaser.Scene {
 		});
 
 		this.ggr_logo = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/3., 'ggr_logo');
-		
+
 		this.input.keyboard.on('keydown_UP', this.restart_dance, this);
 
 		this.score_text = this.add.text(WINDOW_WIDTH/2., WINDOW_HEIGHT - 40, `SCORE: ${this.score}`, {
@@ -47,16 +55,16 @@ class Endscreen extends Phaser.Scene {
 
 			let gonddr_scene = this.scene.get('gonddr');
 			gonddr_scene.registry.destroy();
-			gonddr_scene.events.off(); 
+			gonddr_scene.events.off();
 			gonddr_scene.scene.restart();
 
         	this.scene.transition({
 				target: 'gonddr',
-				duration: 1200,					
+				duration: 1200,
 				moveBelow: true
 			});
 		}
-		do_checkerboard(this, transition_to_gonddr, this); 
+		do_checkerboard(this, transition_to_gonddr, this);
 	}
 }
 
