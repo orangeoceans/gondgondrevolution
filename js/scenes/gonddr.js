@@ -21,6 +21,9 @@ class GonDDR extends Phaser.Scene {
 		this.score = 0;
 		this.score_text;
 
+		this.secret_code = "LeftUpRightUpDownRightRight";
+		this.secret_code_input = "";
+
 		this.tps = 100;   // Ticks per second;
 
 		/* A tick is the smallest time step in the song script, NOT a frame or Phaser loop.
@@ -82,6 +85,10 @@ class GonDDR extends Phaser.Scene {
 	update (time, delta) {
 
 		if(!this.music_started) {
+			let secret_code_entered = this.check_secret_code();
+			if (secret_code_entered) {
+				this.add_feedback_generic(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., "SECRET CODE!");
+			}
 			return;
 		}
 
@@ -260,7 +267,7 @@ class GonDDR extends Phaser.Scene {
 		return game_object;
 	}
 
-  update_bpm(delta) {
+	update_bpm(delta) {
 		//console.log("Current BPM: " + this.bpm);
 		//console.log("Target BPM: "  + this.target_bpm);
 		//console.log("Change rate: "  + this.bpm_change_per_beat);
@@ -406,6 +413,26 @@ class GonDDR extends Phaser.Scene {
 				}
 			}
 		});
+	}
+
+	check_secret_code() {
+		this.arrow_keys.forEach( (key, i) => {
+
+			// Direction that was pressed
+			let direction = Directions[i];
+
+			// JustDown(key) returns true only once per key press
+			if (Phaser.Input.Keyboard.JustDown(key)) {
+				this.secret_code_input += direction;	
+			}
+		});
+		if (this.secret_code_input == this.secret_code) {
+			return true;
+		} else if (!this.secret_code.startsWith(this.secret_code_input)) {
+			this.secret_code_input = ""
+		}
+
+		return false;
 	}
 
 	update_gondola () {
