@@ -51,9 +51,9 @@ const FEEDBACK_FADE_START_TICK = 20;
 const FEEDBACK_FADE_SPEED = 0.1;
 
 const Hit_Ranks = [
-	{Distance: 5,    Text: "perfect", Score: 10, Breaks_combo: false, Combo_power: 2},
-	{Distance: 10,   Text: "great", Score: 8, Breaks_combo: false, Combo_power: 1},
-	{Distance: 15,   Text: "ok", Score: 6, Breaks_combo: false, Combo_power: 1},
-	{Distance: 20,   Text: "poor", Score: 4, Breaks_combo: false, Combo_power: 0},
-	{Distance: 1000, Text: "bad", Score: 2, Breaks_combo: false, Combo_power: 0}
+	{Distance: 10,    Text: "perfect", Score: 10, Breaks_combo: false, Combo_power: 2},
+	{Distance: 20,   Text: "great", Score: 8, Breaks_combo: false, Combo_power: 1},
+	{Distance: 30,   Text: "ok", Score: 6, Breaks_combo: false, Combo_power: 1},
+	{Distance: 40,   Text: "poor", Score: 4, Breaks_combo: true, Combo_power: 0},
+	{Distance: 1000, Text: "bad", Score: 2, Breaks_combo: true, Combo_power: 0}
 ]

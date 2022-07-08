@@ -26,8 +26,8 @@ class GonDDR extends Phaser.Scene {
 		   Speed, position, and timing of arrows are measured in ticks. */
 
 		// Margin in pixels that a player's button press registers as a hit
-		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE;
-		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE;
+		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE - 10;
+		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE + 10;
 
 		// TODO: Phaser keyboard key objects for the arrow keys/WASD?
 		this.arrow_keys = [];
@@ -422,6 +422,7 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	get_hit_rank (hit_distance) {
+		console.log(hit_distance);
 		for (const rank of Hit_Ranks) {
 			if (hit_distance <= rank.Distance) {
 				return rank;
