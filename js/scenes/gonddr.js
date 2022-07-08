@@ -98,7 +98,7 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		this.handle_beat(this_tick);
-		this.update_arrows(this_tick, delta_tick);
+		this.update_arrows(delta_tick);
 		this.update_feedback(delta_tick);
 		this.update_gondola();
 
@@ -338,34 +338,38 @@ class GonDDR extends Phaser.Scene {
 
 
 	// Create, move, destroy, and register hits on arrows for this loop
-	update_arrows (this_tick, delta_tick) {
+	update_arrows (delta_tick) {
 
-		// Move arrow, mark as missed when leaving hit window, destroy arrows when leaving screen
-		this.arrows.forEach( (arrow, i, arrows) => {
+		this.arrows.filter( (arrow, i, arrows) => {
 
+			// Update position
 			arrow.lifetime_ticks += delta_tick;
 			arrow.y = ARROW_START_Y + ((arrow.lifetime_ticks/this.fall_to_bottom_ticks) * ARROW_DIST_TOTAL);
-			
+
 			// Destroy arrow if out of screen
 			if (arrow.y > ARROW_END_Y) {
-				let arrow_to_destroy = arrows.splice(i, 1);
-				arrow_to_destroy[0].destroy();
-
-				// Is this safe to call inside a forEach?
-				if (this.song_idx >= this.song.beatmap.length && arrows.length == 0) {
-					this.end_dance();
-				}
+				arrow.destroy();
+				return 0;
 			}
 
-			// Mark arrow as missed
-			else if (arrow.y > this.hit_window_end && !arrow.has_hit && !arrow.has_missed) {
-				this.handle_miss(this_tick, arrow);
+			// If arrow has passed the hit window, mark as missed
+			if (arrow.y > this.hit_window_end && !arrow.has_hit && !arrow.has_missed) {
+				this.handle_miss(arrow);
 			}
+
+			return 1;
+
 		});
+
+		// If there are no more arrows, end the game
+		if (this.song_idx >= this.song.beatmap.length && arrows.length == 0) {
+			this.end_dance();
+		}
 
 		// Check if each pressed arrow key correctly hits an arrow
 		this.arrow_keys.forEach( (key, i) => {
 
+			// Direction that was pressed
 			let direction = Directions[i];
 
 			// JustDown(key) returns true only once per key press
@@ -377,13 +381,13 @@ class GonDDR extends Phaser.Scene {
 
 					// Check if arrow matches direction, is in hit window, and is not hit
 					if (arrow.matches(direction) && arrow.in_window(this.hit_window_start, this.hit_window_end) && !arrow.has_hit) {
-						this.handle_hit(this_tick, this.arrows[j]);
+						this.handle_hit(arrow);
 						key_hit = true;
 						break; // Each key press should hit only one arrow, so break
 					}
 				}
 				if (!key_hit) { // If the key is pressed but had no matching arrow in the hit window, it's incorrect
-					this.handle_miss(this_tick);
+					this.handle_miss();
 				}
 			}
 		});
@@ -522,7 +526,7 @@ class GonDDR extends Phaser.Scene {
 		this.set_arrow_speed(); // TODO: SET function
 	}
 
-	handle_hit (this_tick, arrow) {
+	handle_hit (arrow) {
 		arrow.has_hit = true;
 		arrow.visible = false;
 		this.hit_frame.play('hit_frame_flash');
@@ -544,7 +548,7 @@ class GonDDR extends Phaser.Scene {
 		this.add_feedback_hit(rank.Text);
 	}
 
-	handle_miss (this_tick, arrow = null) {
+	handle_miss (arrow = null) {
 		if (this.combo >= 4) {
 			this.cameras.main.shake(100);
 		}
