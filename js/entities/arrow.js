@@ -1,9 +1,8 @@
 // Arrow class, with some extra info on top of sprite
 class Arrow extends Phaser.GameObjects.Sprite {
-	constructor(scene, x, y, start_tick, direction, hit_tick) {
+	constructor(scene, x, y, direction, hit_tick) {
 		super(scene, x, y, 'arrows', direction);
 
-		this.start_tick = start_tick;
 		this.lifetime_ticks = 0;
 
 		this.direction = direction;

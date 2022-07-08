@@ -4,9 +4,6 @@ class GonDDR extends Phaser.Scene {
 
 		super('gonddr');
 
-		this.start_time;
-		this.prev_tick_start;
-
 		this.song;
 		this.song_idx;
 		this.music;
@@ -39,9 +36,6 @@ class GonDDR extends Phaser.Scene {
 
 
 	create () {
-
-		this.prev_time_ms;
-
 		this.music = this.sound.add("wu_wei", 1)
 		this.beat = 0;
 		this.music_started = false;
@@ -78,8 +72,6 @@ class GonDDR extends Phaser.Scene {
 			return;
 		}
 
-		let time_ms = Date.now() - this.start_time;
-		let this_tick = ms_to_tick(time_ms, this.tps);
 		let delta_tick = ms_to_tick(delta, this.tps);
 
 		if (!this.background) {
@@ -96,7 +88,7 @@ class GonDDR extends Phaser.Scene {
 			this.do_on_beat();
 		}
 
-		this.handle_beat(this_tick);
+		this.handle_beat(delta_tick);
 
 		this.update_arrows(delta_tick);
 		this.check_input()
@@ -157,8 +149,6 @@ class GonDDR extends Phaser.Scene {
 				console.log("Fade out complete");
 				this.music.play();
 				this.music_started = true;
-				this.start_time = Date.now();
-				this.prev_time_ms = Date.now() - this.start_time;
 				this.gondola.setFrame(Gondola_Poses.Neutral);
 				this.gondola_start_bounce.stop();
 			}
@@ -430,7 +420,7 @@ class GonDDR extends Phaser.Scene {
 		}
 	}
 
-	handle_beat(this_tick) {
+	handle_beat(delta_tick) {
 
 		if (this.song_idx < this.song.beatmap.length) {
 
@@ -442,7 +432,7 @@ class GonDDR extends Phaser.Scene {
 				if (this.beat >= beat_action.beat - this.fall_to_hit_ticks / this.tpb) {
 					idx_adjust = 1;
 					beat_action.arrows.forEach((arrow, i) => {
-						this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, this_tick, Directions[arrow.direction], 0)); // Push new arrow to array
+						this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, Directions[arrow.direction], 0)); // Push new arrow to array
 						this.add.existing(this.arrows[this.arrows.length-1]);
 					}); // Add new arrow to Phaser scene
 				}
@@ -463,7 +453,7 @@ class GonDDR extends Phaser.Scene {
 							case "sound":
 								this.play_timed_sound(beat_action.config[param]);
 							case "image":
-								this.show_timed_image(beat_action.config[param], this_tick);
+								this.show_timed_image(beat_action.config[param]);
 						}
 					}
 				}
@@ -480,7 +470,7 @@ class GonDDR extends Phaser.Scene {
 		console.log("SFX triggered")
 	}
 
-	show_timed_image(image_config, this_tick) {
+	show_timed_image(image_config) {
 		let timed_image = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., image_config.key);
 		timed_image.scaleX = 2;
 		timed_image.scaleY = 0;
