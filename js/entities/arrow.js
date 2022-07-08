@@ -5,11 +5,25 @@ class Arrow extends Phaser.GameObjects.Sprite {
 
 		this.start_tick = start_tick;
 		this.lifetime_ticks = 0;
-		
+
 		this.direction = direction;
 		this.hit_tick = hit_tick;
 		this.has_hit = false;
 		this.has_missed = false;
+	}
+
+	matches(direction) {
+		if (direction == Directions[this.direction]) {
+			return 1;
+		}
+		return 0;
+	}
+
+	in_window(start, end) {
+		if (start < this.y && this.y < end) {
+			return 1;
+		}
+		return 0;
 	}
 }
 

@@ -341,57 +341,53 @@ class GonDDR extends Phaser.Scene {
 	update_arrows (this_tick, delta_tick) {
 
 		// Move arrow, mark as missed when leaving hit window, destroy arrows when leaving screen
-		for (var i = this.arrows.length-1; i >= 0; i--) {
+		this.arrows.forEach( (arrow, i, arrows) => {
 
-			let elapsed_ticks = this_tick - this.arrows[i].start_tick;
-			this.arrows[i].lifetime_ticks += delta_tick;
-
-			console.log(elapsed_ticks);
-			console.log(this.arrows[i].lifetime_ticks);
-			console.log("-----")
-
-			this.arrows[i].y = ARROW_START_Y + ((this.arrows[i].lifetime_ticks/this.fall_to_bottom_ticks) * ARROW_DIST_TOTAL);
-
+			arrow.lifetime_ticks += delta_tick;
+			arrow.y = ARROW_START_Y + ((arrow.lifetime_ticks/this.fall_to_bottom_ticks) * ARROW_DIST_TOTAL);
+			
 			// Destroy arrow if out of screen
-			if (this.arrows[i].y > ARROW_END_Y) {
-				let arrow_to_destroy = this.arrows.splice(i, 1);
+			if (arrow.y > ARROW_END_Y) {
+				let arrow_to_destroy = arrows.splice(i, 1);
 				arrow_to_destroy[0].destroy();
 
-				if (this.song_idx >= this.song.beatmap.length && this.arrows.length == 0) {
+				// Is this safe to call inside a forEach?
+				if (this.song_idx >= this.song.beatmap.length && arrows.length == 0) {
 					this.end_dance();
 				}
-
-				continue;
 			}
 
 			// Mark arrow as missed
-			if (this.arrows[i].y > this.hit_window_end && !this.arrows[i].has_hit && !this.arrows[i].has_missed) {
-				this.handle_miss(this_tick, this.arrows[i]);
+			else if (arrow.y > this.hit_window_end && !arrow.has_hit && !arrow.has_missed) {
+				this.handle_miss(this_tick, arrow);
 			}
-		}
+		});
 
 		// Check if each pressed arrow key correctly hits an arrow
-		for (var a = 0; a < this.arrow_keys.length; a++) {
-			let direction = Directions[a];
+		this.arrow_keys.forEach( (key, i) => {
 
-			if (Phaser.Input.Keyboard.JustDown(this.arrow_keys[a])) { // JustDown(key) returns true only once per key press
+			let direction = Directions[i];
+
+			// JustDown(key) returns true only once per key press
+			if (Phaser.Input.Keyboard.JustDown(key)) {
 				let key_hit = false;
-				for (var i = 0; i < this.arrows.length; i++) { // Loop through arrows
-					if (direction == Directions[this.arrows[i].direction]) { // Check if arrow matches direction
-						if (this.hit_window_start < this.arrows[i].y && this.arrows[i].y < this.hit_window_end) { // Check if arrow in hit window
-							if (!this.arrows[i].has_hit) {
-								this.handle_hit(this_tick, this.arrows[i]);
-								key_hit = true;
-								break; // Each key press should hit only one arrow, so break
-							}
-						}
+
+				for (var j = 0; j < this.arrows.length; j++) { // Loop through arrows
+					let arrow = this.arrows[j];
+
+					// Check if arrow matches direction, is in hit window, and is not hit
+					if (arrow.matches(direction) && arrow.in_window(this.hit_window_start, this.hit_window_end) && !arrow.has_hit) {
+						this.handle_hit(this_tick, this.arrows[j]);
+						key_hit = true;
+						break; // Each key press should hit only one arrow, so break
 					}
 				}
 				if (!key_hit) { // If the key is pressed but had no matching arrow in the hit window, it's incorrect
 					this.handle_miss(this_tick);
 				}
 			}
-		}
+		});
+
 	}
 
 	update_gondola () {
