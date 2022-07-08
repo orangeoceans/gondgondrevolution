@@ -88,7 +88,7 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		if(this.bpm != this.target_bpm) {
-			update_bpm();
+			update_bpm(delta);
 		}
 
 		let prev_beat = this.beat;
@@ -249,7 +249,7 @@ class GonDDR extends Phaser.Scene {
 		return game_object;
 	}
 
-  update_bpm() {
+  update_bpm(delta) {
 		console.log("Current BPM: " + this.bpm);
 		console.log("Target BPM: "  + this.target_bpm);
 		console.log("Change rate: "  + this.bpm_change_per_beat);
