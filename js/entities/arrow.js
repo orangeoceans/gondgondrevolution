@@ -4,6 +4,8 @@ class Arrow extends Phaser.GameObjects.Sprite {
 		super(scene, x, y, 'arrows', direction);
 
 		this.start_tick = start_tick;
+		this.lifetime_ticks = 0;
+		
 		this.direction = direction;
 		this.hit_tick = hit_tick;
 		this.has_hit = false;
@@ -18,7 +20,7 @@ const Directions = {
 	Left:  3,
 	0:     "Up",
 	1:     "Right",
-	2:     "Down", 
+	2:     "Down",
 	3:     "Left"
 };
 

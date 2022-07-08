@@ -47,7 +47,7 @@ class GonDDR extends Phaser.Scene {
 		this.music_started = false;
 
 		this.init_song();
-		this.init_arrow_properties();
+		this.set_arrow_speed();
 		this.init_game_objects();
 
 		this.cheer = this.sound.add("cheer", 1);
@@ -98,7 +98,7 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		this.handle_beat(this_tick);
-		this.update_arrows(this_tick);
+		this.update_arrows(this_tick, delta_tick);
 		this.update_feedback(delta_tick);
 		this.update_gondola();
 
@@ -191,7 +191,7 @@ class GonDDR extends Phaser.Scene {
 		console.log("BPM: " + this.bpm + " Beats per bar: " + this.bpb);
 	}
 
-	init_arrow_properties() {
+	set_arrow_speed() {
 		this.tpb = this.tps/(this.bpm/60) // Ticks per beat
 		console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
 
@@ -267,13 +267,13 @@ class GonDDR extends Phaser.Scene {
 
 			console.log("New BPM: " + this.bpm);
 
-			this.init_arrow_properties(); // TODO: Make SET method
+			this.set_arrow_speed(); // TODO: Make SET method
 
 		} else { // Stabilize at target BPM
 			console.log("BPM change rate is 0 or threshold reached; setting BPM to target");
 			this.bpm = this.target_bpm;
 			this.bpm_change_per_beat = 0;
-			this.init_arrow_properties();
+			this.set_arrow_speed();
 		}
 	}
 
@@ -338,13 +338,19 @@ class GonDDR extends Phaser.Scene {
 
 
 	// Create, move, destroy, and register hits on arrows for this loop
-	update_arrows (this_tick) {
+	update_arrows (this_tick, delta_tick) {
 
 		// Move arrow, mark as missed when leaving hit window, destroy arrows when leaving screen
 		for (var i = this.arrows.length-1; i >= 0; i--) {
 
 			let elapsed_ticks = this_tick - this.arrows[i].start_tick;
-			this.arrows[i].y = ARROW_START_Y + ((elapsed_ticks/this.fall_to_bottom_ticks) * ARROW_DIST_TOTAL);
+			this.arrows[i].lifetime_ticks += delta_tick;
+
+			console.log(elapsed_ticks);
+			console.log(this.arrows[i].lifetime_ticks);
+			console.log("-----")
+
+			this.arrows[i].y = ARROW_START_Y + ((this.arrows[i].lifetime_ticks/this.fall_to_bottom_ticks) * ARROW_DIST_TOTAL);
 
 			// Destroy arrow if out of screen
 			if (this.arrows[i].y > ARROW_END_Y) {
@@ -517,7 +523,7 @@ class GonDDR extends Phaser.Scene {
 			this.bpm_change_per_beat = (this.target_bpm - this.bpm) / bpm_config.duration;
 			console.log("BPM target: " + this.target_bpm);
 		}
-		this.init_arrow_properties(); // TODO: SET function
+		this.set_arrow_speed(); // TODO: SET function
 	}
 
 	handle_hit (this_tick, arrow) {
