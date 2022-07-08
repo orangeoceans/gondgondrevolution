@@ -45,7 +45,7 @@ const ARROW_X = {
 }
 
 const ARROW_SIZE    = 50;
-const ARROW_START_Y = -ARROW_SIZE;
+const ARROW_START_Y = 75;
 const ARROW_END_Y   = WINDOW_HEIGHT + ARROW_SIZE;
 const ARROW_HIT_Y   = WINDOW_HEIGHT - 100
 

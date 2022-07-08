@@ -242,6 +242,13 @@ class GonDDR extends Phaser.Scene {
 			repeat: 0
 		});
 
+		this.static_arrows = []
+		for(var i = 0; i < 4; i++) {
+			this.static_arrows.push(new Arrow(this, ARROW_X[i], 75, i, 0));
+			this.static_arrows[i].alpha = 0.5;
+			this.add.existing(this.static_arrows[i])
+		}
+
 	}
 
 	add_starting_visual(game_object, onComplete) {
@@ -506,6 +513,16 @@ class GonDDR extends Phaser.Scene {
 				duration: 50,
 			});
 		};
+
+		this.static_arrows.forEach( (arrow, i) => {
+			this.tweens.add({
+				targets: arrow,
+				scaleX: 1.2,
+				scaleY: 1.2,
+				yoyo: true,
+				duration: 50,
+			});
+		})
 
 		this.tweens.add({
 			targets: this.gondola,
