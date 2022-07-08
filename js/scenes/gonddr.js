@@ -88,47 +88,14 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		if(this.bpm != this.target_bpm) {
-
-			console.log("Current BPM: " + this.bpm);
-			console.log("Target BPM: "  + this.target_bpm);
-			console.log("Change rate: "  + this.bpm_change_per_beat);
-
-			if((this.bpm > this.target_bpm && this.bpm_change_per_beat < 0) ||
-			   (this.bpm < this.target_bpm && this.bpm_change_per_beat > 0)) {
-
-				let elapsed_sec = (time_ms - this.prev_time_ms) / 1000;
-				let beat_duration_sec = this.bpm / 60;
-
-				console.log("Elapsed seconds: " + elapsed_sec);
-				console.log("Length of beat: "  + beat_duration_sec);
-
-				this.bpm += (this.bpm_change_per_beat / beat_duration_sec) * elapsed_sec;
-
-				console.log("New BPM: " + this.bpm);
-
-				this.init_arrow_properties(); // TODO: Make SET method
-
-			} else { // Stabilize at target BPM
-				console.log("Threshold reached; setting BPM to target");
-				this.bpm = this.target_bpm;
-				this.bpm_change_per_beat = 0;
-				this.init_arrow_properties();
-			}
+			update_beat();
 		}
 
-		//console.log("Previous timestamp: " + this.prev_time_ms);
-		//console.log("Current timestamp: " + time_ms);
-		//console.log("Current BPS: " + (this.bpm / 60));
-		//console.log(((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60))
 		let prev_beat = this.beat;
 		this.beat = this.beat + ((delta / 1000.) * (this.bpm / 60.));
 		if (Math.floor(this.beat) > Math.floor(prev_beat)) {
 			this.do_on_beat();
 		}
-		//console.log("Current interval (seconds): " + ((time_ms - this.prev_time_ms) / 1000));
-		//console.log("Current beat:" + this.beat);
-
-		this.prev_time_ms = time_ms
 
 		this.handle_beat(this_tick);
 		this.update_arrows(this_tick);
@@ -229,7 +196,7 @@ class GonDDR extends Phaser.Scene {
 		console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
 
 		this.fall_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
-		console.log("Fall speed: " + this.fall_speed_ppt);
+		console.log("New fall speed: " + this.fall_speed_ppt);
 
 		// # of ticks for a standard arrow to fall from the top to the hitbox.
 		this.fall_to_hit_ticks = ARROW_DIST_TO_HIT / this.fall_speed_ppt;
@@ -280,6 +247,34 @@ class GonDDR extends Phaser.Scene {
 		game_object.alpha=0;
 		this.tweens.add({ targets:game_object, alpha:1, duration:1, delay:10, onComplete: onComplete});
 		return game_object;
+	}
+
+  update_beat() {
+		console.log("Current BPM: " + this.bpm);
+		console.log("Target BPM: "  + this.target_bpm);
+		console.log("Change rate: "  + this.bpm_change_per_beat);
+
+		if((this.bpm > this.target_bpm && this.bpm_change_per_beat < 0) ||
+			 (this.bpm < this.target_bpm && this.bpm_change_per_beat > 0)) {
+
+			let elapsed_sec = delta / 1000.;
+			let beat_duration_sec = this.bpm / 60.;
+
+			console.log("Elapsed seconds: " + elapsed_sec);
+			console.log("Length of beat: "  + beat_duration_sec);
+
+			this.bpm += (this.bpm_change_per_beat / beat_duration_sec) * elapsed_sec;
+
+			console.log("New BPM: " + this.bpm);
+
+			this.init_arrow_properties(); // TODO: Make SET method
+
+		} else { // Stabilize at target BPM
+			console.log("BPM change rate is 0 or threshold reached; setting BPM to target");
+			this.bpm = this.target_bpm;
+			this.bpm_change_per_beat = 0;
+			this.init_arrow_properties();
+		}
 	}
 
 	update_feedback(delta_tick) {
