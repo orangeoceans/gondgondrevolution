@@ -72,7 +72,8 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	// Main game loop
-	update () {
+	update (time, delta) {
+		console.log(delta);
 
 		if(!this.music_started) {
 			return;
@@ -80,6 +81,7 @@ class GonDDR extends Phaser.Scene {
 
 		let time_ms = Date.now() - this.start_time;
 		let this_tick = ms_to_tick(time_ms, this.tps);
+		let delta_tick = ms_to_tick(delta, this.tps);
 
 		if (!this.background) {
 			this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
@@ -119,7 +121,7 @@ class GonDDR extends Phaser.Scene {
 		//console.log("Current BPS: " + (this.bpm / 60));
 		//console.log(((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60))
 		let prev_beat = this.beat;
-		this.beat = this.beat + (((time_ms - this.prev_time_ms) / 1000) * (this.bpm / 60));
+		this.beat = this.beat + ((delta / 1000.) * (this.bpm / 60.));
 		if (Math.floor(this.beat) > Math.floor(prev_beat)) {
 			this.do_on_beat();
 		}
@@ -130,7 +132,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.handle_beat(this_tick);
 		this.update_arrows(this_tick);
-		this.update_feedback(this_tick);
+		this.update_feedback(delta_tick);
 		this.update_gondola();
 
 	}
@@ -280,14 +282,17 @@ class GonDDR extends Phaser.Scene {
 		return game_object;
 	}
 
-	update_feedback(this_tick) {
+	update_feedback(delta_tick) {
 
 		// Iterate through feedback text
 		this.feedback_array = this.feedback_array.filter((item, i) => {
 			var current_feedback = this.feedback_array[i];
 
+			// Increment lifetime of the feedback text
+			current_feedback.lifetime_ticks += delta_tick;
+
 			// Destroy feedback that is too old
-			if(this_tick - current_feedback.start_tick > FEEDBACK_LIFETIME) {
+			if(current_feedback.lifetime_ticks > FEEDBACK_LIFETIME) {
 				current_feedback.destroy();
 				return false;
 			}
@@ -295,7 +300,7 @@ class GonDDR extends Phaser.Scene {
 			// Otherwise make the text rise
 			else {
 				current_feedback.y -= FEEDBACK_RISE_SPEED;
-				if(this_tick - current_feedback.start_tick > FEEDBACK_FADE_START_TICK && current_feedback.alpha > 0) {
+				if(current_feedback.lifetime_ticks > FEEDBACK_FADE_START_TICK && current_feedback.alpha > 0) {
 					current_feedback.alpha -= FEEDBACK_FADE_SPEED;
 				}
 				return true;
@@ -304,12 +309,12 @@ class GonDDR extends Phaser.Scene {
 	}
 
 
-	add_feedback_generic(x, y, this_tick, text, jitter_x = 0, jitter_y = 0, image = false, fill = "#00F", fontsize = "32px") {
+	add_feedback_generic(x, y, text, jitter_x = 0, jitter_y = 0, image = false, fill = "#00F", fontsize = "32px") {
 
 		if (image) {
-			var feedback = new FeedbackImage(this, x, y, this_tick, text, jitter_x, jitter_y);
+			var feedback = new FeedbackImage(this, x, y, text, jitter_x, jitter_y);
 		} else {
-			var feedback = new FeedbackText(this, x, y, this_tick, text, {
+			var feedback = new FeedbackText(this, x, y, text, {
 					fontSize: fontsize,
 					fill: fill
 			}, jitter_x, jitter_y);
@@ -319,21 +324,21 @@ class GonDDR extends Phaser.Scene {
 
 	}
 
-	add_feedback_hit(this_tick, text) {
+	add_feedback_hit(text) {
 
-		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, `hit_${text}`,
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, `hit_${text}`,
 			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
 	}
 
-	add_feedback_error(this_tick) {
+	add_feedback_error() {
 
-		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, this_tick, "hit_miss",
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, "hit_miss",
 			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
 	}
 
-	add_feedback_combo(this_tick, number) {
+	add_feedback_combo(number) {
 
-		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, this_tick, "combo", 0, 0, true);
+		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, "combo", 0, 0, true);
 	}
 
 
@@ -527,7 +532,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.combo++;
 		if (this.combo >= 4) {
-			this.add_feedback_combo(this_tick, this.combo);
+			this.add_feedback_combo(this.combo);
 		}
 
 		var hit_distance = Math.abs(ARROW_HIT_Y - arrow.y);
@@ -539,7 +544,7 @@ class GonDDR extends Phaser.Scene {
 		this.score += rank.Score * Math.pow(Math.ceil(this.combo/4), rank.Combo_power)
 		this.score_text.text = `${this.score}`
 
-		this.add_feedback_hit(this_tick, rank.Text);
+		this.add_feedback_hit(rank.Text);
 	}
 
 	handle_miss (this_tick, arrow = null) {
@@ -548,10 +553,10 @@ class GonDDR extends Phaser.Scene {
 		}
 		this.combo = 0;
 		if (arrow === null) {
-			this.add_feedback_error(this_tick);
+			this.add_feedback_error();
 		} else {
 			arrow.has_missed = true;
-			this.add_feedback_error(this_tick);
+			this.add_feedback_error();
 		}
 	}
 

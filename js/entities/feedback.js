@@ -1,6 +1,6 @@
 // Feedback class, with some extra info on top of sprite
 class FeedbackText extends Phaser.GameObjects.Text {
-	constructor(scene, x, y, start_tick, text, params, jitter_x = 0, jitter_y = 0) {
+	constructor(scene, x, y, text, params, jitter_x = 0, jitter_y = 0) {
 		let text_offset_x = 0;
 		if (jitter_x > 0) {
 			text_offset_x = (Math.random() * jitter_x * 2.) - jitter_x;
@@ -13,12 +13,12 @@ class FeedbackText extends Phaser.GameObjects.Text {
 
 		super(scene, x + text_offset_x, y + text_offset_y, text, params);
 
-		this.start_tick = start_tick;
+		this.lifetime_ticks = 0;
 	}
 }
 
 class FeedbackImage extends Phaser.GameObjects.Image {
-	constructor(scene, x, y, start_tick, img_key, jitter_x = 0, jitter_y = 0) {
+	constructor(scene, x, y, img_key, jitter_x = 0, jitter_y = 0) {
 		let img_offset_x = 0;
 		if (jitter_x > 0) {
 			img_offset_x = (Math.random() * jitter_x * 2.) - jitter_x;
@@ -31,7 +31,7 @@ class FeedbackImage extends Phaser.GameObjects.Image {
 
 		super(scene, x + img_offset_x, y + img_offset_y, img_key);
 
-		this.start_tick = start_tick;
+		this.lifetime_ticks = 0;
 	}
 }
 
