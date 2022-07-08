@@ -73,7 +73,6 @@ class GonDDR extends Phaser.Scene {
 
 	// Main game loop
 	update (time, delta) {
-		console.log(delta);
 
 		if(!this.music_started) {
 			return;
@@ -98,7 +97,10 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		this.handle_beat(this_tick);
+
 		this.update_arrows(delta_tick);
+		this.check_input()
+
 		this.update_feedback(delta_tick);
 		this.update_gondola();
 
@@ -250,9 +252,9 @@ class GonDDR extends Phaser.Scene {
 	}
 
   update_bpm(delta) {
-		console.log("Current BPM: " + this.bpm);
-		console.log("Target BPM: "  + this.target_bpm);
-		console.log("Change rate: "  + this.bpm_change_per_beat);
+		//console.log("Current BPM: " + this.bpm);
+		//console.log("Target BPM: "  + this.target_bpm);
+		//console.log("Change rate: "  + this.bpm_change_per_beat);
 
 		if((this.bpm > this.target_bpm && this.bpm_change_per_beat < 0) ||
 			 (this.bpm < this.target_bpm && this.bpm_change_per_beat > 0)) {
@@ -260,12 +262,12 @@ class GonDDR extends Phaser.Scene {
 			let elapsed_sec = delta / 1000.;
 			let beat_duration_sec = this.bpm / 60.;
 
-			console.log("Elapsed seconds: " + elapsed_sec);
-			console.log("Length of beat: "  + beat_duration_sec);
+			//console.log("Elapsed seconds: " + elapsed_sec);
+			//console.log("Length of beat: "  + beat_duration_sec);
 
 			this.bpm += (this.bpm_change_per_beat / beat_duration_sec) * elapsed_sec;
 
-			console.log("New BPM: " + this.bpm);
+			//console.log("New BPM: " + this.bpm);
 
 			this.set_arrow_speed(); // TODO: Make SET method
 
@@ -340,7 +342,7 @@ class GonDDR extends Phaser.Scene {
 	// Create, move, destroy, and register hits on arrows for this loop
 	update_arrows (delta_tick) {
 
-		this.arrows.filter( (arrow, i, arrows) => {
+		this.arrows = this.arrows.filter( (arrow, i) => {
 
 			// Update position
 			arrow.lifetime_ticks += delta_tick;
@@ -359,14 +361,17 @@ class GonDDR extends Phaser.Scene {
 
 			return 1;
 
-		});
+		}, this);
 
 		// If there are no more arrows, end the game
-		if (this.song_idx >= this.song.beatmap.length && arrows.length == 0) {
+		if (this.song_idx >= this.song.beatmap.length && this.arrows.length == 0) {
 			this.end_dance();
 		}
+	}
 
-		// Check if each pressed arrow key correctly hits an arrow
+	// Check if each pressed arrow key correctly hits an arrow
+	check_input() {
+
 		this.arrow_keys.forEach( (key, i) => {
 
 			// Direction that was pressed
@@ -376,7 +381,8 @@ class GonDDR extends Phaser.Scene {
 			if (Phaser.Input.Keyboard.JustDown(key)) {
 				let key_hit = false;
 
-				for (var j = 0; j < this.arrows.length; j++) { // Loop through arrows
+				// Loop through arrows
+				for (var j = 0; j < this.arrows.length; j++) {
 					let arrow = this.arrows[j];
 
 					// Check if arrow matches direction, is in hit window, and is not hit
@@ -391,7 +397,6 @@ class GonDDR extends Phaser.Scene {
 				}
 			}
 		});
-
 	}
 
 	update_gondola () {
