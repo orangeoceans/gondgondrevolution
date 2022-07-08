@@ -38,10 +38,12 @@ class GonDDR extends Phaser.Scene {
 	create () {
 
 		game.events.on('blur', function () {
+			this.music.pause();
 			this.scene.pause();
 		}, this);
 
 		game.events.on('focus', function () {
+			this.music.resume();
 			this.scene.resume();
 		}, this);
 
