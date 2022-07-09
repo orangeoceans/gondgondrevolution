@@ -94,7 +94,7 @@ class GonDDR extends Phaser.Scene {
 
 		if (!this.background) {
 			//this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
-			this.background = new LightBeams(this, beat_to_ms(this.bpb,this.bpm));
+			this.background = new LightBeams(this, beat_to_ms(this.bpb,this.bpm), false);
 		}
 
 		if(this.bpm != this.target_bpm) {

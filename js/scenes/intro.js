@@ -131,7 +131,7 @@ class Intro extends Phaser.Scene {
 
 function do_checkerboard(_this, yoyo_func = null, yoyo_func_context = null) {
 
-	var tiles = _this.add.group({ key: 'pink_tile', repeat: 99, setScale: { x: 0, y: 0 } });
+	var tiles = _this.add.group({ key: 'pink_tile', repeat: 99, setScale: { x: 0, y: 1.1 } });
 
     Phaser.Actions.GridAlign(tiles.getChildren(), {
         width: 10,
@@ -148,8 +148,8 @@ function do_checkerboard(_this, yoyo_func = null, yoyo_func_context = null) {
 
     	let tween_params = {
             targets: child,
-            scaleX: 1,
-            scaleY: 1,
+            scaleX: 1.05,
+            scaleY: 1.1,
             //angle: 180,
             _ease: 'Sine.easeInOut',
             ease: 'Power2',
