@@ -1,8 +1,6 @@
 class GonDDR extends Phaser.Scene {
-
 	constructor () {
-
-		super('gonddr');
+		super("gonddr");
 
 		this.song;
 		this.song_idx;
@@ -95,7 +93,8 @@ class GonDDR extends Phaser.Scene {
 		let delta_tick = ms_to_tick(delta, this.tps);
 
 		if (!this.background) {
-			this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
+			//this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
+			this.background = new LightBeams(this, beat_to_ms(this.bpb,this.bpm));
 		}
 
 		if(this.bpm != this.target_bpm) {
@@ -291,6 +290,7 @@ class GonDDR extends Phaser.Scene {
 			console.log("BPM change rate is 0 or threshold reached; setting BPM to target");
 			this.bpm = this.target_bpm;
 			this.bpm_change_per_beat = 0;
+			this.background.period = beat_to_ms(this.bpb,this.bpm);
 			this.set_arrow_speed();
 		}
 	}
@@ -658,18 +658,18 @@ const Gondola_Poses = {
 }
 
 const Gondola_Offsets = {
-	Neutral:   -98,
-	Left:      -62,
-	Right:     -64,
+	Neutral:   -88,
+	Left:      -57,
+	Right:     -59,
 	Down:      -93,
-	Up:        -3,
-	UpRight:   -3,
+	Up:        7,
+	UpRight:   17,
 	DownLeft:  -50,
-	UpLeft:    0,
+	UpLeft:    5,
 	RightDown: -60,
-	RightLeft: -60,
-	UpDown:    0,
-	Happy:     -98
+	RightLeft: -50,
+	UpDown:    10,
+	Happy:     -88
 }
 
 const GONDOLA_WIDTH  = 359;
