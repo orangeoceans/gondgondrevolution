@@ -54,17 +54,16 @@
 
       { "beat": 52,     "arrows": [ {"direction": "Up"} ] },
       { "beat": 53.5,   "arrows": [ {"direction": "Down"} ] },
-      { "beat": 55,     "arrows": [ {"direction": "Up"} ],
+      { "beat": 55,     "arrows": [ {"direction": "Up"} ] },
+
+      { "comments": "slow down start",
+        "beat": 56,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ],
         "config": {
           "bpm": {
             "target": 136,
             "duration": 16
           }
         }
-      },
-
-      { "comments": "slow down start",
-        "beat": 56,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ]
       },
       { "beat": 56.001,     "arrows": [], "config": { "background": {"name":"checker_spin", "beats":4} } },
       { "beat": 59,     "arrows": [ {"direction": "Right"} ] },
@@ -89,17 +88,17 @@
       { "beat": 70,     "arrows": [ {"direction": "Left"}  ] },
       { "beat": 70.25,  "arrows": [ {"direction": "Up"} ] },
       { "beat": 70.5,  "arrows": [ {"direction": "Right"} ] },
-      { "beat": 70.75,  "arrows": [ {"direction": "Down"} ],
+      { "beat": 70.75,  "arrows": [ {"direction": "Down"} ] },
+
+      { "beat": 71,     "arrows": [], "config": { "background": {"name":"light_beams_flash", "beats":1} } },
+
+      { "comments": "main dance theme",
         "config": {
           "bpm": {
             "target": 146,
             "duration": 0
           }
-        }
-      },
-
-      { "beat": 71,     "arrows": [], "config": { "background": {"name":"light_beams_flash", "beats":1} } },
-      { "comments": "main dance theme",
+        },
         "beat": 72,    "arrows": [ {"direction": "Right"} ] },
       { "beat": 72.5,    "arrows": [ {"direction": "Right"} ] },
       { "beat": 73.5,    "arrows": [ {"direction": "Right"} ] },
