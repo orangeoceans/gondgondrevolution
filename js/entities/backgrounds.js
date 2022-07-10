@@ -2,7 +2,8 @@ class PurpleWave {
     constructor (context, startup_duration, half_period) {
         this.context = context;
 
-        this.half_period = this.half_period;
+        this.startup_duration = startup_duration;
+        this.half_period = half_period;
         this.num_steps = 22;
 
         this.start_color =  new Phaser.Display.Color(239, 85, 165);
@@ -25,15 +26,15 @@ class PurpleWave {
             this.context.tweens.add({
                 targets: this.rects[i],
                 alpha: 1,
-                duration: startup_duration,
+                duration: this.startup_duration,
                 onComplete: this.rects[i].destroy
             })
 
             this.context.tweens.add({
                 targets: this.rects[i],
                 x: WINDOW_WIDTH,
-                duration: half_period,
-                delay: i*half_period/11.,
+                duration: this.half_period,
+                delay: i*this.half_period/11.,
                 yoyo: true,
                 repeat: -1,
                 ease: 'Linear'
@@ -51,12 +52,12 @@ class PurpleWave {
         return new_color;
     }
 
-    end (duration) {
+    end () {
         for (var i = 0; i < this.num_steps; i++) {
             this.context.tweens.add({
                 targets: this.rects[i],
                 alpha: 0,
-                duration: duration,
+                duration: 500,
                 onComplete: this.rects[i].destroy
             })
         }

@@ -12,7 +12,7 @@ class GonDDR extends Phaser.Scene {
 		this.static_arrows = []
 		this.arrow_beams = []
 
-		this.background;
+		this.background = null;
 		this.gondola;
 		this.dance_pad;
 
@@ -96,10 +96,10 @@ class GonDDR extends Phaser.Scene {
 
 		let delta_tick = ms_to_tick(delta, this.tps);
 
-		if (!this.background) {
+		//if (!this.background) {
 			//this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
-			this.background = new LightBeams(this, beat_to_ms(this.bpb,this.bpm), true);
-		}
+			//this.background = new LightBeams(this, beat_to_ms(this.bpb,this.bpm), true);
+		//}
 
 		if(this.bpm != this.target_bpm) {
 			this.update_bpm(delta);
@@ -517,6 +517,8 @@ class GonDDR extends Phaser.Scene {
 							case "image":
 								this.show_timed_image(beat_action.config[param]);
 								break;
+							case "background":
+								this.change_background(beat_action.config[param]);
 						}
 					}
 
@@ -538,7 +540,7 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	show_timed_image(image_config) {
-		let timed_image = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., image_config.key);
+		let timed_image = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., image_config.name);
 		timed_image.scaleX = 2;
 		timed_image.scaleY = 0;
 
@@ -551,6 +553,31 @@ class GonDDR extends Phaser.Scene {
 			hold: image_config.duration,
 			onComplete: timed_image.destroy
 		})
+	}
+
+	change_background(bg_config) {
+		let bg_name = bg_config.name;
+		let bg_period_beats = bg_config.beats;
+		if (this.background) {
+			this.background.end();
+		}
+		switch(bg_name) {
+			case "purple_wave":
+				this.background = new PurpleWave(this, 500, beat_to_ms(bg_period_beats,this.bpm));
+				break;
+			case "colored_circles":
+				this.background = new ColoredCircles(this, beat_to_ms(bg_period_beats,this.bpm));
+				break;
+			case "light_beams_fade":
+				this.background = new LightBeams(this, beat_to_ms(bg_period_beats,this.bpm), true);
+				break;
+			case "light_beams_flash":
+				this.background = new LightBeams(this, beat_to_ms(bg_period_beats,this.bpm), false);
+				break;
+			case "checker_spin":
+				this.background = new CheckerSpin(this, beat_to_ms(bg_period_beats,this.bpm));
+				break;
+		}
 	}
 
 	do_on_beat() {
@@ -658,7 +685,7 @@ class GonDDR extends Phaser.Scene {
 			});
 		}
 
-		this.background.end(100);
+		this.background.end();
 		this.time.delayedCall(500,
 			function() {
 				do_checkerboard(this, transition_to_endscreen, this);

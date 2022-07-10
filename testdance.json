@@ -5,9 +5,12 @@
     },
 
     "beatmap": [
-      { "beat": 0,     "arrows": [], "config": { "sound": {"name": "voice_ready"}, "image": {"key":"ready", "duration":1000} } },
+      { "beat": 0,     "arrows": [], "config": { "sound": {"name": "voice_ready"}, 
+                                                 "image": {"name":"ready", "duration":1000} } },
 
-      { "beat": 4,     "arrows": [], "config": { "sound": {"name": "voice_gondola"}, "image": {"key":"gondola_go", "duration":1000} } },
+      { "beat": 4,     "arrows": [], "config": { "sound": {"name": "voice_gondola"}, 
+                                                 "image": {"name":"gondola_go", "duration":1000},
+                                                 "background": {"name":"light_beams_fade", "beats":4} } },
 
       { "comments":    "1st piano repeat",
         "beat": 8,     "arrows": [ {"direction": "Right"} ] },
@@ -63,6 +66,7 @@
       { "comments": "slow down start",
         "beat": 56,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ]
       },
+      { "beat": 56.001,     "arrows": [], "config": { "background": {"name":"checker_spin", "beats":4} } },
       { "beat": 59,     "arrows": [ {"direction": "Right"} ] },
       { "beat": 59.5,     "arrows": [ {"direction": "Right"} ] },
 
@@ -94,6 +98,7 @@
         }
       },
 
+      { "beat": 71,     "arrows": [], "config": { "background": {"name":"light_beams_flash", "beats":1} } },
       { "comments": "main dance theme",
         "beat": 72,    "arrows": [ {"direction": "Right"} ] },
       { "beat": 72.5,    "arrows": [ {"direction": "Right"} ] },
@@ -130,6 +135,7 @@
       { "beat": 96.5,     "arrows": [ {"direction": "Right"} ] },
       { "beat": 97,     "arrows": [ {"direction": "Left"} ] },
 
+      { "beat": 103.999,     "arrows": [], "config": { "background": {"name":"purple_wave", "beats":2} } },
       { "comments":     "2nd theme repeat",
         "beat": 104,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
       { "beat": 105.5,   "arrows": [ {"direction": "Down"} ] },
