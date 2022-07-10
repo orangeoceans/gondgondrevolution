@@ -9,7 +9,7 @@
 
       { "beat": 4,     "arrows": [], "config": { "sound": {"name": "voice_gondola"}, "image": {"key":"gondola_go", "duration":1000} } },
 
-      { "comments": "1st piano repeat",
+      { "comments":    "1st piano repeat",
         "beat": 8,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
       { "beat": 10.5,  "arrows": [ {"direction": "Down"} ] },
       { "beat": 11,    "arrows": [ {"direction": "Up"} ] },
@@ -46,7 +46,7 @@
       { "beat": 37.5,   "arrows": [ {"direction": "Up"}, {"direction": "Right"} ] },
       { "beat": 39,     "arrows": [ {"direction": "Down"}, {"direction": "Left"} ] },
 
-      { "comments": "2nd piano repeat",
+      { "comments":     "2nd piano repeat",
         "beat": 40,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
       { "beat": 42.5,   "arrows": [ {"direction": "Down"} ] },
       { "beat": 43,     "arrows": [ {"direction": "Up"} ] },
@@ -99,6 +99,60 @@
             "duration": 0
           }
         }
-      }
+      },
+      { "beat": 73.5,  "arrows": [ {"direction": "Down"} ] },
+      { "beat": 75,    "arrows": [ {"direction": "Up"} ] },
+      { "beat": 75.5,  "arrows": [ {"direction": "Down"}  ] },
+
+      { "beat": 76,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 77,     "arrows": [ {"direction": "Left"} ] },
+      { "beat": 79,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 79.5,   "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 80,     "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
+      { "beat": 83,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 83.5,   "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 84,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ] },
+      { "beat": 85.5,   "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
+      { "beat": 87,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] },
+      { "beat": 87.5,   "arrows": [ {"direction": "Down"} ] },
+
+      { "beat": 88,     "arrows": [ {"direction": "Up"}, {"direction": "Down"} ] },
+      { "beat": 89.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 91,     "arrows": [ {"direction": "Left"} ] },
+      { "beat": 91.5,   "arrows": [ {"direction": "Up"}  ] },
+
+      { "beat": 92,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 93.5,   "arrows": [ {"direction": "Up"} ] },
+      { "beat": 95,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 95.5,   "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 96,     "arrows": [ {"direction": "Right"}, {"direction": "Left"} ] },
+      { "beat": 99,     "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 100,     "arrows": [ {"direction": "Up"}, {"direction": "Down"} ] },
+      { "beat": 101.5,   "arrows": [ {"direction": "Up"}, {"direction": "Right"} ] },
+      { "beat": 103,     "arrows": [ {"direction": "Down"}, {"direction": "Left"} ] },
+
+      { "comments":     "2nd theme repeat",
+        "beat": 104,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
+      { "beat": 105.5,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 107,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 107.5,   "arrows": [ {"direction": "Down"}  ] },
+
+      { "beat": 108,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 109,     "arrows": [ {"direction": "Left"} ] },
+      { "beat": 111,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 111.5,   "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 112,     "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
+      { "beat": 115,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 115.5,   "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 116,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ] },
+      { "beat": 117.5,   "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
+      { "beat": 119,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] },
+      { "beat": 119.5,   "arrows": [ {"direction": "Down"} ] }
     ]
 }
