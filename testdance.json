@@ -32,16 +32,6 @@
       { "beat": 44,    "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
       { "beat": 45.5,  "arrows": [ {"direction": "Left"}, {"direction": "Up"} ] },
       { "beat": 47, "arrows": [ {"direction": "Right"},  {"direction": "Down"}] },
-
-
-
-
-
-      { "beat": 24, "arrows": [ {"direction": "Right"} ] },
-      { "beat": 28, "arrows": [ {"direction": "Left"} ] },
-      { "beat": 36, "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
-      { "beat": 37.5, "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
-      { "beat": 39, "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
       { "beat": 52, "arrows": [ {"direction": "Down"} ] },
       { "beat": 53, "arrows": [ {"direction": "Up"} ] },
       { "beat": 54, "arrows": [ {"direction": "Right"} ] },

@@ -28,8 +28,8 @@ class GonDDR extends Phaser.Scene {
 		   Speed, position, and timing of arrows are measured in ticks. */
 
 		// Margin in pixels that a player's button press registers as a hit
-		this.hit_window_start = ARROW_HIT_Y - ARROW_SIZE - 10;
-		this.hit_window_end = ARROW_HIT_Y + ARROW_SIZE + 10;
+		this.hit_window_end = ARROW_HIT_Y - (1/2) * ARROW_SIZE - 10;
+		this.hit_window_start = ARROW_HIT_Y + (1/2) * ARROW_SIZE + 10;
 
 		// TODO: Phaser keyboard key objects for the arrow keys/WASD?
 		this.arrow_keys = [];
@@ -206,14 +206,14 @@ class GonDDR extends Phaser.Scene {
 		this.tpb = this.tps/(this.bpm/60) // Ticks per beat
 		console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
 
-		this.fall_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
-		console.log("New fall speed: " + this.fall_speed_ppt);
+		this.arrow_move_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
+		console.log("New fall speed: " + this.arrow_move_speed_ppt);
 
 		// # of ticks for a standard arrow to fall from the top to the hitbox.
-		this.fall_to_hit_ticks = ARROW_DIST_TO_HIT / this.fall_speed_ppt;
+		this.arrow_reach_hit_ticks = ARROW_DIST_TO_HIT / this.arrow_move_speed_ppt;
 
 		// # of ticks for a standard arrow to fall from the top to bottom of the screen.
-		this.fall_to_bottom_ticks = ARROW_DIST_TOTAL / this.fall_speed_ppt;
+		this.arrow_reach_goal_ticks = ARROW_DIST_TOTAL / this.arrow_move_speed_ppt;
 	}
 
 	// Create game objects
@@ -362,16 +362,16 @@ class GonDDR extends Phaser.Scene {
 
 			// Update position
 			arrow.lifetime_ticks += delta_tick;
-			arrow.y = ARROW_START_Y + ((arrow.lifetime_ticks/this.fall_to_bottom_ticks) * ARROW_DIST_TOTAL);
+			arrow.y = ARROW_START_Y - ((arrow.lifetime_ticks/this.arrow_reach_goal_ticks) * ARROW_DIST_TOTAL);
 
 			// Destroy arrow if out of screen
-			if (arrow.y > ARROW_END_Y) {
+			if (arrow.y < ARROW_END_Y) {
 				arrow.destroy();
 				return 0;
 			}
 
 			// If arrow has passed the hit window, mark as missed
-			if (arrow.y > this.hit_window_end && !arrow.has_hit && !arrow.has_missed) {
+			if (arrow.y < this.hit_window_end && !arrow.has_hit && !arrow.has_missed) {
 				this.handle_miss(arrow);
 			}
 
@@ -402,7 +402,7 @@ class GonDDR extends Phaser.Scene {
 					let arrow = this.arrows[j];
 
 					// Check if arrow matches direction, is in hit window, and is not hit
-					if (arrow.matches(direction) && arrow.in_window(this.hit_window_start, this.hit_window_end) && !arrow.has_hit) {
+					if (arrow.matches(direction) && arrow.in_window(this.hit_window_end, this.hit_window_start) && !arrow.has_hit) {
 						this.handle_hit(arrow);
 						key_hit = true;
 						break; // Each key press should hit only one arrow, so break
@@ -423,7 +423,7 @@ class GonDDR extends Phaser.Scene {
 
 			// JustDown(key) returns true only once per key press
 			if (Phaser.Input.Keyboard.JustDown(key)) {
-				this.secret_code_input += direction;	
+				this.secret_code_input += direction;
 			}
 		});
 		if (this.secret_code_input == this.secret_code) {
@@ -476,7 +476,7 @@ class GonDDR extends Phaser.Scene {
 
 			// Arrows are generated at an offset
 			if (beat_action.arrows.length > 0) {
-				if (this.beat >= beat_action.beat - this.fall_to_hit_ticks / this.tpb) {
+				if (this.beat >= beat_action.beat - this.arrow_reach_hit_ticks / this.tpb) {
 					idx_adjust = 1;
 					beat_action.arrows.forEach((arrow, i) => {
 						this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, Directions[arrow.direction], 0)); // Push new arrow to array
