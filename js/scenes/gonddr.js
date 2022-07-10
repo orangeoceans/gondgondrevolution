@@ -34,6 +34,9 @@ class GonDDR extends Phaser.Scene {
 		// TODO: Phaser keyboard key objects for the arrow keys/WASD?
 		this.arrow_keys = [];
 
+		this.gondola_pose_timer = 0;
+		this.gondola_hold_ticks = ms_to_tick(200, this.tps);
+
 	}
 
 
@@ -113,6 +116,7 @@ class GonDDR extends Phaser.Scene {
 		this.check_input()
 
 		this.update_feedback(delta_tick);
+		this.gondola_pose_timer += delta_tick;
 		this.update_gondola();
 
 	}
@@ -440,6 +444,7 @@ class GonDDR extends Phaser.Scene {
 
 		for (var i = 0; i < this.arrow_keys.length; i++) {
 			if (this.arrow_keys[i].isDown) {
+				this.gondola_pose_timer = 0;
 				let direction = Directions[i];
 				if (!direction_pressed) {
 					direction_pressed += direction;
@@ -450,12 +455,15 @@ class GonDDR extends Phaser.Scene {
 			}
 		}
 
-		if (!direction_pressed) {
+		console.log(`pose timer ${this.gondola_pose_timer} out of ${this.gondola_hold_ticks}`);
+		if (!direction_pressed && this.gondola_pose_timer >= this.gondola_hold_ticks) {
 			direction_pressed = "Neutral";
 		}
 
-		this.gondola.setFrame(Gondola_Poses[direction_pressed]);
-		this.gondola.y = GONDOLA_Y + Gondola_Offsets[direction_pressed];
+		if (direction_pressed) {
+			this.gondola.setFrame(Gondola_Poses[direction_pressed]);
+			this.gondola.y = GONDOLA_Y + Gondola_Offsets[direction_pressed];
+		}
 	}
 
 	get_hit_rank (hit_distance) {
