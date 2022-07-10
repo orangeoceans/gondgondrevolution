@@ -101,7 +101,7 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		if(this.bpm != this.target_bpm) {
-			update_bpm(delta);
+			this.update_bpm(delta);
 		}
 
 		let prev_beat = this.beat;
@@ -208,10 +208,10 @@ class GonDDR extends Phaser.Scene {
 
 	set_arrow_speed() {
 		this.tpb = this.tps/(this.bpm/60) // Ticks per beat
-		console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
+		//console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
 
 		this.arrow_move_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
-		console.log("New fall speed: " + this.arrow_move_speed_ppt);
+		//console.log("New fall speed: " + this.arrow_move_speed_ppt);
 
 		// # of ticks for a standard arrow to fall from the top to the hitbox.
 		this.arrow_reach_hit_ticks = ARROW_DIST_TO_HIT / this.arrow_move_speed_ppt;
@@ -485,11 +485,20 @@ class GonDDR extends Phaser.Scene {
 			// Arrows are generated at an offset
 			if (beat_action.arrows.length > 0) {
 				if (this.beat >= beat_action.beat - this.arrow_reach_hit_ticks / this.tpb) {
-					idx_adjust = 1;
+
+					console.log(beat_action.beat);
+					console.log(this.beat);
+
 					beat_action.arrows.forEach((arrow, i) => {
+						console.log(arrow.direction);
 						this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, Directions[arrow.direction], 0)); // Push new arrow to array
 						this.add.existing(this.arrows[this.arrows.length-1]);
-					}); // Add new arrow to Phaser scene
+					});
+					beat_action.arrows = [];
+
+					if(beat_action.config == undefined) {
+						idx_adjust = 1;
+					}
 				}
 			}
 
@@ -497,19 +506,28 @@ class GonDDR extends Phaser.Scene {
 			if (this.beat >= beat_action.beat) {
 				if(beat_action.config != undefined) {
 
+					console.log(beat_action.beat);
+					console.log(this.beat);
+					console.log(beat_action.config);
+
 					idx_adjust = 1;
-					//console.log(beat_action.config);
-					//console.log(this.beat);
 
 					for (const param in beat_action.config) {
 						switch(param) {
 							case "bpm":
-								this.update_bpm(beat_action.config[param]);
+								this.update_target_bpm(beat_action.config[param]);
+								break;
 							case "sound":
 								this.play_timed_sound(beat_action.config[param]);
+								break;
 							case "image":
 								this.show_timed_image(beat_action.config[param]);
+								break;
 						}
+					}
+
+					if(beat_action.arrows.length == 0) {
+						idx_adjust = 1;
 					}
 				}
 			}
@@ -572,7 +590,7 @@ class GonDDR extends Phaser.Scene {
 		});
 	}
 
-	update_bpm(bpm_config) {
+	update_target_bpm(bpm_config) {
 
 		if(bpm_config.duration == 0) {
 			this.bpm = this.target_bpm = bpm_config.target;
