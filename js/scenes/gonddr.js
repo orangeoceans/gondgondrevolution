@@ -1,4 +1,9 @@
 class GonDDR extends Phaser.Scene {
+
+	/* =====================
+	   Base methods
+   	 ===================== */
+
 	constructor () {
 		super("gonddr");
 
@@ -41,7 +46,6 @@ class GonDDR extends Phaser.Scene {
 		this.gondola_hold_ticks = ms_to_tick(200, this.tps);
 
 	}
-
 
 	create () {
 
@@ -124,6 +128,71 @@ class GonDDR extends Phaser.Scene {
 
 	}
 
+
+	/* =====================
+	   Initialization
+   	 ===================== */
+
+	// Load song data, set BPM and time signature
+	init_song() {
+		this.song = this.cache.json.get('testdance');
+		this.arrow_idx = 0;
+		this.action_idx = 0;
+
+		// Set starting BPM, beats per bar, and ticks per beat
+		this.bpm = this.song.properties.starting_bpm;  // Beats per minute
+		this.target_bpm = this.bpm;  // For BPM transitions
+		this.bpm_change_per_beat = 0;  // For BPM transitions
+
+		this.bpb = this.song.properties.beats_per_bar; // Beats per bar (determines fall time)
+
+		console.log("BPM: " + this.bpm + " Beats per bar: " + this.bpb);
+	}
+
+	// Create game objects
+	init_game_objects() {
+
+		// Create sprites
+		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X-DANCE_PAD_OFFSET_X, GONDOLA_Y-DANCE_PAD_OFFSET_Y, 'dance_pad') );
+
+		this.gondola = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y + Gondola_Offsets.Neutral, 'gondola', Gondola_Poses.Neutral) );
+		this.gondola.setOrigin(0.5,1);
+		this.gondola_start_bounce = this.tweens.add({
+			targets: this.gondola,
+			scaleX: 1.05,
+			scaleY: 0.9,
+			ease: 'Sine.easeInOut',
+			duration: beat_to_ms(0.5, this.bpm),
+			repeat: -1,
+			yoyo: true
+		});
+
+		// Draw score info
+		this.score_text = this.add_starting_visual( this.add.text(SCORE_X, SCORE_Y, '0', {
+				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
+				fill: FEEDBACK_COLOR_DEFAULT,
+				align: 'right'
+		}) );
+		this.score_text.setOrigin(1,1);
+
+		for(var i = 0; i < 4; i++) {
+			this.arrow_beams.push( this.add.image(ARROW_X[i], WINDOW_HEIGHT/2., 'arrow_beam') );
+			this.static_arrows.push( this.add_starting_visual( this.add.sprite(ARROW_X[i], ARROW_HIT_Y, 'guide_arrows', i) ));
+			if (i == 0 || i == 2) {
+				this.arrow_beams[i].tint = 0x3892FF;
+			} else {
+				this.arrow_beams[i].tint = 0xFF38BD;
+			}
+			this.arrow_beams[i].alpha = 0;
+		}
+	}
+
+	add_starting_visual(game_object, alpha=1) {
+		game_object.alpha=0;
+		this.tweens.add({ targets:game_object, alpha:alpha, duration:1, delay:10});
+		return game_object;
+	}
+
 	create_title() {
 		this.cheer.volume = 0
 		this.cheer.play({seek: 0.5})
@@ -194,28 +263,109 @@ class GonDDR extends Phaser.Scene {
 		});
 	}
 
-	// Load song data, set BPM and time signature
-	init_song() {
-		this.song = this.cache.json.get('testdance');
-		this.arrow_idx = 0;
-		this.action_idx = 0;
 
-		// Set starting BPM, beats per bar, and ticks per beat
-		this.bpm = this.song.properties.starting_bpm;  // Beats per minute
-		this.target_bpm = this.bpm;  // For BPM transitions
-		this.bpm_change_per_beat = 0;  // For BPM transitions
+	/* =====================
+	   Beatmap processing
+   	 ===================== */
 
-		this.bpb = this.song.properties.beats_per_bar; // Beats per bar (determines fall time)
+	// Handle arrows and actions based on the beatmap
+	handle_beat(delta_tick) {
 
-		console.log("BPM: " + this.bpm + " Beats per bar: " + this.bpb);
+		// Action and arrow indices are separate due to differeces in timing
+		if (this.action_idx < this.song.beatmap.length) {
+
+			let beat_action = this.song.beatmap[this.action_idx];
+
+			// Effects occur on the beat
+			if (this.beat >= beat_action.beat) {
+				this.do_beat_action(beat_action);
+				this.action_idx++;
+			}
+		}
+
+		if (this.arrow_idx < this.song.beatmap.length) {
+
+			let beat_arrows = this.song.beatmap[this.arrow_idx];
+
+			// Arrows are drawn 1 bar in advance of hit time
+			if (this.beat >= beat_arrows.beat - this.arrow_reach_hit_ticks / this.tpb) {
+				this.add_arrows(beat_arrows);
+				this.arrow_idx++;
+			}
+		}
+
 	}
 
+	// Add arrows to the game
+	add_arrows(beat_arrows) {
+		beat_arrows.arrows.forEach((arrow, i) => {
+			this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, Directions[arrow.direction], 0)); // Push new arrow to array
+			this.add.existing(this.arrows[this.arrows.length-1]);
+		});
+	}
+
+	// Perform timed actions
+	do_beat_action(beat_action) {
+
+		// Nothing to do if there's no config
+		if(beat_action.config == undefined) { return; }
+
+		// Handle BPM changes, SFX, images, and background changes as needed
+		for (const param in beat_action.config) {
+			switch(param) {
+				case "bpm":
+					this.update_target_bpm(beat_action.config[param]);
+					break;
+				case "sound":
+					this.play_timed_sound(beat_action.config[param]);
+					break;
+				case "image":
+					this.show_timed_image(beat_action.config[param]);
+					break;
+				case "background":
+					this.change_background(beat_action.config[param]);
+			}
+		}
+
+	}
+
+	end_dance () {
+		console.log("Ending dance.")
+		this.dance_ended = true;
+		this.music.stop();
+		function transition_to_endscreen() {
+			this.gondola.destroy();
+			this.dance_pad.destroy();
+			this.score_text.destroy();
+			for (var i = 0; i < this.static_arrows.length; i++) {
+				this.static_arrows[i].destroy();
+				this.arrow_beams[i].destroy();
+			}
+					this.scene.transition({
+				target: 'endscreen',
+				duration: 1200,
+				moveBelow: true,
+				data: {score: this.score}
+			});
+		}
+
+		this.background.end();
+		this.time.delayedCall(500,
+			function() {
+				do_checkerboard(this, transition_to_endscreen, this);
+			}, [], this
+		);
+	}
+
+
+	/* =====================
+	   BPM handlers
+   	 ===================== */
+
+	// Update the speed that arrows fall at based on current BPM
 	set_arrow_speed() {
 		this.tpb = this.tps/(this.bpm/60) // Ticks per beat
-		//console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
-
 		this.arrow_move_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
-		//console.log("New fall speed: " + this.arrow_move_speed_ppt);
 
 		// # of ticks for a standard arrow to fall from the top to the hitbox.
 		this.arrow_reach_hit_ticks = ARROW_DIST_TO_HIT / this.arrow_move_speed_ppt;
@@ -224,54 +374,23 @@ class GonDDR extends Phaser.Scene {
 		this.arrow_reach_goal_ticks = ARROW_DIST_TOTAL / this.arrow_move_speed_ppt;
 	}
 
-	// Create game objects
-	init_game_objects() {
+	// Set the target BPM based on beatmap
+	update_target_bpm(bpm_config) {
 
-		// Create sprites
-		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X-DANCE_PAD_OFFSET_X, GONDOLA_Y-DANCE_PAD_OFFSET_Y, 'dance_pad') );
-
-		this.gondola = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y + Gondola_Offsets.Neutral, 'gondola', Gondola_Poses.Neutral) );
-		this.gondola.setOrigin(0.5,1);
-		this.gondola_start_bounce = this.tweens.add({
-			targets: this.gondola,
-			scaleX: 1.05,
-			scaleY: 0.9,
-			ease: 'Sine.easeInOut',
-			duration: beat_to_ms(0.5, this.bpm),
-			repeat: -1,
-			yoyo: true
-		});
-
-		// Draw score info
-		this.score_text = this.add_starting_visual( this.add.text(SCORE_X, SCORE_Y, '0', {
-				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
-				fill: FEEDBACK_COLOR_DEFAULT,
-				align: 'right'
-		}) );
-		this.score_text.setOrigin(1,1);
-
-		for(var i = 0; i < 4; i++) {
-			this.arrow_beams.push( this.add.image(ARROW_X[i], WINDOW_HEIGHT/2., 'arrow_beam') );
-			this.static_arrows.push( this.add_starting_visual( this.add.sprite(ARROW_X[i], ARROW_HIT_Y, 'guide_arrows', i) ));
-			if (i == 0 || i == 2) {
-				this.arrow_beams[i].tint = 0x3892FF;
-			} else {
-				this.arrow_beams[i].tint = 0xFF38BD;
-			}
-			this.arrow_beams[i].alpha = 0;
+		if(bpm_config.duration == 0) {
+			this.bpm = this.target_bpm = bpm_config.target;
+			this.bpm_change_per_beat = 0;
+			console.log("BPM changed: " + this.bpm);
+		} else {
+			this.target_bpm = bpm_config.target;
+			this.bpm_change_per_beat = (this.target_bpm - this.bpm) / bpm_config.duration;
+			console.log("BPM target: " + this.target_bpm);
 		}
+		this.set_arrow_speed(); // TODO: SET function
 	}
 
-	add_starting_visual(game_object, alpha=1) {
-		game_object.alpha=0;
-		this.tweens.add({ targets:game_object, alpha:alpha, duration:1, delay:10});
-		return game_object;
-	}
-
+	// Increment or set the BPM based on target
 	update_bpm(delta) {
-		//console.log("Current BPM: " + this.bpm);
-		//console.log("Target BPM: "  + this.target_bpm);
-		//console.log("Change rate: "  + this.bpm_change_per_beat);
 
 		if((this.bpm > this.target_bpm && this.bpm_change_per_beat < 0) ||
 			 (this.bpm < this.target_bpm && this.bpm_change_per_beat > 0)) {
@@ -279,116 +398,24 @@ class GonDDR extends Phaser.Scene {
 			let elapsed_sec = delta / 1000.;
 			let beat_duration_sec = this.bpm / 60.;
 
-			//console.log("Elapsed seconds: " + elapsed_sec);
-			//console.log("Length of beat: "  + beat_duration_sec);
-
 			this.bpm += (this.bpm_change_per_beat / beat_duration_sec) * elapsed_sec;
-
-			//console.log("New BPM: " + this.bpm);
-
-			this.set_arrow_speed(); // TODO: Make SET method
+			this.set_arrow_speed();
 
 		} else { // Stabilize at target BPM
-			console.log("BPM change rate is 0 or threshold reached; setting BPM to target");
+			// Set BPM and reset rate of change
 			this.bpm = this.target_bpm;
 			this.bpm_change_per_beat = 0;
+
+			// Update background and arrow speed
 			this.background.period = beat_to_ms(this.bpb,this.bpm);
 			this.set_arrow_speed();
 		}
 	}
 
-	update_feedback(delta_tick) {
 
-		// Iterate through feedback text
-		this.feedback_array = this.feedback_array.filter((item, i) => {
-			var current_feedback = this.feedback_array[i];
-
-			// Increment lifetime of the feedback text
-			current_feedback.lifetime_ticks += delta_tick;
-
-			// Destroy feedback that is too old
-			if(current_feedback.lifetime_ticks > FEEDBACK_LIFETIME) {
-				current_feedback.destroy();
-				return false;
-			}
-
-			// Otherwise make the text rise
-			else {
-				current_feedback.y -= FEEDBACK_RISE_SPEED;
-				if(current_feedback.lifetime_ticks > FEEDBACK_FADE_START_TICK && current_feedback.alpha > 0) {
-					current_feedback.alpha -= FEEDBACK_FADE_SPEED;
-				}
-				return true;
-			}
-		});
-	}
-
-
-	add_feedback_generic(x, y, text, jitter_x = 0, jitter_y = 0, image = false, fill = "#00F", fontsize = "32px") {
-
-		if (image) {
-			var feedback = new FeedbackImage(this, x, y, text, jitter_x, jitter_y);
-		} else {
-			var feedback = new FeedbackText(this, x, y, text, {
-					fontSize: fontsize,
-					fill: fill
-			}, jitter_x, jitter_y);
-		}
-		this.add.existing(feedback);
-		this.feedback_array.push(feedback);
-
-	}
-
-	add_feedback_hit(text) {
-
-		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, `hit_${text}`,
-			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
-	}
-
-	add_feedback_error() {
-
-		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, "hit_miss",
-			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
-	}
-
-	add_feedback_combo(number) {
-
-		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, "combo", 0, 0, true);
-	}
-
-
-	// Create, move, destroy, and register hits on arrows for this loop
-	update_arrows (delta_tick) {
-
-		this.arrows = this.arrows.filter( (arrow, i) => {
-
-			// Update position
-			arrow.lifetime_ticks += delta_tick;
-			arrow.y = ARROW_START_Y - ((arrow.lifetime_ticks/this.arrow_reach_goal_ticks) * ARROW_DIST_TOTAL);
-
-			// Destroy arrow if out of screen
-			if (arrow.y < ARROW_END_Y) {
-				arrow.destroy();
-				return 0;
-			}
-
-			// If arrow has passed the hit window, mark as missed
-			if (arrow.y < this.hit_window_end && !arrow.has_hit && !arrow.has_missed) {
-				this.handle_miss(arrow);
-			}
-
-			return 1;
-
-		}, this);
-
-		// If there are no more arrows or actions, end the game
-		if (!this.dance_ended &&
-				 this.arrow_idx >= this.song.beatmap.length &&
-				 this.action_idx >= this.song.beatmap.length &&
-				 this.arrows.length == 0) {
-			this.end_dance();
-		}
-	}
+	/* =====================
+	   Input handlers
+   	 ===================== */
 
 	// Check if each pressed arrow key correctly hits an arrow
 	check_input() {
@@ -421,6 +448,7 @@ class GonDDR extends Phaser.Scene {
 		});
 	}
 
+	// Check if user has input the secret code
 	check_secret_code() {
 		this.arrow_keys.forEach( (key, i) => {
 
@@ -441,189 +469,38 @@ class GonDDR extends Phaser.Scene {
 		return false;
 	}
 
-	update_gondola () {
-		let direction_pressed = ""
+	// Create, move, destroy, and register hits on arrows for this loop
+ 	update_arrows (delta_tick) {
 
-		for (var i = 0; i < this.arrow_keys.length; i++) {
-			if (this.arrow_keys[i].isDown) {
-				let direction = Directions[i];
-				if (!direction_pressed) {
-					direction_pressed += direction;
-				} else {
-					direction_pressed += direction;
-					break;
-				}
-			}
-		}
+ 		this.arrows = this.arrows.filter( (arrow, i) => {
 
-		if (!direction_pressed && this.gondola_pose_timer >= this.gondola_hold_ticks) {
-			direction_pressed = "Neutral";
-		}
+ 			// Update position
+ 			arrow.lifetime_ticks += delta_tick;
+ 			arrow.y = ARROW_START_Y - ((arrow.lifetime_ticks/this.arrow_reach_goal_ticks) * ARROW_DIST_TOTAL);
 
-		if (direction_pressed) {
-			this.gondola.setFrame(Gondola_Poses[direction_pressed]);
-			this.gondola.y = GONDOLA_Y + Gondola_Offsets[direction_pressed];
-		}
-	}
+ 			// Destroy arrow if out of screen
+ 			if (arrow.y < ARROW_END_Y) {
+ 				arrow.destroy();
+ 				return 0;
+ 			}
 
-	get_hit_rank (hit_distance) {
-		//console.log(hit_distance);
-		for (const rank of Hit_Ranks) {
-			if (hit_distance <= rank.Distance) {
-				return rank;
-			}
-		}
-	}
+ 			// If arrow has passed the hit window, mark as missed
+ 			if (arrow.y < this.hit_window_end && !arrow.has_hit && !arrow.has_missed) {
+ 				this.handle_miss(arrow);
+ 			}
 
-	handle_beat(delta_tick) {
+ 			return 1;
 
-		if (this.action_idx < this.song.beatmap.length) {
+ 		}, this);
 
-			let beat_action = this.song.beatmap[this.action_idx];
-
-			// Effects occur on the beat
-			if (this.beat >= beat_action.beat) {
-
-				if(beat_action.config != undefined) {
-
-					console.log("Current action index: " + this.action_idx);
-					console.log("Index beat: " + beat_action.beat);
-					console.log("Current beat: " + this.beat);
-
-					for (const param in beat_action.config) {
-						switch(param) {
-							case "bpm":
-								this.update_target_bpm(beat_action.config[param]);
-								break;
-							case "sound":
-								this.play_timed_sound(beat_action.config[param]);
-								break;
-							case "image":
-								this.show_timed_image(beat_action.config[param]);
-								break;
-							case "background":
-								this.change_background(beat_action.config[param]);
-						}
-					}
-				}
-
-				this.action_idx++;
-			}
-		}
-
-		if (this.arrow_idx < this.song.beatmap.length) {
-
-			let beat_arrows = this.song.beatmap[this.arrow_idx];
-
-			// Arrows are generated at an offset
-			if (this.beat >= beat_arrows.beat - this.arrow_reach_hit_ticks / this.tpb) {
-
-				console.log("Current arrow index: " + this.arrow_idx);
-				console.log("Index beat: " + beat_arrows.beat);
-				console.log("Current beat: " + this.beat);
-				this.arrow_idx++;
-
-				beat_arrows.arrows.forEach((arrow, i) => {
-					console.log(arrow.direction);
-					this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, Directions[arrow.direction], 0)); // Push new arrow to array
-					this.add.existing(this.arrows[this.arrows.length-1]);
-				});
-			}
-		}
-
-	}
-
-	play_timed_sound(sound_config) {
-		let sound = sound_config.name;
-		this.sfx[sound].play({volume: 1.5});
-		console.log("SFX triggered")
-	}
-
-	show_timed_image(image_config) {
-		let timed_image = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., image_config.name);
-		timed_image.scaleX = 2;
-		timed_image.scaleY = 0;
-
-		this.tweens.add({
-			targets: timed_image,
-			scaleX: 1,
-			scaleY: 1,
-			duration: 100,
-			yoyo: true,
-			hold: image_config.duration,
-			onComplete: timed_image.destroy
-		})
-	}
-
-	change_background(bg_config) {
-		let bg_name = bg_config.name;
-		let bg_period_beats = bg_config.beats;
-		if (this.background) {
-			this.background.end();
-		}
-		switch(bg_name) {
-			case "purple_wave":
-				this.background = new PurpleWave(this, 500, beat_to_ms(bg_period_beats,this.bpm));
-				break;
-			case "colored_circles":
-				this.background = new ColoredCircles(this, beat_to_ms(bg_period_beats,this.bpm));
-				break;
-			case "light_beams_fade":
-				this.background = new LightBeams(this, beat_to_ms(bg_period_beats,this.bpm), true);
-				break;
-			case "light_beams_flash":
-				this.background = new LightBeams(this, beat_to_ms(bg_period_beats,this.bpm), false);
-				break;
-			case "checker_spin":
-				this.background = new CheckerSpin(this, beat_to_ms(bg_period_beats,this.bpm));
-				break;
-		}
-	}
-
-	do_on_beat() {
-		for (var i = 0; i < this.arrows.length; i++) {
-			this.tweens.add({
-				targets: this.arrows[i],
-				scaleX: 1.2,
-				scaleY: 1.2,
-				yoyo: true,
-				duration: 50,
-			});
-		};
-
-		this.static_arrows.forEach( (arrow, i) => {
-			this.tweens.add({
-				targets: arrow,
-				scaleX: 1.2,
-				scaleY: 1.2,
-				yoyo: true,
-				duration: 50,
-			});
-		})
-
-		this.tweens.add({
-			targets: this.gondola,
-			scaleX: 1.05,
-			scaleY: 0.9,
-			ease: 'Sine.easeInOut',
-			duration: beat_to_ms(0.5, this.bpm),
-			yoyo: true
-		});
-	}
-
-	update_target_bpm(bpm_config) {
-
-		if(bpm_config.duration == 0) {
-			this.bpm = this.target_bpm = bpm_config.target;
-			this.bpm_change_per_beat = 0;
-			console.log("BPM changed: " + this.bpm);
-		} else {
-			this.target_bpm = bpm_config.target;
-			this.bpm_change_per_beat = (this.target_bpm - this.bpm) / bpm_config.duration;
-			console.log("BPM target: " + this.target_bpm);
-		}
-		this.set_arrow_speed(); // TODO: SET function
-	}
+ 		// If there are no more arrows or actions, end the game
+ 		if (!this.dance_ended &&
+ 				 this.arrow_idx >= this.song.beatmap.length &&
+ 				 this.action_idx >= this.song.beatmap.length &&
+ 				 this.arrows.length == 0) {
+ 			this.end_dance();
+ 		}
+ 	}
 
 	handle_hit (arrow) {
 		arrow.has_hit = true;
@@ -665,34 +542,200 @@ class GonDDR extends Phaser.Scene {
 		}
 	}
 
-	end_dance () {
-		console.log("Ending dance.")
-		this.dance_ended = true;
-		this.music.stop();
-		function transition_to_endscreen() {
-			this.gondola.destroy();
-			this.dance_pad.destroy();
-			this.score_text.destroy();
-			for (var i = 0; i < this.static_arrows.length; i++) {
-				this.static_arrows[i].destroy();
-				this.arrow_beams[i].destroy();
-			}
-        	this.scene.transition({
-				target: 'endscreen',
-				duration: 1200,
-				moveBelow: true,
-				data: {score: this.score}
-			});
-		}
+	// Check accuracy of hit
+	get_hit_rank (hit_distance) {
+ 		//console.log(hit_distance);
+ 		for (const rank of Hit_Ranks) {
+ 			if (hit_distance <= rank.Distance) {
+ 				return rank;
+ 			}
+ 		}
+ 	}
 
-		this.background.end();
-		this.time.delayedCall(500,
-			function() {
-				do_checkerboard(this, transition_to_endscreen, this);
-			}, [], this
-		);
+
+	/* =====================
+	   Feedback handlers
+   	 ===================== */
+
+	update_feedback(delta_tick) {
+
+		// Iterate through feedback text
+		this.feedback_array = this.feedback_array.filter((item, i) => {
+			var current_feedback = this.feedback_array[i];
+
+			// Increment lifetime of the feedback text
+			current_feedback.lifetime_ticks += delta_tick;
+
+			// Destroy feedback that is too old
+			if(current_feedback.lifetime_ticks > FEEDBACK_LIFETIME) {
+				current_feedback.destroy();
+				return false;
+			}
+
+			// Otherwise make the text rise
+			else {
+				current_feedback.y -= FEEDBACK_RISE_SPEED;
+				if(current_feedback.lifetime_ticks > FEEDBACK_FADE_START_TICK && current_feedback.alpha > 0) {
+					current_feedback.alpha -= FEEDBACK_FADE_SPEED;
+				}
+				return true;
+			}
+		});
+	}
+
+	add_feedback_generic(x, y, text, jitter_x = 0, jitter_y = 0, image = false, fill = "#00F", fontsize = "32px") {
+
+		if (image) {
+			var feedback = new FeedbackImage(this, x, y, text, jitter_x, jitter_y);
+		} else {
+			var feedback = new FeedbackText(this, x, y, text, {
+					fontSize: fontsize,
+					fill: fill
+			}, jitter_x, jitter_y);
+		}
+		this.add.existing(feedback);
+		this.feedback_array.push(feedback);
+
+	}
+
+	add_feedback_hit(text) {
+
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, `hit_${text}`,
+			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
+	}
+
+	add_feedback_error() {
+
+		this.add_feedback_generic(FEEDBACK_HIT_X, FEEDBACK_HIT_Y, "hit_miss",
+			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
+	}
+
+	add_feedback_combo(number) {
+
+		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, "combo", 0, 0, true);
+	}
+
+	/* =====================
+	   Timed action handlers
+   	 ===================== */
+
+	// Play SFX
+	play_timed_sound(sound_config) {
+		let sound = sound_config.name;
+		this.sfx[sound].play({volume: 1.5});
+	}
+
+	// Display splash graphic
+	show_timed_image(image_config) {
+		let timed_image = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., image_config.name);
+		timed_image.scaleX = 2;
+		timed_image.scaleY = 0;
+
+		this.tweens.add({
+			targets: timed_image,
+			scaleX: 1,
+			scaleY: 1,
+			duration: 100,
+			yoyo: true,
+			hold: image_config.duration,
+			onComplete: timed_image.destroy
+		})
+	}
+
+	// Update the background
+	change_background(bg_config) {
+		let bg_name = bg_config.name;
+		let bg_period_beats = bg_config.beats;
+		if (this.background) {
+			this.background.end();
+		}
+		switch(bg_name) {
+			case "purple_wave":
+				this.background = new PurpleWave(this, 500, beat_to_ms(bg_period_beats,this.bpm));
+				break;
+			case "colored_circles":
+				this.background = new ColoredCircles(this, beat_to_ms(bg_period_beats,this.bpm));
+				break;
+			case "light_beams_fade":
+				this.background = new LightBeams(this, beat_to_ms(bg_period_beats,this.bpm), true);
+				break;
+			case "light_beams_flash":
+				this.background = new LightBeams(this, beat_to_ms(bg_period_beats,this.bpm), false);
+				break;
+			case "checker_spin":
+				this.background = new CheckerSpin(this, beat_to_ms(bg_period_beats,this.bpm));
+				break;
+		}
+	}
+
+
+	/* =====================
+	   Animation & sprite handlers
+   	 ===================== */
+
+	// Gondola reacts to button presses
+	update_gondola () {
+ 		let direction_pressed = ""
+
+ 		for (var i = 0; i < this.arrow_keys.length; i++) {
+ 			if (this.arrow_keys[i].isDown) {
+ 				let direction = Directions[i];
+ 				if (!direction_pressed) {
+ 					direction_pressed += direction;
+ 				} else {
+ 					direction_pressed += direction;
+ 					break;
+ 				}
+ 			}
+ 		}
+
+ 		if (!direction_pressed && this.gondola_pose_timer >= this.gondola_hold_ticks) {
+ 			direction_pressed = "Neutral";
+ 		}
+
+ 		if (direction_pressed) {
+ 			this.gondola.setFrame(Gondola_Poses[direction_pressed]);
+ 			this.gondola.y = GONDOLA_Y + Gondola_Offsets[direction_pressed];
+ 		}
+ 	}
+
+	// Perform animations in time with beat
+	do_on_beat() {
+		for (var i = 0; i < this.arrows.length; i++) {
+			this.tweens.add({
+				targets: this.arrows[i],
+				scaleX: 1.2,
+				scaleY: 1.2,
+				yoyo: true,
+				duration: 50,
+			});
+		};
+
+		this.static_arrows.forEach( (arrow, i) => {
+			this.tweens.add({
+				targets: arrow,
+				scaleX: 1.2,
+				scaleY: 1.2,
+				yoyo: true,
+				duration: 50,
+			});
+		})
+
+		this.tweens.add({
+			targets: this.gondola,
+			scaleX: 1.05,
+			scaleY: 0.9,
+			ease: 'Sine.easeInOut',
+			duration: beat_to_ms(0.5, this.bpm),
+			yoyo: true
+		});
 	}
 }
+
+
+/* =====================
+   Constants
+ 	 ===================== */
 
 const Gondola_Poses = {
 	Neutral:   0,

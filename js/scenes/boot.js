@@ -12,36 +12,38 @@ class Boot extends Phaser.Scene {
 
 	// Preload assets from disk
 	preload () {
-		this.load.spritesheet('intro_bg', 'assets/intro_bg.png', {frameWidth: WINDOW_WIDTH, frameHeight: WINDOW_HEIGHT});
+		this.load.spritesheet('intro_bg', 'assets/sprites/intro/intro_bg.png', {frameWidth: WINDOW_WIDTH, frameHeight: WINDOW_HEIGHT});
 
-		this.load.spritesheet('arrows', 'assets/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
-		this.load.spritesheet('guide_arrows', 'assets/guide_arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
-		this.load.spritesheet('hit_frame', 'assets/hit_frame_long.png', {frameWidth: ARROW_SIZE*15, frameHeight: ARROW_SIZE});
-		this.load.spritesheet('gondola', 'assets/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
+		this.load.spritesheet('arrows', 'assets/sprites/gonddr/arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
+		this.load.spritesheet('guide_arrows', 'assets/sprites/gonddr/guide_arrows.png', {frameWidth: ARROW_SIZE, frameHeight: ARROW_SIZE});
+		this.load.spritesheet('hit_frame', 'assets/sprites/gonddr/hit_frame_long.png', {frameWidth: ARROW_SIZE*15, frameHeight: ARROW_SIZE});
+		this.load.spritesheet('gondola', 'assets/sprites/gonddr/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
 
-		this.load.image('press_start', 'assets/press_start.png');
-		this.load.image('ggr_logo', 'assets/ggr_logo.png');
-		this.load.image('dance_pad', 'assets/dance_pad.png');
-		this.load.image('arrow_beam', 'assets/arrow_beam.png');
-		this.load.image('song_title_blue', 'assets/song_title_blue.png');
-		this.load.image('song_title_pink', 'assets/song_title_pink.png');
-		this.load.image('ready', 'assets/ready.png');
-		this.load.image('gondola_go', 'assets/gondola_go.png');
+		this.load.image('press_start', 'assets/sprites/shared/press_start.png');
+		this.load.image('ggr_logo', 'assets/sprites/shared/ggr_logo.png');
 
-		this.load.image('pink_tile', 'assets/pink_tile.png');
-		this.load.image('blue_tile', 'assets/blue_tile.png');
-		this.load.image('black_bg', 'assets/black_bg.png');
-		this.load.image('pixel', 'assets/pixel.png');
-		this.load.image('circle', 'assets/circle.png');
-		this.load.image('beam', 'assets/beam.png');
+		this.load.image('dance_pad', 'assets/sprites/gonddr/dance_pad.png');
+		this.load.image('arrow_beam', 'assets/sprites/gonddr/arrow_beam.png');
+		this.load.image('song_title_blue', 'assets/sprites/gonddr/song_title_blue.png');
+		this.load.image('song_title_pink', 'assets/sprites/gonddr/song_title_pink.png');
+		this.load.image('ready', 'assets/sprites/gonddr/ready.png');
+		this.load.image('gondola_go', 'assets/sprites/gonddr/gondola_go.png');
 
-		this.load.image('hit_perfect', 'assets/hit_perfect.png');
-		this.load.image('hit_great', 'assets/hit_great.png');
-		this.load.image('hit_ok', 'assets/hit_ok.png');
-		this.load.image('hit_poor', 'assets/hit_poor.png');
-		this.load.image('hit_bad', 'assets/hit_bad.png');
-		this.load.image('hit_miss', 'assets/hit_miss.png');
-		this.load.image('combo', 'assets/combo.png');
+		this.load.image('pink_tile', 'assets/sprites/shared/pink_tile.png');
+		this.load.image('blue_tile', 'assets/sprites/shared/blue_tile.png');
+		this.load.image('black_bg', 'assets/sprites/shared/black_bg.png');
+		this.load.image('pixel', 'assets/sprites/shared/pixel.png');
+
+		this.load.image('circle', 'assets/sprites/gonddr/circle.png');
+		this.load.image('beam', 'assets/sprites/gonddr/beam.png');
+
+		this.load.image('hit_perfect', 'assets/sprites/gonddr/hit_perfect.png');
+		this.load.image('hit_great', 'assets/sprites/gonddr/hit_great.png');
+		this.load.image('hit_ok', 'assets/sprites/gonddr/hit_ok.png');
+		this.load.image('hit_poor', 'assets/sprites/gonddr/hit_poor.png');
+		this.load.image('hit_bad', 'assets/sprites/gonddr/hit_bad.png');
+		this.load.image('hit_miss', 'assets/sprites/gonddr/hit_miss.png');
+		this.load.image('combo', 'assets/sprites/gonddr/combo.png');
 
 		this.load.audio('button_click', ['assets/sfx/button_click_001.wav']);
 		this.load.audio('disc_buzz', ['assets/sfx/disc_buzz_002.wav']);
