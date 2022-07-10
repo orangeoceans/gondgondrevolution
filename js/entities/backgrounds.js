@@ -165,7 +165,7 @@ class LightBeams {
 
     show_beam(beam) {
         beam.angle = 30*Math.random() - 15;
-        beam.alpha = 1;
+        beam.alpha = 0.8;
         if (this.fade) {
             this.context.tweens.add({
                 targets: beam,

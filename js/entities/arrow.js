@@ -47,7 +47,7 @@ const ARROW_X = {
 const ARROW_SIZE    = 50;
 const ARROW_START_Y = WINDOW_HEIGHT + ARROW_SIZE;
 const ARROW_END_Y   = -1 * (1/2) * ARROW_SIZE;
-const ARROW_HIT_Y   = 75;
+const ARROW_HIT_Y   = 80;
 
 const ARROW_DIST_TOTAL  = Math.abs(ARROW_END_Y - ARROW_START_Y);
 const ARROW_DIST_TO_HIT = Math.abs(ARROW_HIT_Y - ARROW_START_Y);

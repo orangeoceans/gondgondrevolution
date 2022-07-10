@@ -9,9 +9,10 @@ class GonDDR extends Phaser.Scene {
 		this.dance_ended;
 
 		this.arrows;      // Currently active arrows
+		this.static_arrows = []
+		this.arrow_beams = []
 
 		this.background;
-		this.hit_frame;   // Sprite of hit window
 		this.gondola;
 		this.dance_pad;
 
@@ -97,7 +98,7 @@ class GonDDR extends Phaser.Scene {
 
 		if (!this.background) {
 			//this.background = new PurpleWave(this, 1000, beat_to_ms(this.bpb,this.bpm));
-			this.background = new LightBeams(this, beat_to_ms(this.bpb,this.bpm), false);
+			this.background = new LightBeams(this, beat_to_ms(this.bpb,this.bpm), true);
 		}
 
 		if(this.bpm != this.target_bpm) {
@@ -224,8 +225,6 @@ class GonDDR extends Phaser.Scene {
 	init_game_objects() {
 
 		// Create sprites
-		this.hit_frame = this.add_starting_visual( this.add.sprite(WINDOW_WIDTH/2., ARROW_HIT_Y, 'hit_frame', 0) );
-
 		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X-DANCE_PAD_OFFSET_X, GONDOLA_Y-DANCE_PAD_OFFSET_Y, 'dance_pad') );
 
 		this.gondola = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y + Gondola_Offsets.Neutral, 'gondola', Gondola_Poses.Neutral) );
@@ -248,20 +247,16 @@ class GonDDR extends Phaser.Scene {
 		}) );
 		this.score_text.setOrigin(1,1);
 
-		// Create animations
-		this.anims.create({
-			key: 'hit_frame_flash',
-			frames: this.anims.generateFrameNumbers('hit_frame', { frames: [ 1, 0 ] }),
-			frameRate: 8,
-			repeat: 0
-		});
-
-		this.static_arrows = []
 		for(var i = 0; i < 4; i++) {
-			this.static_arrows.push( this.add_starting_visual( this.add.existing(new Arrow(this, ARROW_X[i], 75, i, 0)), 0.5) );
-			this.static_arrows[i].alpha = 0.5;
+			this.arrow_beams.push( this.add.image(ARROW_X[i], WINDOW_HEIGHT/2., 'arrow_beam') );
+			this.static_arrows.push( this.add_starting_visual( this.add.sprite(ARROW_X[i], ARROW_HIT_Y, 'guide_arrows', i) ));
+			if (i == 0 || i == 2) {
+				this.arrow_beams[i].tint = 0x3892FF;
+			} else {
+				this.arrow_beams[i].tint = 0xFF38BD;
+			}
+			this.arrow_beams[i].alpha = 0;
 		}
-
 	}
 
 	add_starting_visual(game_object, alpha=1) {
@@ -455,7 +450,6 @@ class GonDDR extends Phaser.Scene {
 			}
 		}
 
-		console.log(`pose timer ${this.gondola_pose_timer} out of ${this.gondola_hold_ticks}`);
 		if (!direction_pressed && this.gondola_pose_timer >= this.gondola_hold_ticks) {
 			direction_pressed = "Neutral";
 		}
@@ -607,7 +601,12 @@ class GonDDR extends Phaser.Scene {
 	handle_hit (arrow) {
 		arrow.has_hit = true;
 		arrow.visible = false;
-		this.hit_frame.play('hit_frame_flash');
+		this.arrow_beams[arrow.direction].alpha = 1;
+		this.tweens.add({
+			targets: this.arrow_beams[arrow.direction],
+			alpha: 0,
+			duration: 500,
+		});
 
 		this.combo++;
 		if (this.combo >= 4) {
@@ -646,10 +645,10 @@ class GonDDR extends Phaser.Scene {
 		function transition_to_endscreen() {
 			this.gondola.destroy();
 			this.dance_pad.destroy();
-			this.hit_frame.destroy();
 			this.score_text.destroy();
 			for (var i = 0; i < this.static_arrows.length; i++) {
 				this.static_arrows[i].destroy();
+				this.arrow_beams[i].destroy();
 			}
         	this.scene.transition({
 				target: 'endscreen',
