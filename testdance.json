@@ -6,27 +6,46 @@
 
     "beatmap": [
       { "beat": 0,     "arrows": [], "config": { "sound": {"name": "voice_ready"}, "image": {"key":"ready", "duration":1000} } },
+
       { "beat": 4,     "arrows": [], "config": { "sound": {"name": "voice_gondola"}, "image": {"key":"gondola_go", "duration":1000} } },
+
       { "beat": 8,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
-      { "beat": 11,    "arrows": [ {"direction": "Up"} ] },
-      { "beat": 11.5,  "arrows": [ {"direction": "Down"} ] },
-      { "beat": 12,    "arrows": [ {"direction": "Left"}  ] },
-      { "beat": 13.5,    "arrows": [ {"direction": "Right"} ] },
-      { "beat": 15,    "arrows": [ {"direction": "Up"} ] },
+      { "beat": 10.5,    "arrows": [ {"direction": "Up"} ] },
+      { "beat": 11,  "arrows": [ {"direction": "Down"} ] },
+      { "beat": 11.5,    "arrows": [ {"direction": "Left"}  ] },
+
+      { "beat": 12,    "arrows": [ {"direction": "Right"} ] },
+      { "beat": 13,    "arrows": [ {"direction": "Left"} ] },
+      { "beat": 15,    "arrows": [ {"direction": "Right"} ] },
       { "beat": 15.5,    "arrows": [ {"direction": "Right"} ] },
+
       { "beat": 16,    "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
       { "beat": 19,    "arrows": [ {"direction": "Up"} ] },
       { "beat": 19.5,    "arrows": [ {"direction": "Right"} ] },
+
       { "beat": 20,    "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
       { "beat": 21.5,  "arrows": [ {"direction": "Left"}, {"direction": "Up"} ] },
       { "beat": 23, "arrows": [ {"direction": "Right"},  {"direction": "Down"}] },
-      { "beat": 32,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
-      { "beat": 35,    "arrows": [ {"direction": "Left"} ] },
-      { "beat": 35.5,  "arrows": [ {"direction": "Right"} ] },
-      { "beat": 36,    "arrows": [ {"direction": "Up"}  ] },
-      { "beat": 37.5,    "arrows": [ {"direction": "Down"} ] },
-      { "beat": 39,    "arrows": [ {"direction": "Up"} ] },
+      { "beat": 23.5, "arrows": [ {"direction": "Right"},  {"direction": "Down"}] },
+
+      { "beat": 24,     "arrows": [ {"direction": "Up"}, {"direction": "Down"} ] },
+      { "beat": 25.5,    "arrows": [ {"direction": "Right"} ] },
+      { "beat": 27,  "arrows": [ {"direction": "Left"} ] },
+      { "beat": 27.5,    "arrows": [ {"direction": "Up"}  ] },
+
+      { "beat": 28,    "arrows": [ {"direction": "Down"} ] },
+      { "beat": 29.5,    "arrows": [ {"direction": "Up"} ] },
+      { "beat": 31,    "arrows": [ {"direction": "Up"} ] },
+      { "beat": 31.5,    "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 32,    "arrows": [ {"direction": "Right"}, {"direction": "Down"} ] },
+      { "beat": 35,    "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 36,    "arrows": [ {"direction": "Up"}, {"direction": "Left"} ] },
+      { "beat": 37.5,  "arrows": [ {"direction": "Down"} ] },
+      { "beat": 39, "arrows": [ {"direction": "Down"} ] },
       { "beat": 39.5,    "arrows": [ {"direction": "Right"} ] },
+
       { "beat": 40,    "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
       { "beat": 43,    "arrows": [ {"direction": "Down"} ] },
       { "beat": 44,    "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
