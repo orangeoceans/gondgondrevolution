@@ -3,7 +3,9 @@ class GonDDR extends Phaser.Scene {
 		super("gonddr");
 
 		this.song;
-		this.song_idx;
+		this.arrow_idx;
+		this.action_idx;
+
 		this.music;
 		this.music_started;
 		this.dance_ended;
@@ -195,7 +197,8 @@ class GonDDR extends Phaser.Scene {
 	// Load song data, set BPM and time signature
 	init_song() {
 		this.song = this.cache.json.get('testdance');
-		this.song_idx = 0;
+		this.arrow_idx = 0;
+		this.action_idx = 0;
 
 		// Set starting BPM, beats per bar, and ticks per beat
 		this.bpm = this.song.properties.starting_bpm;  // Beats per minute
@@ -378,8 +381,11 @@ class GonDDR extends Phaser.Scene {
 
 		}, this);
 
-		// If there are no more arrows, end the game
-		if (!this.dance_ended && this.song_idx >= this.song.beatmap.length && this.arrows.length == 0) {
+		// If there are no more arrows or actions, end the game
+		if (!this.dance_ended &&
+				 this.arrow_idx >= this.song.beatmap.length &&
+				 this.action_idx >= this.song.beatmap.length &&
+				 this.arrows.length == 0) {
 			this.end_dance();
 		}
 	}
@@ -471,40 +477,18 @@ class GonDDR extends Phaser.Scene {
 
 	handle_beat(delta_tick) {
 
-		if (this.song_idx < this.song.beatmap.length) {
+		if (this.action_idx < this.song.beatmap.length) {
 
-			let beat_action = this.song.beatmap[this.song_idx];
-			let idx_adjust = 0;
-
-			// Arrows are generated at an offset
-			if (beat_action.arrows.length > 0) {
-				if (this.beat >= beat_action.beat - this.arrow_reach_hit_ticks / this.tpb) {
-
-					console.log(beat_action.beat);
-					console.log(this.beat);
-
-					beat_action.arrows.forEach((arrow, i) => {
-						console.log(arrow.direction);
-						this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, Directions[arrow.direction], 0)); // Push new arrow to array
-						this.add.existing(this.arrows[this.arrows.length-1]);
-					});
-					beat_action.arrows = [];
-
-					if(beat_action.config == undefined) {
-						idx_adjust = 1;
-					}
-				}
-			}
+			let beat_action = this.song.beatmap[this.action_idx];
 
 			// Effects occur on the beat
 			if (this.beat >= beat_action.beat) {
+
 				if(beat_action.config != undefined) {
 
-					console.log(beat_action.beat);
-					console.log(this.beat);
-					console.log(beat_action.config);
-
-					idx_adjust = 1;
+					console.log("Current action index: " + this.action_idx);
+					console.log("Index beat: " + beat_action.beat);
+					console.log("Current beat: " + this.beat);
 
 					for (const param in beat_action.config) {
 						switch(param) {
@@ -521,16 +505,32 @@ class GonDDR extends Phaser.Scene {
 								this.change_background(beat_action.config[param]);
 						}
 					}
-
-					if(beat_action.arrows.length == 0) {
-						idx_adjust = 1;
-					}
 				}
+
+				this.action_idx++;
 			}
-
-			this.song_idx += idx_adjust;
-
 		}
+
+		if (this.arrow_idx < this.song.beatmap.length) {
+
+			let beat_arrows = this.song.beatmap[this.arrow_idx];
+
+			// Arrows are generated at an offset
+			if (this.beat >= beat_arrows.beat - this.arrow_reach_hit_ticks / this.tpb) {
+
+				console.log("Current arrow index: " + this.arrow_idx);
+				console.log("Index beat: " + beat_arrows.beat);
+				console.log("Current beat: " + this.beat);
+				this.arrow_idx++;
+
+				beat_arrows.arrows.forEach((arrow, i) => {
+					console.log(arrow.direction);
+					this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, Directions[arrow.direction], 0)); // Push new arrow to array
+					this.add.existing(this.arrows[this.arrows.length-1]);
+				});
+			}
+		}
+
 	}
 
 	play_timed_sound(sound_config) {

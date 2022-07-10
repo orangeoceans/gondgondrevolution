@@ -5,10 +5,10 @@
     },
 
     "beatmap": [
-      { "beat": 0,     "arrows": [], "config": { "sound": {"name": "voice_ready"}, 
+      { "beat": 0,     "arrows": [], "config": { "sound": {"name": "voice_ready"},
                                                  "image": {"name":"ready", "duration":1000} } },
 
-      { "beat": 4,     "arrows": [], "config": { "sound": {"name": "voice_gondola"}, 
+      { "beat": 4,     "arrows": [], "config": { "sound": {"name": "voice_gondola"},
                                                  "image": {"name":"gondola_go", "duration":1000},
                                                  "background": {"name":"light_beams_fade", "beats":4} } },
 
