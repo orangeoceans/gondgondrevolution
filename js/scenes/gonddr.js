@@ -400,6 +400,7 @@ class GonDDR extends Phaser.Scene {
 			// JustDown(key) returns true only once per key press
 			if (Phaser.Input.Keyboard.JustDown(key)) {
 				let key_hit = false;
+				this.gondola_pose_timer = 0;
 
 				// Loop through arrows
 				for (var j = 0; j < this.arrows.length; j++) {
@@ -444,7 +445,6 @@ class GonDDR extends Phaser.Scene {
 
 		for (var i = 0; i < this.arrow_keys.length; i++) {
 			if (this.arrow_keys[i].isDown) {
-				this.gondola_pose_timer = 0;
 				let direction = Directions[i];
 				if (!direction_pressed) {
 					direction_pressed += direction;
