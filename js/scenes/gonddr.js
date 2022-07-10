@@ -204,10 +204,10 @@ class GonDDR extends Phaser.Scene {
 
 	set_arrow_speed() {
 		this.tpb = this.tps/(this.bpm/60) // Ticks per beat
-		console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
+		//console.log("Updating arrows for BPM " + this.bpm + "\nTicks per beat: " + this.tpb);
 
 		this.arrow_move_speed_ppt = ARROW_DIST_TO_HIT / (this.tpb * this.bpb); // Fall speed of each arrow, in pixels per tick
-		console.log("New fall speed: " + this.arrow_move_speed_ppt);
+		//console.log("New fall speed: " + this.arrow_move_speed_ppt);
 
 		// # of ticks for a standard arrow to fall from the top to the hitbox.
 		this.arrow_reach_hit_ticks = ARROW_DIST_TO_HIT / this.arrow_move_speed_ppt;
@@ -477,7 +477,10 @@ class GonDDR extends Phaser.Scene {
 			// Arrows are generated at an offset
 			if (beat_action.arrows.length > 0) {
 				if (this.beat >= beat_action.beat - this.arrow_reach_hit_ticks / this.tpb) {
+
 					console.log(beat_action.beat);
+					console.log(this.beat);
+
 					beat_action.arrows.forEach((arrow, i) => {
 						console.log(arrow.direction);
 						this.arrows.push(new Arrow(this, ARROW_X[Directions[arrow.direction]], ARROW_START_Y, Directions[arrow.direction], 0)); // Push new arrow to array
@@ -496,7 +499,9 @@ class GonDDR extends Phaser.Scene {
 				if(beat_action.config != undefined) {
 
 					console.log(beat_action.beat);
+					console.log(this.beat);
 					console.log(beat_action.config);
+
 					idx_adjust = 1;
 
 					for (const param in beat_action.config) {
