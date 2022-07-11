@@ -16,16 +16,17 @@ class GonDDR extends Phaser.Scene {
 		this.dance_ended;
 
 		this.arrows;      // Currently active arrows
-		this.static_arrows = []
-		this.arrow_beams = []
+		this.arrow_beams = [];
+		this.static_arrows = [];
 
 		this.background = null;
 		this.gondola;
 		this.dance_pad;
 
-		this.combo = 0;
-		this.score = 0;
+		this.combo;
+		this.score;
 		this.score_text;
+		this.high_score;
 
 		this.secret_code = "LeftUpRightUpDownRightRight";
 		this.secret_code_input = "";
@@ -42,9 +43,15 @@ class GonDDR extends Phaser.Scene {
 		// TODO: Phaser keyboard key objects for the arrow keys/WASD?
 		this.arrow_keys = [];
 
-		this.gondola_pose_timer = 0;
+		this.gondola_pose_timer;
 		this.gondola_hold_ticks = ms_to_tick(200, this.tps);
 
+	}
+
+	init (data) {
+		console.log("init");
+		this.high_score = data.high_score;
+		console.log("init done");
 	}
 
 	create () {
@@ -63,6 +70,10 @@ class GonDDR extends Phaser.Scene {
 		this.beat = 0;
 		this.music_started = false;
 		this.dance_ended = false;
+
+		this.score = 0;
+		this.combo = 0;
+		this.gondola_pose_timer = 0;
 
 		this.init_song();
 		this.set_arrow_speed();
@@ -340,11 +351,11 @@ class GonDDR extends Phaser.Scene {
 				this.static_arrows.pop().destroy();
 				this.arrow_beams.pop().destroy();
 			}
-					this.scene.transition({
+			this.scene.transition({
 				target: 'endscreen',
 				duration: 1200,
 				moveBelow: true,
-				data: {score: this.score}
+				data: {score: this.score, high_score: this.high_score}
 			});
 		}
 
@@ -521,6 +532,7 @@ class GonDDR extends Phaser.Scene {
 
 		if (rank.Breaks_combo){
 			this.combo = 0;
+			this.camera.main.shake(100);
 		}
 		this.score += rank.Score * Math.pow(Math.ceil(this.combo/4), rank.Combo_power)
 		this.score_text.text = `${this.score}`

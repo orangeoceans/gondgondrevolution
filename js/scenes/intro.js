@@ -68,7 +68,8 @@ class Intro extends Phaser.Scene {
         	this.scene.transition({
 				target: 'gonddr',
 				duration: 1200,
-				moveBelow: true
+				moveBelow: true,
+				data: {high_score: 0}
 			});
 		}
 

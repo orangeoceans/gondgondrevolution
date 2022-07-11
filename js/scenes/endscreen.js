@@ -6,12 +6,19 @@ class Endscreen extends Phaser.Scene {
 		this.press_start;
 		this.ggr_logo;
 		this.score;
+		this.high_score;
 		this.score_text;
+		this.high_score_text;
 
 	}
 
 	init (data) {
 		this.score = data.score;
+		this.high_score = data.high_score;
+
+		if (this.score > this.high_score) {
+			this.high_score = this.score;
+		}
 	}
 
 	create() {
@@ -44,6 +51,11 @@ class Endscreen extends Phaser.Scene {
 				fill: FEEDBACK_COLOR_DEFAULT
 		}));
 		this.score_text.setOrigin(0.5,1);
+		this.high_score_text = this.add_starting_visual(this.add.text(WINDOW_WIDTH/2., WINDOW_HEIGHT*0.75, `HI-SCORE: ${this.high_score}`, {
+			fontSize: FEEDBACK_FONTSIZE_DEFAULT,
+			fill: FEEDBACK_COLOR_DEFAULT
+		}));
+		this.high_score_text.setOrigin(0.5,1);
 	}
 
 	add_starting_visual(game_object, alpha=1) {
@@ -54,14 +66,16 @@ class Endscreen extends Phaser.Scene {
 
 	restart_dance() {
 		function transition_to_gonddr() {
-			this.ggr_logo.visible = false;
-			this.press_start.visible = false;
-			this.score_text.visible = false;
+			this.ggr_logo.destroy();
+			this.press_start.destroy();
+			this.score_text.destroy();
+			this.high_score_text.destroy();
 
         	this.scene.transition({
 				target: 'gonddr',
 				duration: 1200,
-				moveBelow: true
+				moveBelow: true,
+				data: {high_score: this.high_score}
 			});
 		}
 		do_checkerboard(this, transition_to_gonddr, this);
