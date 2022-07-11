@@ -170,8 +170,7 @@ class GonDDR extends Phaser.Scene {
 		// Draw score info
 		this.score_text = this.add_starting_visual( this.add.text(SCORE_X, SCORE_Y, '0', {
 				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
-				fill: FEEDBACK_COLOR_DEFAULT,
-				align: 'right'
+				fill: FEEDBACK_COLOR_DEFAULT
 		}) );
 		this.score_text.setOrigin(1,1);
 

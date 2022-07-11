@@ -24,7 +24,7 @@ class Endscreen extends Phaser.Scene {
 			this.scene.resume();
 		}, this);
 		
-		this.press_start = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT*0.75, 'press_start');
+		this.press_start = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT*0.75, 'press_start'));
 		this.tweens.add({
 			targets: this.press_start,
 			scaleX: PRESS_START_ZOOM,
@@ -35,16 +35,21 @@ class Endscreen extends Phaser.Scene {
 			yoyo: true
 		});
 
-		this.ggr_logo = this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/3., 'ggr_logo');
+		this.ggr_logo = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., WINDOW_HEIGHT/3., 'ggr_logo'));
 
 		this.input.keyboard.on('keydown_UP', this.restart_dance, this);
 
-		this.score_text = this.add.text(WINDOW_WIDTH/2., WINDOW_HEIGHT - 40, `SCORE: ${this.score}`, {
+		this.score_text = this.add_starting_visual(this.add.text(WINDOW_WIDTH/2., WINDOW_HEIGHT*0.7, `SCORE: ${this.score}`, {
 				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
 				fill: FEEDBACK_COLOR_DEFAULT
-		});
-		this.score_text.setOrigin(0.5,0.5);
+		}));
+		this.score_text.setOrigin(0.5,1);
+	}
 
+	add_starting_visual(game_object, alpha=1) {
+		game_object.alpha=0;
+		this.tweens.add({ targets:game_object, alpha:alpha, duration:1, delay:10});
+		return game_object;
 	}
 
 	restart_dance() {
