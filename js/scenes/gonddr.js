@@ -337,9 +337,9 @@ class GonDDR extends Phaser.Scene {
 			this.gondola.destroy();
 			this.dance_pad.destroy();
 			this.score_text.destroy();
-			for (var i = 0; i < this.static_arrows.length; i++) {
-				this.static_arrows[i].destroy();
-				this.arrow_beams[i].destroy();
+			while (this.static_arrows.length > 0) {
+				this.static_arrows.pop().destroy();
+				this.arrow_beams.pop().destroy();
 			}
 					this.scene.transition({
 				target: 'endscreen',

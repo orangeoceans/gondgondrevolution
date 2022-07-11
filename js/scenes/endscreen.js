@@ -53,11 +53,6 @@ class Endscreen extends Phaser.Scene {
 			this.press_start.visible = false;
 			this.score_text.visible = false;
 
-			let gonddr_scene = this.scene.get('gonddr');
-			gonddr_scene.registry.destroy();
-			gonddr_scene.events.off();
-			gonddr_scene.scene.restart();
-
         	this.scene.transition({
 				target: 'gonddr',
 				duration: 1200,
