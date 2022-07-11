@@ -9,6 +9,7 @@ class Intro extends Phaser.Scene {
 		this.press_start;
 		this.intro_fadeout;
 		this.logo_fadein;
+		this.started;
 	}
 
 	create() {
@@ -93,15 +94,18 @@ class Intro extends Phaser.Scene {
 		});
 
 		this.input.keyboard.on('keydown_UP', function (event) {
-			this.tweens.add({
-				targets: this.press_start,
-				alpha: 0,
-				scaleX: 1.5,
-				scaleY: 1.5,
-				duration: 300,
-				ease: 'Sine.easeInOut'
-			});
-			this.sounds.button_click.play();
+			if (!this.started) {
+				this.tweens.add({
+					targets: this.press_start,
+					alpha: 0,
+					scaleX: 1.5,
+					scaleY: 1.5,
+					duration: 300,
+					ease: 'Sine.easeInOut'
+				});
+				this.sounds.button_click.play();
+				this.started = true;
+			}
 		}, this);
 
 	}
