@@ -24,8 +24,13 @@ class GonDDR extends Phaser.Scene {
 		this.dance_pad;
 
 		this.combo;
+		this.max_combo;
+		this.combo_container;
+		this.combo_fade;
+
 		this.score;
 		this.score_text;
+		this.score_number;
 		this.high_score;
 
 		this.secret_code = "LeftUpRightUpDownRightRight";
@@ -73,6 +78,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.score = 0;
 		this.combo = 0;
+		this.max_combo = 0;
 		this.gondola_pose_timer = 0;
 
 		this.init_song();
@@ -133,7 +139,6 @@ class GonDDR extends Phaser.Scene {
 		this.update_arrows(delta_tick);
 		this.check_input()
 
-		this.update_feedback(delta_tick);
 		this.gondola_pose_timer += delta_tick;
 		this.update_gondola();
 
@@ -178,13 +183,6 @@ class GonDDR extends Phaser.Scene {
 			yoyo: true
 		});
 
-		// Draw score info
-		this.score_text = this.add_starting_visual( this.add.text(SCORE_X, SCORE_Y, '0', {
-				fontSize: FEEDBACK_FONTSIZE_DEFAULT,
-				fill: FEEDBACK_COLOR_DEFAULT
-		}) );
-		this.score_text.setOrigin(1,1);
-
 		for(var i = 0; i < 4; i++) {
 			this.arrow_beams.push( this.add.image(ARROW_X[i], WINDOW_HEIGHT/2., 'arrow_beam') );
 			this.static_arrows.push( this.add_starting_visual( this.add.sprite(ARROW_X[i], ARROW_HIT_Y, 'guide_arrows', i) ));
@@ -195,6 +193,21 @@ class GonDDR extends Phaser.Scene {
 			}
 			this.arrow_beams[i].alpha = 0;
 		}
+
+		// Draw score info
+		this.score_number = this.add_starting_visual( this.add.bitmapText(SCORE_NUMBER_X, SCORE_Y, 'scorefont', '0', SCORE_SIZE) );
+		this.score_number.setOrigin(1,1);
+		this.score_text = this.add_starting_visual( this.add.bitmapText(SCORE_TEXT_X, SCORE_Y, 'scorefont', 'SCORE: ', SCORE_SIZE) );
+		this.score_text.setOrigin(0,1);
+
+		this.combo_image = this.add.image(0, 0, 'combo');
+		this.combo_image.scaleX = 0.8;
+		this.combo_image.scaleY = 0.8;
+		this.combo_text = this.add.bitmapText(10, 0, 'scorefont', `${this.combo}`, 52);
+		this.combo_container = this.add.container(315, ARROW_HIT_Y, [ this.combo_image, this.combo_text ]);
+		this.combo_container.alpha = 0;
+		this.combo_bounce = this.tweens.add({ targets: this.combo_container, alpha: 0, duration: 1 });
+		this.combo_fade = this.tweens.add({ targets: this.combo_container, alpha: 0, duration: 1 });
 	}
 
 	add_starting_visual(game_object, alpha=1) {
@@ -219,10 +232,10 @@ class GonDDR extends Phaser.Scene {
 
 		this.title_top = this.add.image(-1760,0,'song_title_blue');
 		this.title_top.setOrigin(0,0);
-		this.title_top.scaleY = 0;
+		this.title_top.y = -40;
 		this.tweens.add({
 			targets: this.title_top,
-			scaleY: 1, duration: 400, ease: 'Linear', delay: 500,
+			y: 0, duration: 400, ease: 'Linear', delay: 500,
 			yoyo: true, hold: 4500, callbackScope: this,
 			onStart: function () {this.gondola.setFrame(Gondola_Poses.Happy);}
 		});
@@ -261,10 +274,10 @@ class GonDDR extends Phaser.Scene {
 
 		this.title_bot = this.add.image(0,WINDOW_HEIGHT,'song_title_pink');
 		this.title_bot.setOrigin(0,1);
-		this.title_bot.scaleY = 0;
+		this.title_bot.y = WINDOW_HEIGHT + 40;
 		this.tweens.add({
 			targets: this.title_bot,
-			scaleY: 1, duration: 400, ease: 'Linear', delay: 500,
+			y: WINDOW_HEIGHT, duration: 400, ease: 'Linear', delay: 500,
 			yoyo: true, hold: 4500
 		});
 		this.tweens.add({
@@ -347,6 +360,10 @@ class GonDDR extends Phaser.Scene {
 			this.gondola.destroy();
 			this.dance_pad.destroy();
 			this.score_text.destroy();
+			this.score_number.destroy();
+			this.combo_container.destroy();
+			this.combo_text.destroy();
+			this.combo_image.destroy();
 			while (this.static_arrows.length > 0) {
 				this.static_arrows.pop().destroy();
 				this.arrow_beams.pop().destroy();
@@ -355,7 +372,7 @@ class GonDDR extends Phaser.Scene {
 				target: 'endscreen',
 				duration: 1200,
 				moveBelow: true,
-				data: {score: this.score, high_score: this.high_score}
+				data: {score: this.score, high_score: this.high_score, max_combo: this.max_combo}
 			});
 		}
 
@@ -523,19 +540,24 @@ class GonDDR extends Phaser.Scene {
 		});
 
 		this.combo++;
-		if (this.combo >= 4) {
-			this.add_feedback_combo(this.combo);
-		}
+		if (this.combo > this.max_combo)
+			this.max_combo = this.combo;
+		if (this.combo >= 4)
+			this.add_feedback_combo();
 
 		var hit_distance = Math.abs(ARROW_HIT_Y - arrow.y);
 		let rank = this.get_hit_rank(hit_distance);
 
 		if (rank.Breaks_combo){
+			if (this.combo >= 4){
+				this.cameras.main.shake(100);
+			}
 			this.combo = 0;
-			this.camera.main.shake(100);
+			this.combo_fade.complete();
+			this.combo_container.alpha = 0;
 		}
 		this.score += rank.Score * Math.pow(Math.ceil(this.combo/4), rank.Combo_power)
-		this.score_text.text = `${this.score}`
+		this.score_number.text = `${this.score}`
 
 		this.add_feedback_hit(rank.Text);
 	}
@@ -545,6 +567,8 @@ class GonDDR extends Phaser.Scene {
 			this.cameras.main.shake(100);
 		}
 		this.combo = 0;
+		this.combo_fade.complete();
+		this.combo_container.alpha = 0;
 		if (arrow === null) {
 			this.add_feedback_error();
 		} else {
@@ -568,32 +592,6 @@ class GonDDR extends Phaser.Scene {
 	   Feedback handlers
    	 ===================== */
 
-	update_feedback(delta_tick) {
-
-		// Iterate through feedback text
-		this.feedback_array = this.feedback_array.filter((item, i) => {
-			var current_feedback = this.feedback_array[i];
-
-			// Increment lifetime of the feedback text
-			current_feedback.lifetime_ticks += delta_tick;
-
-			// Destroy feedback that is too old
-			if(current_feedback.lifetime_ticks > FEEDBACK_LIFETIME) {
-				current_feedback.destroy();
-				return false;
-			}
-
-			// Otherwise make the text rise
-			else {
-				current_feedback.y -= FEEDBACK_RISE_SPEED;
-				if(current_feedback.lifetime_ticks > FEEDBACK_FADE_START_TICK && current_feedback.alpha > 0) {
-					current_feedback.alpha -= FEEDBACK_FADE_SPEED;
-				}
-				return true;
-			}
-		});
-	}
-
 	add_feedback_generic(x, y, text, jitter_x = 0, jitter_y = 0, image = false, fill = "#00F", fontsize = "32px") {
 
 		if (image) {
@@ -606,6 +604,14 @@ class GonDDR extends Phaser.Scene {
 		}
 		this.add.existing(feedback);
 		this.feedback_array.push(feedback);
+		this.tweens.add({
+			targets: feedback,
+			alpha: 0,
+			y: feedback.y - FEEDBACK_DISTANCE,
+			duration: FEEDBACK_FADE_TIME,
+			delay: FEEDBACK_FADE_DELAY,
+			onComplete: feedback.destroy
+		})
 
 	}
 
@@ -621,9 +627,30 @@ class GonDDR extends Phaser.Scene {
 			FEEDBACK_JITTER_X, FEEDBACK_JITTER_Y, true);
 	}
 
-	add_feedback_combo(number) {
+	add_feedback_combo() {
 
-		this.add_feedback_generic(FEEDBACK_COMBO_X, FEEDBACK_COMBO_Y, "combo", 0, 0, true);
+		this.combo_text.text = `${this.combo}`;
+		this.combo_container.alpha = 1;
+		this.combo_container.scaleX = 1;
+		this.combo_container.scaleY = 1;
+
+		//if (this.combo_bounce)
+		this.combo_bounce.complete();
+		this.combo_bounce = this.tweens.add({
+			targets: this.combo_container,
+			scaleX: 1.2,
+			scaleY: 1.2,
+			duration: 100,
+			yoyo: true
+		});
+		//if (this.combo_fade)
+		this.combo_fade.complete();
+		this.combo_fade = this.tweens.add({
+			targets: this.combo_container,
+			alpha: 0.5,
+			duration: 500,
+			delay: 500
+		});
 	}
 
 	/* =====================
@@ -785,5 +812,7 @@ const GONDOLA_Y      = 480;
 const DANCE_PAD_OFFSET_X = -30;
 const DANCE_PAD_OFFSET_Y = 40;
 
-const SCORE_X = WINDOW_WIDTH - 10;
-const SCORE_Y = WINDOW_HEIGHT - 10;
+const SCORE_SIZE = 52;
+const SCORE_NUMBER_X = WINDOW_WIDTH-SCORE_SIZE/2.;
+const SCORE_TEXT_X = SCORE_SIZE/2.;
+const SCORE_Y = WINDOW_HEIGHT-SCORE_SIZE/2.;

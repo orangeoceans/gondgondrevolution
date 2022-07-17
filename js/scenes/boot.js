@@ -24,8 +24,8 @@ class Boot extends Phaser.Scene {
 
 		this.load.image('dance_pad', 'assets/sprites/gonddr/dance_pad.png');
 		this.load.image('arrow_beam', 'assets/sprites/gonddr/arrow_beam.png');
-		this.load.image('song_title_blue', 'assets/sprites/gonddr/song_title_blue.png');
-		this.load.image('song_title_pink', 'assets/sprites/gonddr/song_title_pink.png');
+		this.load.image('song_title_blue', 'assets/sprites/gonddr/song_title.png');
+		this.load.image('song_title_pink', 'assets/sprites/gonddr/song_title.png');
 		this.load.image('ready', 'assets/sprites/gonddr/ready.png');
 		this.load.image('gondola_go', 'assets/sprites/gonddr/gondola_go.png');
 
@@ -51,6 +51,8 @@ class Boot extends Phaser.Scene {
 		this.load.audio('voice_ready', ['assets/sfx/voice_ready_001.wav']);
 		this.load.audio('voice_gondola', ['assets/sfx/voice_gondola_001.wav']);
 		this.load.audio('cheer', ['assets/sfx/cheer.mp3']);
+
+		this.load.bitmapFont('scorefont', 'assets/fonts/scorefont_0.png', 'assets/fonts/scorefont.xml');
 
 		this.load.audio('wu_wei', ['assets/bgm/wu_wei.mp3']);
 

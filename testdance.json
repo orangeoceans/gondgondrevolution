@@ -133,7 +133,7 @@
       { "beat": 96,     "arrows": [ {"direction": "Right"} ] },
       { "beat": 96.5,     "arrows": [ {"direction": "Right"} ] },
       { "beat": 97,     "arrows": [ {"direction": "Left"} ] },
-
+      { "beat": 100,     "arrows": [], "config": { "background": {"name":"light_beams_fade", "beats":0.5} } },
       { "beat": 103.999,     "arrows": [], "config": { "background": {"name":"purple_wave", "beats":2} } },
       { "comments":     "2nd theme repeat",
         "beat": 104,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },

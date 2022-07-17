@@ -1,6 +1,6 @@
 // Feedback class, with some extra info on top of sprite
-class FeedbackText extends Phaser.GameObjects.Text {
-	constructor(scene, x, y, text, params, jitter_x = 0, jitter_y = 0) {
+class FeedbackText extends Phaser.GameObjects.BitmapText {
+	constructor(scene, x, y, text, jitter_x = 0, jitter_y = 0) {
 		let text_offset_x = 0;
 		if (jitter_x > 0) {
 			text_offset_x = (Math.random() * jitter_x * 2.) - jitter_x;
@@ -11,7 +11,7 @@ class FeedbackText extends Phaser.GameObjects.Text {
 			text_offset_y = (Math.random() * jitter_y * 2.) - jitter_y;
 		}
 
-		super(scene, x + text_offset_x, y + text_offset_y, text, params);
+		super(scene, x + text_offset_x, y + text_offset_y, 'scorefont', text, SCORE_SIZE);
 
 		this.lifetime_ticks = 0;
 	}
@@ -45,10 +45,9 @@ const FEEDBACK_COMBO_Y = FEEDBACK_HIT_Y ;
 const FEEDBACK_JITTER_X = 10;
 const FEEDBACK_JITTER_Y = 10;
 
-const FEEDBACK_LIFETIME = 100;
-const FEEDBACK_RISE_SPEED = 1;
-const FEEDBACK_FADE_START_TICK = 20;
-const FEEDBACK_FADE_SPEED = 0.1;
+const FEEDBACK_FADE_TIME = 700;
+const FEEDBACK_FADE_DELAY = 100;
+const FEEDBACK_DISTANCE = 80;
 
 const Hit_Ranks = [
 	{Distance: 10,   Text: "perfect", Score: 10, Breaks_combo: false, Combo_power: 2},
