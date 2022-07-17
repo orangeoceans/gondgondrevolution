@@ -97,7 +97,6 @@
           }
         },
         "beat": 72,    "arrows": [ {"direction": "Right"} ] },
-      { "beat": 72.5,    "arrows": [ {"direction": "Right"} ] },
       { "beat": 73.5,    "arrows": [ {"direction": "Right"} ] },
       { "beat": 74.5,    "arrows": [ {"direction": "Left"} ] },
       { "beat": 75,    "arrows": [ {"direction": "Up"} ] },
