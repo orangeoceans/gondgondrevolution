@@ -169,6 +169,16 @@ class GonDDR extends Phaser.Scene {
 	init_game_objects() {
 
 		// Create sprites
+		this.gondola_bg = this.add_starting_visual( this.add.tileSprite( WINDOW_WIDTH/2., WINDOW_HEIGHT/2., 
+																		 WINDOW_WIDTH, WINDOW_HEIGHT, 'gondola_bg' ) );
+		this.gondola_bg.tileScaleX = 0.6;
+		this.gondola_bg.tileScaleY = 0.6;
+		this.tweens.add({
+			targets: this.gondola_bg,
+			tilePositionX: -4000,
+			//tilePositionY: 1000,
+			duration: 20000,
+		});
 		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X-DANCE_PAD_OFFSET_X, GONDOLA_Y-DANCE_PAD_OFFSET_Y, 'dance_pad') );
 
 		this.gondola = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y + Gondola_Offsets.Neutral, 'gondola', Gondola_Poses.Neutral) );
@@ -185,7 +195,7 @@ class GonDDR extends Phaser.Scene {
 
 		for(var i = 0; i < 4; i++) {
 			this.arrow_beams.push( this.add.image(ARROW_X[i], WINDOW_HEIGHT/2., 'arrow_beam') );
-			this.static_arrows.push( this.add_starting_visual( this.add.sprite(ARROW_X[i], ARROW_HIT_Y, 'guide_arrows', i) ));
+			this.static_arrows.push( this.add_starting_visual( this.add.sprite(ARROW_X[i], -ARROW_SIZE, 'guide_arrows', i) ));
 			if (i == 0 || i == 2) {
 				this.arrow_beams[i].tint = 0x3892FF;
 			} else {
@@ -195,9 +205,9 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		// Draw score info
-		this.score_number = this.add_starting_visual( this.add.bitmapText(SCORE_NUMBER_X, SCORE_Y, 'scorefont', '0', SCORE_SIZE) );
+		this.score_number = this.add_starting_visual( this.add.bitmapText(SCORE_NUMBER_X, WINDOW_HEIGHT+50, 'scorefont', '0', SCORE_SIZE) );
 		this.score_number.setOrigin(1,1);
-		this.score_text = this.add_starting_visual( this.add.bitmapText(SCORE_TEXT_X, SCORE_Y, 'scorefont', 'SCORE: ', SCORE_SIZE) );
+		this.score_text = this.add_starting_visual( this.add.bitmapText(SCORE_TEXT_X,  WINDOW_HEIGHT+50, 'scorefont', 'SCORE: ', SCORE_SIZE) );
 		this.score_text.setOrigin(0,1);
 
 		this.combo_image = this.add.image(0, 0, 'combo');
@@ -224,7 +234,7 @@ class GonDDR extends Phaser.Scene {
 			callbackScope: this,
 			onComplete: function (tweens, targets) {
 				this.tweens.add({
-					targets: this.cheer, volume: 0, duration: 1000, delay:9000
+					targets: this.cheer, volume: 0, duration: 1000, delay:8000
 				});
 			}
 		});
@@ -242,33 +252,10 @@ class GonDDR extends Phaser.Scene {
 		this.tweens.add({
 			targets: this.title_top,
 			x: 0, duration: 5300, ease: 'Linear', delay: 500,
-			callbackScope: this, completeDelay: 1000,
+			callbackScope: this, completeDelay: 100,
 			onComplete: function (tweens, targets) {
 				console.log("Fade in complete");
-				this.title_fadeout.play();
-			}
-		});
-
-		this.title_fadeout = this.tweens.add({
-			targets: this.title,
-			alpha: 0,
-			scaleX: 3,
-			scaleY: 1.5,
-			duration: 1000,
-			delay: 250,
-			ease: "Sine.easeInOut",
-			paused: true,
-			callbackScope: this,
-			completeDelay: 250,
-			onStart: function (tween, targets) {
-				console.log("Fade out start");
-			},
-			onComplete: function (tween, targets) {
-				console.log("Fade out complete");
-				this.music.play();
-				this.music_started = true;
-				this.gondola.setFrame(Gondola_Poses.Neutral);
-				this.gondola_start_bounce.stop();
+				this.start_song();
 			}
 		});
 
@@ -283,6 +270,32 @@ class GonDDR extends Phaser.Scene {
 		this.tweens.add({
 			targets: this.title_bot,
 			x: -1760, duration: 5300, ease: 'Linear', delay: 500
+		});
+	}
+
+	start_song() {
+		this.music.play();
+		this.music_started = true;
+		this.gondola.setFrame(Gondola_Poses.Neutral);
+		this.gondola_start_bounce.stop();
+		
+		this.tweens.add({
+			targets: this.static_arrows,
+			y: ARROW_HIT_Y,
+			duration: 1000,
+			ease: 'Sine.easeInOut'
+		});
+		this.tweens.add({
+			targets: [this.score_number, this.score_text],
+			y: SCORE_Y,
+			duration: 1000,
+			ease: 'Sine.easeInOut'
+		});
+		this.tweens.add({
+			targets: this.gondola_bg,
+			alpha: 0,
+			duration: 1500,
+			onComplete: this.gondola_bg.destroy
 		});
 	}
 

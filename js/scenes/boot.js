@@ -28,6 +28,7 @@ class Boot extends Phaser.Scene {
 		this.load.image('song_title_pink', 'assets/sprites/gonddr/song_title.png');
 		this.load.image('ready', 'assets/sprites/gonddr/ready.png');
 		this.load.image('gondola_go', 'assets/sprites/gonddr/gondola_go.png');
+		this.load.image('gondola_bg', 'assets/sprites/gonddr/gondola_bg.png');
 
 		this.load.image('pink_tile', 'assets/sprites/shared/pink_tile.png');
 		this.load.image('blue_tile', 'assets/sprites/shared/blue_tile.png');
