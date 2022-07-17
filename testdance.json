@@ -78,19 +78,14 @@
       { "beat": 67,    "arrows": [ {"direction": "Right"} ] },
 
       { "beat": 68,     "arrows": [ {"direction": "Left"}  ] },
-      { "beat": 68.25,  "arrows": [ {"direction": "Up"} ] },
-      { "beat": 68.5,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 68.75,  "arrows": [ {"direction": "Down"} ] },
-      { "beat": 69,     "arrows": [ {"direction": "Left"} ] },
-      { "beat": 69.25,  "arrows": [ {"direction": "Up"} ] },
-      { "beat": 69.5,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 69.75,  "arrows": [ {"direction": "Down"} ] },
+      { "beat": 68.5,   "arrows": [ {"direction": "Up"} ] },
+      { "beat": 69,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 69.5,   "arrows": [ {"direction": "Down"} ] },
       { "beat": 70,     "arrows": [ {"direction": "Left"}  ] },
-      { "beat": 70.25,  "arrows": [ {"direction": "Up"} ] },
-      { "beat": 70.5,  "arrows": [ {"direction": "Right"} ] },
-      { "beat": 70.75,  "arrows": [ {"direction": "Down"} ] },
+      { "beat": 70.5,  "arrows": [ {"direction": "Up"} ] },
 
-      { "beat": 71,     "arrows": [], "config": { "background": {"name":"light_beams_flash", "beats":1} } },
+      { "beat": 71,     "arrows": [{"direction": "Left"}, {"direction": "Right"}],
+        "config": { "background": {"name":"light_beams_flash", "beats":1} } },
 
       { "comments": "main dance theme",
         "config": {
@@ -123,9 +118,11 @@
       { "beat": 87,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] },
 
       { "beat": 88,     "arrows": [ {"direction": "Up"}, {"direction": "Down"} ] },
-      { "beat": 89.5,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 91,     "arrows": [ {"direction": "Left"} ] },
-      { "beat": 91.5,   "arrows": [ {"direction": "Up"}  ] },
+      { "beat": 89,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 90,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 90.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 91,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 91.5,   "arrows": [ {"direction": "Right"} ] },
 
       { "beat": 92,     "arrows": [ {"direction": "Down"}, {"direction": "Up"} ] },
       { "beat": 94,   "arrows": [ {"direction": "Down"}, {"direction": "Right"} ] },
@@ -135,6 +132,7 @@
       { "beat": 97,     "arrows": [ {"direction": "Left"} ] },
       { "beat": 100,     "arrows": [], "config": { "background": {"name":"light_beams_fade", "beats":0.5} } },
       { "beat": 103.999,     "arrows": [], "config": { "background": {"name":"purple_wave", "beats":2} } },
+
       { "comments":     "2nd theme repeat",
         "beat": 104,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
       { "beat": 105.5,   "arrows": [ {"direction": "Down"} ] },
@@ -153,6 +151,89 @@
       { "beat": 116,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ] },
       { "beat": 117.5,   "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
       { "beat": 119,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] },
-      { "beat": 119.5,   "arrows": [ {"direction": "Down"} ] }
+
+      { "beat": 120,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
+      { "beat": 121.5,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 123,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 123.5,   "arrows": [ {"direction": "Down"}  ] },
+
+      { "beat": 124,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 125,     "arrows": [ {"direction": "Left"} ] },
+      { "beat": 127,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 127.5,   "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 128,     "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
+      { "beat": 129,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 131.5,   "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 132,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ] },
+      { "beat": 133.5,   "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
+      { "beat": 135,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] },
+
+      { "beat": 136,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
+        "config": {
+          "bpm": {
+            "target": 142,
+            "duration": 4
+          }
+        }
+      },
+
+      { "beat": 212,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
+        "config": {
+          "bpm": {
+            "target": 134,
+            "duration": 0
+          }
+        }
+      },
+
+      { "beat": 244,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
+        "config": {
+          "bpm": {
+            "target": 140,
+            "duration": 0
+          }
+        }
+      },
+
+      { "beat": 268,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
+        "config": {
+          "bpm": {
+            "target": 146,
+            "duration": 14
+          }
+        }
+      },
+
+      { "beat": 340,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
+        "config": {
+          "bpm": {
+            "target": 76,
+            "duration": 0
+          }
+        }
+      },
+
+      { "beat": 340,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
+        "config": {
+          "bpm": {
+            "target": 76,
+            "duration": 10
+          }
+        }
+      },
+
+      { "beat": 350,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
+        "config": {
+          "bpm": {
+            "target": 137,
+            "duration": 0
+          }
+        }
+      },
+
+      { "beat": 380,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] }
+
     ]
 }

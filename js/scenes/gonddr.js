@@ -130,7 +130,10 @@ class GonDDR extends Phaser.Scene {
 
 		let prev_beat = this.beat;
 		this.beat = this.beat + ((delta / 1000.) * (this.bpm / 60.));
+
 		if (Math.floor(this.beat) > Math.floor(prev_beat)) {
+			console.log(this.beat);
+			console.log(this.bpm);
 			this.do_on_beat();
 		}
 
@@ -169,7 +172,7 @@ class GonDDR extends Phaser.Scene {
 	init_game_objects() {
 
 		// Create sprites
-		this.gondola_bg = this.add_starting_visual( this.add.tileSprite( WINDOW_WIDTH/2., WINDOW_HEIGHT/2., 
+		this.gondola_bg = this.add_starting_visual( this.add.tileSprite( WINDOW_WIDTH/2., WINDOW_HEIGHT/2.,
 																		 WINDOW_WIDTH, WINDOW_HEIGHT, 'gondola_bg' ) );
 		this.gondola_bg.tileScaleX = 0.6;
 		this.gondola_bg.tileScaleY = 0.6;
@@ -278,7 +281,7 @@ class GonDDR extends Phaser.Scene {
 		this.music_started = true;
 		this.gondola.setFrame(Gondola_Poses.Neutral);
 		this.gondola_start_bounce.stop();
-		
+
 		this.tweens.add({
 			targets: this.static_arrows,
 			y: ARROW_HIT_Y,
@@ -438,7 +441,7 @@ class GonDDR extends Phaser.Scene {
 			let elapsed_sec = delta / 1000.;
 			let beat_duration_sec = this.bpm / 60.;
 
-			this.bpm += (this.bpm_change_per_beat / beat_duration_sec) * elapsed_sec;
+			this.bpm += (this.bpm_change_per_beat * beat_duration_sec) * elapsed_sec;
 			this.set_arrow_speed();
 
 		} else { // Stabilize at target BPM
