@@ -118,20 +118,27 @@
       { "beat": 87,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] },
 
       { "beat": 88,     "arrows": [ {"direction": "Up"}, {"direction": "Down"} ] },
-      { "beat": 89,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 89,     "arrows": [ {"direction": "Down"} ] },
       { "beat": 90,     "arrows": [ {"direction": "Down"} ] },
       { "beat": 90.5,   "arrows": [ {"direction": "Left"} ] },
       { "beat": 91,     "arrows": [ {"direction": "Up"} ] },
       { "beat": 91.5,   "arrows": [ {"direction": "Right"} ] },
 
       { "beat": 92,     "arrows": [ {"direction": "Down"}, {"direction": "Up"} ] },
-      { "beat": 94,   "arrows": [ {"direction": "Down"}, {"direction": "Right"} ] },
+      { "beat": 94,     "arrows": [ {"direction": "Down"}, {"direction": "Right"} ] },
 
-      { "beat": 96,     "arrows": [ {"direction": "Right"} ] },
-      { "beat": 96.5,     "arrows": [ {"direction": "Right"} ] },
-      { "beat": 97,     "arrows": [ {"direction": "Left"} ] },
-      { "beat": 100,     "arrows": [], "config": { "background": {"name":"light_beams_fade", "beats":0.5} } },
-      { "beat": 103.999,     "arrows": [], "config": { "background": {"name":"purple_wave", "beats":2} } },
+      { "beat": 96,      "arrows": [ {"direction": "Right"} ] },
+      { "beat": 96.5,    "arrows": [ {"direction": "Right"} ] },
+      { "beat": 97,      "arrows": [ {"direction": "Left"} ] },
+      { "beat": 98,      "arrows": [ {"direction": "Left"} ] },
+      { "beat": 99,      "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 100,     "arrows": [ {"direction": "Up"} ], "config": { "background": {"name":"light_beams_fade", "beats":0.5} } },
+      { "beat": 101,      "arrows": [ {"direction": "Up"} ] },
+      { "beat": 102,      "arrows": [ {"direction": "Down"} ] },
+      { "beat": 103,      "arrows": [ {"direction": "Down"} ] },
+
+      { "beat": 103.999, "arrows": [], "config": { "background": {"name":"purple_wave", "beats":2} } },
 
       { "comments":     "2nd theme repeat",
         "beat": 104,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
@@ -141,36 +148,37 @@
 
       { "beat": 108,     "arrows": [ {"direction": "Right"} ] },
       { "beat": 109,     "arrows": [ {"direction": "Left"} ] },
-      { "beat": 111,     "arrows": [ {"direction": "Right"} ] },
-      { "beat": 111.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 110.5,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 111,     "arrows": [ {"direction": "Left"} ] },
+      { "beat": 111.5,   "arrows": [ {"direction": "Left"} ] },
 
-      { "beat": 112,     "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
-      { "beat": 115,     "arrows": [ {"direction": "Down"} ] },
-      { "beat": 115.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 112,     "arrows": [ {"direction": "Left"} ] },
+      { "beat": 112.5,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 113,   "arrows": [ {"direction": "Up"} ] },
+      { "beat": 115,   "arrows": [ {"direction": "Up"} ] },
+      { "beat": 115.5,   "arrows": [ {"direction": "Right"} ] },
 
-      { "beat": 116,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ] },
-      { "beat": 117.5,   "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
+      { "beat": 116,     "arrows": [ {"direction": "Down"}, {"direction": "Left"} ] },
+      { "beat": 117.5,   "arrows": [ {"direction": "Right"}, {"direction": "Up"} ] },
       { "beat": 119,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] },
 
       { "beat": 120,     "arrows": [ {"direction": "Left"}, {"direction": "Right"} ] },
-      { "beat": 121.5,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 122.5,   "arrows": [ {"direction": "Down"} ] },
       { "beat": 123,     "arrows": [ {"direction": "Up"} ] },
       { "beat": 123.5,   "arrows": [ {"direction": "Down"}  ] },
 
-      { "beat": 124,     "arrows": [ {"direction": "Right"} ] },
-      { "beat": 125,     "arrows": [ {"direction": "Left"} ] },
-      { "beat": 127,     "arrows": [ {"direction": "Right"} ] },
-      { "beat": 127.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 124,     "arrows": [ {"direction": "Right"}, {"direction": "Down"} ] },
+      { "beat": 126,     "arrows": [ {"direction": "Left"}, {"direction": "Up"} ] },
 
-      { "beat": 128,     "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
-      { "beat": 129,     "arrows": [ {"direction": "Down"} ] },
-      { "beat": 131.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 128,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 128.5,   "arrows": [ {"direction": "Up"} ] },
+      { "beat": 129,     "arrows": [ {"direction": "Up"} ] },
 
-      { "beat": 132,     "arrows": [ {"direction": "Up"}, {"direction": "Right"} ] },
-      { "beat": 133.5,   "arrows": [ {"direction": "Left"}, {"direction": "Down"} ] },
-      { "beat": 135,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ] },
+      { "beat": 132,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 134,   "arrows": [ {"direction": "Right"} ] },
 
-      { "beat": 136,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
+      { "comment": "First repeat of plinks",
+        "beat": 136,     "arrows": [ ],
         "config": {
           "bpm": {
             "target": 142,
@@ -178,6 +186,99 @@
           }
         }
       },
+
+      { "beat": 140,     "arrows": [ {"direction": "Right"},  {"direction": "Up"} ] },
+      { "beat": 142,     "arrows": [ {"direction": "Left"},  {"direction": "Down"} ] },
+      { "beat": 143,     "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 144,     "arrows": [ {"direction": "Left"},  {"direction": "Up"} ] },
+      { "beat": 146,     "arrows": [ {"direction": "Right"},  {"direction": "Down"} ] },
+      { "beat": 147,     "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 148,     "arrows": [ {"direction": "Right"},  {"direction": "Down"} ] },
+      { "beat": 150,     "arrows": [ {"direction": "Left"},  {"direction": "Up"} ] },
+      { "beat": 151,     "arrows": [ {"direction": "Up"} ] },
+
+      { "beat": 152,     "arrows": [ {"direction": "Left"},   {"direction": "Down"} ] },
+      { "beat": 154,     "arrows": [ {"direction": "Right"},  {"direction": "Up"} ] },
+      { "beat": 155,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 155.25,  "arrows": [ {"direction": "Right"} ] },
+
+      { "comments": "Second repeat of plinks",
+        "beat": 156,     "arrows": [ {"direction": "Right"},  {"direction": "Up"} ] },
+      { "beat": 158,     "arrows": [ {"direction": "Left"},  {"direction": "Down"} ] },
+      { "beat": 159,     "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 160,     "arrows": [ {"direction": "Left"},  {"direction": "Up"} ] },
+      { "beat": 162,     "arrows": [ {"direction": "Right"},  {"direction": "Down"} ] },
+      { "beat": 163,     "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 164,     "arrows": [ {"direction": "Right"},  {"direction": "Down"} ] },
+      { "beat": 166,     "arrows": [ {"direction": "Left"},  {"direction": "Up"} ] },
+      { "beat": 167,     "arrows": [ {"direction": "Up"} ] },
+
+      { "beat": 168,     "arrows": [ {"direction": "Left"},   {"direction": "Down"} ] },
+      { "beat": 170,     "arrows": [ {"direction": "Right"},  {"direction": "Up"} ] },
+      { "beat": 171,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 171.25,  "arrows": [ {"direction": "Right"} ] },
+
+      { "comments": "Third repeat of plinks",
+        "beat": 172,     "arrows": [ {"direction": "Right"},  {"direction": "Up"} ] },
+      { "beat": 173.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 174,     "arrows": [ {"direction": "Down"}] },
+      { "beat": 174.5,   "arrows": [ {"direction": "Left"}] },
+      { "beat": 175,     "arrows": [ {"direction": "Down"}] },
+      { "beat": 175.5,   "arrows": [ {"direction": "Left"}] },
+
+      { "beat": 176,     "arrows": [ {"direction": "Left"},  {"direction": "Up"} ] },
+      { "beat": 177.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 178,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 178.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 179,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 179.5,   "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 180,     "arrows": [ {"direction": "Right"},  {"direction": "Down"} ] },
+      { "beat": 181.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 182,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 182.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 183,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 183.5,   "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 184,     "arrows": [ {"direction": "Left"},   {"direction": "Down"} ] },
+      { "beat": 185.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 186,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 186.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 187,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 187.25,   "arrows": [ {"direction": "Right"} ] },
+
+      { "comments": "Fourth repeat of plinks",
+        "beat": 188,     "arrows": [ {"direction": "Right"},  {"direction": "Up"} ] },
+      { "beat": 189.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 190,     "arrows": [ {"direction": "Down"}] },
+      { "beat": 190.5,   "arrows": [ {"direction": "Left"}] },
+      { "beat": 191,     "arrows": [ {"direction": "Down"}] },
+      { "beat": 191.5,   "arrows": [ {"direction": "Left"}] },
+
+      { "beat": 192,     "arrows": [ {"direction": "Left"},  {"direction": "Up"} ] },
+      { "beat": 193.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 194,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 194.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 195,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 195.5,   "arrows": [ {"direction": "Right"} ] },
+
+      { "beat": 196,     "arrows": [ {"direction": "Right"},  {"direction": "Down"} ] },
+      { "beat": 197.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 198,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 198.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 199,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 199.5,   "arrows": [ {"direction": "Left"} ] },
+
+      { "beat": 200,     "arrows": [ {"direction": "Left"},   {"direction": "Down"} ] },
+      { "beat": 201.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 202,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 202.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 203,     "arrows": [ {"direction": "Up"} ] },
+      { "beat": 203.25,   "arrows": [ {"direction": "Right"} ] },
 
       { "beat": 212,     "arrows": [ {"direction": "Right"},  {"direction": "Left"} ],
         "config": {
