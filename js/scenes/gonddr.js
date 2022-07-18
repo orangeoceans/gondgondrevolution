@@ -179,8 +179,8 @@ class GonDDR extends Phaser.Scene {
 		this.tweens.add({
 			targets: this.gondola_bg,
 			tilePositionX: -4000,
-			//tilePositionY: 1000,
 			duration: 20000,
+			onComplete: this.gondola_bg.destroy
 		});
 		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X-DANCE_PAD_OFFSET_X, GONDOLA_Y-DANCE_PAD_OFFSET_Y, 'dance_pad') );
 
