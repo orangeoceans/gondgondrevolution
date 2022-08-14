@@ -631,7 +631,8 @@
       { "beat": 339,     "arrows": [ {"direction": "Right"}, {"direction": "Up"} ] },
       { "beat": 339.5,   "arrows": [ {"direction": "Up"} ] },
 
-      { "beat": 340,     "arrows": [ {"direction": "Right"} ],
+      { "beat": 340,     "comments": "slowdown",
+        "arrows": [ {"direction": "Right"} ],
         "config": {
           "bpm": {
             "target": 135,
@@ -644,69 +645,63 @@
       { "beat": 342,       "arrows": [ {"direction": "Right"} ] },
       { "beat": 343.125,   "arrows": [ {"direction": "Left"} ] },
       { "beat": 344.25,    "arrows": [ {"direction": "Down"} ] },
-      { "beat": 345.5,     "arrows": [ {"direction": "Down"} ] },
-      { "beat": 346.5,   "arrows": [ {"direction": "Right"}, {"direction": "Right"} ] },
+      { "beat": 345.125,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 346.5,     "arrows": [ {"direction": "Down"} ] },
 
-      { "beat": 352.5, "arrows": [ {"direction": "Right"} ] },
-      { "beat": 255,   "arrows": [ {"direction": "Left"} ] },
-      { "beat": 356.5, "arrows": [ {"direction": "Up"} ] },
-      { "beat": 357,   "arrows": [ {"direction": "Right"} ] },
+      { "comments": "piano outro 1st repeat",
+        "beat": 352.5, "arrows": [ {"direction": "Right"} ] },
+      { "beat": 355,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 355.5, "arrows": [ {"direction": "Up"} ] },
+      { "beat": 356,   "arrows": [ {"direction": "Right"} ] },
 
-      { "beat": 357.5,   "arrows": [ {"direction": "Down"} ] },
-      { "beat": 358.5,   "arrows": [ {"direction": "Up"} ] },
+      { "beat": 356.5,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 357.5,   "arrows": [ {"direction": "Up"} ] },
       { "beat": 359.5,   "arrows": [ {"direction": "Down"} ] },
       { "beat": 360,   "arrows": [ {"direction": "Up"} ] },
 
+      { "beat": 360.5,   "arrows": [ {"direction": "Right"} ] },
       { "beat": 361,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 361.5,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 364,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 361.5,   "arrows": [ {"direction": "Down"} ] },
 
-
-      { "beat": 368.5,     "arrows": [ {"direction": "Up"}, {"direction": "Left"} ] },
-      { "beat": 371,   "arrows": [ {"direction": "Left"} ] },
+      { "comments": "piano outro 2nd repeat",
+        "beat": 368.5,    "arrows": [ {"direction": "Up"}, {"direction": "Left"} ] },
+      { "beat": 371,     "arrows": [ {"direction": "Left"} ] },
       { "beat": 371.5,   "arrows": [ {"direction": "Up"} ] },
-      { "beat": 372,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 372,     "arrows": [ {"direction": "Right"} ] },
 
-      { "beat": 373.5,   "arrows": [ {"direction": "Down"}, {"direction": "Up"} ] },
-      { "beat": 374.5,   "arrows": [ {"direction": "Right"}, {"direction": "Up"} ] },
-      { "beat": 376.5,   "arrows": [ {"direction": "Up"} ] },
-      { "beat": 377,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 372.5,   "arrows": [ {"direction": "Down"}, {"direction": "Up"} ] },
+      { "beat": 373.5,   "arrows": [ {"direction": "Right"}, {"direction": "Up"} ] },
+      { "beat": 375.5,   "arrows": [ {"direction": "Up"} ] },
+      { "beat": 376,     "arrows": [ {"direction": "Down"} ] },
 
-      { "beat": 377.5,   "arrows": [ {"direction": "Left"} ] },
-      { "beat": 378,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 379,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 376.5,  "arrows": [ {"direction": "Left"} ] },
+      { "beat": 377,    "arrows": [ {"direction": "Right"} ] },
+      { "beat": 377.5,  "arrows": [ {"direction": "Down"} ] },
 
-      { "beat": 378,     "arrows": [ {"direction": "Up"} ] },
-      { "beat": 380.5,   "arrows": [ {"direction": "Left"} ] },
-      { "beat": 381,   "arrows": [ {"direction": "Up"} ] },
-      { "beat": 381.5,   "arrows": [ {"direction": "Right"} ] },
+      { "comments": "piano outro 3rd repeat",
+        "beat": 384.5,  "arrows": [ {"direction": "Up"} ] },
+      { "beat": 386,    "arrows": [ {"direction": "Up"} ] },
+      { "beat": 387.5,  "arrows": [ {"direction": "Left"} ] },
+      { "beat": 388,    "arrows": [ {"direction": "Right"} ] },
 
-      { "beat": 382,   "arrows": [ {"direction": "Down"} ] },
-      { "beat": 383,   "arrows": [ {"direction": "Up"} ] },
-      { "beat": 385,   "arrows": [ {"direction": "Down"} ] },
-      { "beat": 385.5,   "arrows": [ {"direction": "Up"} ] },
+      { "beat": 388.5,  "arrows": [ {"direction": "Right"}, {"direction": "Up"} ] },
+      { "beat": 390.5,  "arrows": [ {"direction": "Left"}, {"direction": "Up"} ] },
 
-      { "beat": 386,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 386.5,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 387,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 392.5,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 393,     "arrows": [ {"direction": "Down"} ] },
+      { "beat": 393.5,   "arrows": [ {"direction": "Up"} ] },
 
+      { "beat": 400.5,     "arrows": [ {"direction": "Down"}, {"direction": "Left"} ] },
 
-      { "beat": 388,     "arrows": [ {"direction": "Up"}, {"direction": "Left"} ] },
-      { "beat": 390.5,   "arrows": [ {"direction": "Left"} ] },
-      { "beat": 391,   "arrows": [ {"direction": "Up"} ] },
-      { "beat": 391.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 404.5,   "arrows": [ {"direction": "Down"}, {"direction": "Up"} ] },
+      { "beat": 406.5,   "arrows": [ {"direction": "Right"}, {"direction": "Up"} ] },
 
-      { "beat": 392,   "arrows": [ {"direction": "Down"}, {"direction": "Up"} ] },
-      { "beat": 393,   "arrows": [ {"direction": "Right"}, {"direction": "Up"} ] },
-      { "beat": 395,   "arrows": [ {"direction": "Up"} ] },
-      { "beat": 395.5,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 408.5,   "arrows": [ {"direction": "Left"} ] },
 
-      { "beat": 396,   "arrows": [ {"direction": "Left"} ] },
-      { "beat": 396.5,   "arrows": [ {"direction": "Right"} ] },
-      { "beat": 397,   "arrows": [ {"direction": "Down"} ] },
+      { "beat": 416.5,   "arrows": [ {"direction": "Left"} ] },
 
 
-      { "comments": "end", "beat": 416,   "arrows": [ ] }
+      { "comments": "end", "beat": 440,   "arrows": [ ] }
 
     ]
 }
