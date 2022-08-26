@@ -173,6 +173,7 @@ class GonDDR extends Phaser.Scene {
 																		 WINDOW_WIDTH, WINDOW_HEIGHT, 'gondola_bg' ) );
 		this.gondola_bg.tileScaleX = 0.6;
 		this.gondola_bg.tileScaleY = 0.6;
+		this.gondola_bg.depth = -1
 		this.tweens.add({
 			targets: this.gondola_bg,
 			tilePositionX: -4000,
@@ -180,9 +181,11 @@ class GonDDR extends Phaser.Scene {
 			onComplete: this.gondola_bg.destroy
 		});
 		this.dance_pad = this.add_starting_visual( this.add.sprite(GONDOLA_X-DANCE_PAD_OFFSET_X, GONDOLA_Y-DANCE_PAD_OFFSET_Y, 'dance_pad') );
+		this.dance_pad.depth = -0.5
 
 		this.gondola = this.add_starting_visual( this.add.sprite(GONDOLA_X, GONDOLA_Y + Gondola_Offsets.Neutral, 'gondola', Gondola_Poses.Neutral) );
 		this.gondola.setOrigin(0.5,1);
+		this.gondola.depth = -0.5
 		this.gondola_start_bounce = this.tweens.add({
 			targets: this.gondola,
 			scaleX: 1.05,
@@ -392,6 +395,7 @@ class GonDDR extends Phaser.Scene {
 		}
 
 		this.background.end();
+		this.background = null;
 		this.time.delayedCall(500,
 			function() {
 				do_checkerboard(this, transition_to_endscreen, this);
@@ -721,7 +725,7 @@ class GonDDR extends Phaser.Scene {
 	// Play a video
 	play_video(vid_config) {
 		this.video = this.add.video(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., vid_config.name);
-		this.video.depth = -0.99;
+		this.video.depth = -0.4;
 		if (this.background) {
 			this.background.end();
 		}
@@ -740,8 +744,8 @@ class GonDDR extends Phaser.Scene {
 				onComplete: function (tween) {
 					this.tweens.add({
 						targets: this.video,
-						scaleX: 1.25,
-						scaleY: 1.25,
+						scaleX: 1.3,
+						scaleY: 1.3,
 						duration: 12750
 					});
 				}
@@ -750,8 +754,8 @@ class GonDDR extends Phaser.Scene {
 				this.tweens.add({
 					targets: this.video,
 					alpha: 0,
-					scaleX: 2,
-					scaleY: 2,
+					scaleX: 4,
+					scaleY: 4,
 					duration: 100,
 					onComplete: this.video.destroy
 				})

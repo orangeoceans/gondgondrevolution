@@ -10,10 +10,7 @@
 
       { "beat": 4,     "arrows": [], "config": { "sound": {"name": "voice_gondola"},
                                                  "image": {"name":"gondola_go", "duration":1000},
-                                                 "background": {"name":"light_beams_fade", "beats":4},
-                                                 "video": {
-                                                  "name":"crater", "zoom": true, "rate": 1.05
-                                                }} },
+                                                 "background": {"name":"light_beams_fade", "beats":4}} },
 
       { "comments":    "1st piano repeat",
         "beat": 8,     "arrows": [ {"direction": "Right"} ] },
@@ -302,7 +299,7 @@
           "video": {
             "name":"crater",
              "zoom": true,
-             "rate": 0.98
+             "rate": 1
           }
         }
       },
