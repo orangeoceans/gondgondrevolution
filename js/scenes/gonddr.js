@@ -54,9 +54,7 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	init (data) {
-		console.log("init");
 		this.high_score = data.high_score;
-		console.log("init done");
 	}
 
 	create () {
@@ -132,8 +130,6 @@ class GonDDR extends Phaser.Scene {
 		this.beat = this.beat + ((delta / 1000.) * (this.bpm / 60.));
 
 		if (Math.floor(this.beat) > Math.floor(prev_beat)) {
-			console.log(this.beat);
-			console.log(this.bpm);
 			this.do_on_beat();
 		}
 
@@ -155,7 +151,6 @@ class GonDDR extends Phaser.Scene {
 	// Load song data, set BPM and time signature
 	init_song() {
 		this.song = this.cache.json.get('wuwei');
-		console.log(this.song);
 		this.arrow_idx = 0;
 		this.action_idx = 0;
 
@@ -165,8 +160,7 @@ class GonDDR extends Phaser.Scene {
 		this.bpm_change_per_beat = 0;  // For BPM transitions
 
 		this.bpb = this.song.properties.beats_per_bar; // Beats per bar (determines fall time)
-
-		console.log("BPM: " + this.bpm + " Beats per bar: " + this.bpb);
+		//console.log("BPM: " + this.bpm + " Beats per bar: " + this.bpb);
 	}
 
 	// Create game objects
@@ -258,7 +252,6 @@ class GonDDR extends Phaser.Scene {
 			x: 0, duration: 5300, ease: 'Linear', delay: 500,
 			callbackScope: this, completeDelay: 100,
 			onComplete: function (tweens, targets) {
-				console.log("Fade in complete");
 				this.start_song();
 			}
 		});
@@ -372,7 +365,6 @@ class GonDDR extends Phaser.Scene {
 	}
 
 	end_dance () {
-		console.log("Ending dance.")
 		this.dance_ended = true;
 		this.music.stop();
 		function transition_to_endscreen() {
@@ -426,11 +418,9 @@ class GonDDR extends Phaser.Scene {
 		if(bpm_config.duration == 0) {
 			this.bpm = this.target_bpm = bpm_config.target;
 			this.bpm_change_per_beat = 0;
-			console.log("BPM changed: " + this.bpm);
 		} else {
 			this.target_bpm = bpm_config.target;
 			this.bpm_change_per_beat = (this.target_bpm - this.bpm) / bpm_config.duration;
-			console.log("BPM target: " + this.target_bpm);
 		}
 		this.set_arrow_speed(); // TODO: SET function
 	}
@@ -598,7 +588,6 @@ class GonDDR extends Phaser.Scene {
 
 	// Check accuracy of hit
 	get_hit_rank (hit_distance) {
- 		//console.log(hit_distance);
  		for (const rank of Hit_Ranks) {
  			if (hit_distance <= rank.Distance) {
  				return rank;
