@@ -51,7 +51,7 @@ class Endscreen extends Phaser.Scene {
 
 		this.ggr_logo = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .3*WINDOW_HEIGHT, 'ggr_logo'));
 
-		this.input.keyboard.on('keydown_UP', this.restart_dance, this);
+		this.input.keyboard.on('keydown-UP', this.restart_dance, this);
 
 		this.score_text = this.add_starting_visual( this.add.bitmapText(SCORE_SIZE, .55*WINDOW_HEIGHT, 'scorefont', 'SCORE:', SCORE_SIZE) );
 		this.score_text.setOrigin(0,0.5);

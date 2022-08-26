@@ -93,7 +93,7 @@ class Intro extends Phaser.Scene {
 			}
 		});
 
-		this.input.keyboard.on('keydown_UP', function (event) {
+		this.input.keyboard.on('keydown-UP', function (event) {
 			if (!this.started) {
 				this.tweens.add({
 					targets: this.press_start,

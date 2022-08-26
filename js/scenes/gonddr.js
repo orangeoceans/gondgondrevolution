@@ -15,6 +15,8 @@ class GonDDR extends Phaser.Scene {
 		this.music_started;
 		this.dance_ended;
 
+		this.video;
+
 		this.arrows;      // Currently active arrows
 		this.arrow_beams = [];
 		this.static_arrows = [];
@@ -357,8 +359,10 @@ class GonDDR extends Phaser.Scene {
 					break;
 				case "background":
 					this.change_background(beat_action.config[param]);
+					break;
 				case "video":
 					this.play_video(beat_action.config[param]);
+					break;
 			}
 		}
 
@@ -717,33 +721,42 @@ class GonDDR extends Phaser.Scene {
 	// Play a video
 	play_video(vid_config) {
 		let vid_name = vid_config.name;
-		let vid = this.add.video(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., vid_name);
-		vid.depth = -0.99;
-		vid.alpha = 0;
-		vid.scaleX = 0.67;
-		vid.scaleY = 0.67;
-		vid.play();
-		this.tweens.add({
-            targets: vid,
-            alpha: 1,
-            duration: 500
-        });
-		this.tweens.add({
-			targets: vid,
-			scaleX: 1,
-			scaleY: 1,
-			duration: 10000
-		})
-		vid.on('complete', function(video){
+		this.video = this.add.video(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., vid_name);
+		this.video.depth = -0.99;
+		if (this.background) {
+			this.background.end();
+		}
+		if (vid_config.zoom) {
+			this.video.alpha = 0;
+			this.video.scaleX = 0.67;
+			this.video.scaleY = 0.67;
 			this.tweens.add({
-				targets: video,
-				alpha: 0,
-				scaleX: 2,
-				scaleY: 2,
-				duration: 100,
-				onComplete: video.removeVideoElement
-			})
-		}, this);
+				targets: this.video,
+				alpha: 1,
+				duration: 500
+			});
+			this.tweens.add({
+				targets: this.video,
+				scaleX: 1,
+				scaleY: 1,
+				duration: 13000
+			});
+			this.video.on('complete', function(video){
+				this.tweens.add({
+					targets: this.video,
+					alpha: 0,
+					scaleX: 2,
+					scaleY: 2,
+					duration: 100,
+					onComplete: this.video.destroy
+				})
+			}, this);
+		} else {
+			this.video.on('complete', this.video.destroy, this.video);
+		}
+		this.video.play();
+		
+
 	}
 
 
