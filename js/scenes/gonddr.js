@@ -154,7 +154,7 @@ class GonDDR extends Phaser.Scene {
 
 	// Load song data, set BPM and time signature
 	init_song() {
-		this.song = this.cache.json.get('testdance');
+		this.song = this.cache.json.get('wuwei');
 		console.log(this.song);
 		this.arrow_idx = 0;
 		this.action_idx = 0;

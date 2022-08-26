@@ -58,7 +58,7 @@ class Boot extends Phaser.Scene {
 		this.load.audio('wu_wei', ['assets/bgm/wu_wei.mp3']);
 		this.load.video('crater', 'assets/video/crater.mp4', 'loadeddata', false, true);
 
-		this.load.json('testdance', 'testdance.json');
+		this.load.json('wuwei', 'wuwei.json');
 	}
 
 
