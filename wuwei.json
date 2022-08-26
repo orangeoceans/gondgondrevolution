@@ -297,12 +297,16 @@
       { "beat": 206.5,     "arrows": [ {"direction": "Right"} ] },
       { "beat": 207.5,     "arrows": [ {"direction": "Right"} ] },
 
-      { "beat": 212,     "arrows": [ {"direction": "Left"} ],
+      { "beat": 208,     "arrows": [],
         "config": {
           "bpm": {
             "target": 134,
             "duration": 0
-          },
+          }
+        }
+      },
+      { "beat": 212,     "arrows": [ {"direction": "Left"} ],
+        "config": {
           "video": {
             "name":"crater",
              "zoom": true,
