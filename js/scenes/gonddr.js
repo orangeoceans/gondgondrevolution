@@ -765,7 +765,7 @@ class GonDDR extends Phaser.Scene {
 			this.tweens.add({
 				targets: this.video,
 				alpha: 0,
-				duration: 1800,
+				duration: 2300,
 				delay: 2000,
 			});
 			this.video.on('complete', this.video.destroy, this.video);
