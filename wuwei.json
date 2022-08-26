@@ -701,7 +701,7 @@
 
       { "beat": 408.5,   "arrows": [ {"direction": "Left"} ] },
 
-      { "beat": 416.5,   "arrows": [ {"direction": "Left"} ] },
+      { "beat": 416.5,   "arrows": [ {"direction": "Right"} ] },
 
 
       { "comments": "end", "beat": 440,   "arrows": [ ] }
