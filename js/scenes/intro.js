@@ -44,7 +44,7 @@ class Intro extends Phaser.Scene {
 				paused: true,
 				callbackScope: this,
 				onStart: function (tween, targets) {
-					this.sounds.disc_buzz.play('', {"volume": 0.01});
+					this.sounds.disc_buzz.play('', {"volume": 1});
 				}
 		});
 
