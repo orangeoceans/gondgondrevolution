@@ -718,7 +718,32 @@ class GonDDR extends Phaser.Scene {
 	play_video(vid_config) {
 		let vid_name = vid_config.name;
 		let vid = this.add.video(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., vid_name);
+		vid.depth = -0.99;
+		vid.alpha = 0;
+		vid.scaleX = 0.67;
+		vid.scaleY = 0.67;
 		vid.play();
+		this.tweens.add({
+            targets: vid,
+            alpha: 1,
+            duration: 500
+        });
+		this.tweens.add({
+			targets: vid,
+			scaleX: 1,
+			scaleY: 1,
+			duration: 10000
+		})
+		vid.on('complete', function(video){
+			this.tweens.add({
+				targets: video,
+				alpha: 0,
+				scaleX: 2,
+				scaleY: 2,
+				duration: 100,
+				onComplete: video.removeVideoElement
+			})
+		}, this);
 	}
 
 
