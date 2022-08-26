@@ -748,6 +748,8 @@ class GonDDR extends Phaser.Scene {
 				}
 			});
 			this.video.on('complete', function(video){
+				this.gondola.alpha = 1;
+				this.dance_pad.alpha = 1;
 				this.tweens.add({
 					targets: this.video,
 					alpha: 0,
@@ -761,6 +763,8 @@ class GonDDR extends Phaser.Scene {
 			if (this.background) {
 				this.background.end();
 			}
+			this.gondola.alpha = 0;
+			this.dance_pad.alpha = 0;
 			this.video.setBlendMode(Phaser.BlendModes.SCREEN);
 			this.tweens.add({
 				targets: this.video,

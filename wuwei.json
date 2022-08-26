@@ -303,10 +303,6 @@
             "target": 134,
             "duration": 0
           },
-          "background": {
-            "name":"checker_spin",
-            "beats":2
-          },
           "video": {
             "name":"crater",
              "zoom": true,
