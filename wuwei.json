@@ -10,7 +10,10 @@
 
       { "beat": 4,     "arrows": [], "config": { "sound": {"name": "voice_gondola"},
                                                  "image": {"name":"gondola_go", "duration":1000},
-                                                 "background": {"name":"light_beams_fade", "beats":4} } },
+                                                 "background": {"name":"light_beams_fade", "beats":4},
+                                                 "video": {
+                                                  "name":"crater", "zoom": true, "rate": 1.05
+                                                }} },
 
       { "comments":    "1st piano repeat",
         "beat": 8,     "arrows": [ {"direction": "Right"} ] },
@@ -296,12 +299,10 @@
             "target": 134,
             "duration": 0
           },
-          "background": {
-            "name":"checker_spin",
-            "beats":2
-          },
           "video": {
-            "name":"crater"
+            "name":"crater",
+             "zoom": true,
+             "rate": 0.98
           }
         }
       },
