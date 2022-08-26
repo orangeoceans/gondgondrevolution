@@ -364,6 +364,8 @@ class GonDDR extends Phaser.Scene {
 					break;
 				case "background":
 					this.change_background(beat_action.config[param]);
+				case "video":
+					this.play_video(beat_action.config[param]);
 			}
 		}
 
@@ -722,6 +724,14 @@ class GonDDR extends Phaser.Scene {
 				break;
 		}
 	}
+
+	// Play a video
+	play_video(vid_config) {
+		let vid_name = vid_config.name;
+		let vid = this.add.video(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., vid_name);
+		vid.play();
+	}
+
 
 
 	/* =====================
