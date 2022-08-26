@@ -299,6 +299,9 @@
           "background": {
             "name":"checker_spin",
             "beats":2
+          },
+          "video": {
+            "name":"crater"
           }
         }
       },

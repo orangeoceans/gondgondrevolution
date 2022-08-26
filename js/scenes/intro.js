@@ -116,9 +116,9 @@ class Intro extends Phaser.Scene {
 			"disc_buzz": this.sound.add("disc_buzz", 1),
 			"voice_ggr": this.sound.add("voice_ggr", 1)
 		}
-		this.sounds.button_click.on('ended', this.trigger_fadeout, this);
-		this.sounds.disc_buzz.on('ended', this.trigger_fadein, this);
-		this.sounds.voice_ggr.on('ended', this.trigger_checkerboard, this);
+		this.sounds.button_click.on('complete', this.trigger_fadeout, this);
+		this.sounds.disc_buzz.on('complete', this.trigger_fadein, this);
+		this.sounds.voice_ggr.on('complete', this.trigger_checkerboard, this);
 	}
 
 	trigger_fadeout = () => {
