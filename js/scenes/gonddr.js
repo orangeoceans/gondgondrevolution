@@ -726,9 +726,6 @@ class GonDDR extends Phaser.Scene {
 	play_video(vid_config) {
 		this.video = this.add.video(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., vid_config.name);
 		this.video.depth = -0.4;
-		if (this.background) {
-			this.background.end();
-		}
 		if (vid_config.zoom) {
 			this.video.setPlaybackRate(vid_config.rate)
 			this.video.alpha = 0;
@@ -761,6 +758,16 @@ class GonDDR extends Phaser.Scene {
 				})
 			}, this);
 		} else {
+			if (this.background) {
+				this.background.end();
+			}
+			this.video.setBlendMode(Phaser.BlendModes.SCREEN);
+			this.tweens.add({
+				targets: this.video,
+				alpha: 0,
+				duration: 1800,
+				delay: 2000,
+			});
 			this.video.on('complete', this.video.destroy, this.video);
 		}
 		this.video.play();

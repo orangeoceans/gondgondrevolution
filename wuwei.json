@@ -277,10 +277,17 @@
       { "beat": 200,     "arrows": [ {"direction": "Left"},   {"direction": "Down"} ] },
       { "beat": 201.5,   "arrows": [ {"direction": "Right"} ] },
       { "beat": 202,     "arrows": [ {"direction": "Down"} ] },
-      { "beat": 202.5,   "arrows": [ {"direction": "Right"} ] },
+      { "beat": 202.5,   "arrows": [ {"direction": "Right"} ] ,
+      "config": {        
+        "video": {
+          "name":"glitch",
+          "zoom": false,
+          "rate": 0.9
+        }
+      }},
       { "beat": 203.5,     "arrows": [ {"direction": "Right"} ] },
 
-      { "beat": 204,     "arrows": [ {"direction": "Right"} ] },
+      { "beat": 204,     "arrows": [ {"direction": "Right"} ]},
       { "beat": 204.5,     "arrows": [ {"direction": "Right"} ] },
       { "beat": 204.75,     "arrows": [ {"direction": "Down"} ] },
 
@@ -295,6 +302,10 @@
           "bpm": {
             "target": 134,
             "duration": 0
+          },
+          "background": {
+            "name":"checker_spin",
+            "beats":2
           },
           "video": {
             "name":"crater",
