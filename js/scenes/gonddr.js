@@ -111,8 +111,9 @@ class GonDDR extends Phaser.Scene {
 
 		if(!this.music_started) {
 			let secret_code_entered = this.check_secret_code();
-			if (secret_code_entered) {
+			if (secret_code_entered && !this.dance_ended) {
 				this.add_feedback_generic(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., "SECRET CODE!");
+				this.end_dance();
 			}
 			return;
 		}
@@ -374,6 +375,7 @@ class GonDDR extends Phaser.Scene {
 	end_dance () {
 		this.dance_ended = true;
 		this.music.stop();
+		this.cheer.stop();
 		function transition_to_endscreen() {
 			this.gondola.destroy();
 			this.dance_pad.destroy();
@@ -386,6 +388,8 @@ class GonDDR extends Phaser.Scene {
 				this.static_arrows.pop().destroy();
 				this.arrow_beams.pop().destroy();
 			}
+			game.events.off('blur');
+			game.events.off('focus');
 			this.scene.transition({
 				target: 'endscreen',
 				duration: 1200,
@@ -394,7 +398,9 @@ class GonDDR extends Phaser.Scene {
 			});
 		}
 
-		this.background.end();
+		if (this.background) {
+			this.background.end();
+		}
 		this.background = null;
 		this.time.delayedCall(500,
 			function() {
@@ -505,9 +511,10 @@ class GonDDR extends Phaser.Scene {
 			}
 		});
 		if (this.secret_code_input == this.secret_code) {
+			this.secret_code_input = "";
 			return true;
 		} else if (!this.secret_code.startsWith(this.secret_code_input)) {
-			this.secret_code_input = ""
+			this.secret_code_input = "";
 		}
 
 		return false;

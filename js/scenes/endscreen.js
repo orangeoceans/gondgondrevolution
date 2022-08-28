@@ -51,7 +51,7 @@ class Endscreen extends Phaser.Scene {
 
 		this.ggr_logo = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .3*WINDOW_HEIGHT, 'ggr_logo'));
 
-		this.input.keyboard.on('keydown-UP', this.restart_dance, this);
+		this.input.on('pointerdown', this.restart_dance, this);
 
 		this.score_text = this.add_starting_visual( this.add.bitmapText(SCORE_SIZE, .55*WINDOW_HEIGHT, 'scorefont', 'SCORE:', SCORE_SIZE) );
 		this.score_text.setOrigin(0,0.5);
@@ -86,7 +86,8 @@ class Endscreen extends Phaser.Scene {
 			this.high_score_text.destroy();
 			this.score_number.destroy();
 			this.high_score_number.destroy();
-
+			game.events.off('blur');
+			game.events.off('focus');
         	this.scene.transition({
 				target: 'gonddr',
 				duration: 1200,
