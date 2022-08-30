@@ -13,6 +13,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.music;
 		this.music_started;
+		this.music_pos;
 		this.dance_ended;
 
 		this.video;
@@ -62,13 +63,13 @@ class GonDDR extends Phaser.Scene {
 	create () {
 
 		game.events.on('blur', function () {
-			this.music.pause();
+			this.music.stop();
 			this.scene.pause();
 		}, this);
 
 		game.events.on('focus', function () {
-			this.music.resume();
 			this.scene.resume();
+			this.music.play({seek: this.music_pos / 1000});
 		}, this);
 
 		this.music = this.sound.add("wu_wei", 1)
@@ -131,6 +132,7 @@ class GonDDR extends Phaser.Scene {
 
 		let prev_beat = this.beat;
 		this.beat = this.beat + ((delta / 1000.) * (this.bpm / 60.));
+		this.music_pos += delta;
 
 		if (Math.floor(this.beat) > Math.floor(prev_beat)) {
 			this.do_on_beat();
@@ -279,6 +281,8 @@ class GonDDR extends Phaser.Scene {
 	start_song() {
 		this.music.play();
 		this.music_started = true;
+		this.music_pos = 0
+
 		this.gondola.setFrame(Gondola_Poses.Neutral);
 		this.gondola_start_bounce.stop();
 
