@@ -69,7 +69,9 @@ class GonDDR extends Phaser.Scene {
 
 		game.events.on('focus', function () {
 			this.scene.resume();
-			this.music.play({seek: this.music_pos / 1000});
+			this.time.delayedCall(500, function() {
+				this.music.play({seek: this.music_pos / 1000});
+			}, [], this)
 		}, this);
 
 		this.music = this.sound.add("wu_wei", 1)
