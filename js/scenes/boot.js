@@ -20,7 +20,11 @@ class Boot extends Phaser.Scene {
 		this.load.spritesheet('gondola', 'assets/sprites/gonddr/gondancin.png', {frameWidth: GONDOLA_WIDTH, frameHeight: GONDOLA_HEIGHT})
 
 		this.load.image('press_start', 'assets/sprites/shared/press_start.png');
+		this.load.image('press_restart', 'assets/sprites/shared/press_restart.png');
 		this.load.image('ggr_logo', 'assets/sprites/shared/ggr_logo.png');
+
+		this.load.image('soundcloud', 'assets/sprites/intro/soundcloud.png');
+		this.load.image('read_gdlq', 'assets/sprites/intro/read_gdlq.png')
 
 		this.load.image('dance_pad', 'assets/sprites/gonddr/dance_pad.png');
 		this.load.image('arrow_beam', 'assets/sprites/gonddr/arrow_beam.png');

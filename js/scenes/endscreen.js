@@ -5,6 +5,8 @@ class Endscreen extends Phaser.Scene {
 
 		this.press_start;
 		this.ggr_logo;
+		this.soundcloud_link;
+		this.gondolaquest_link;
 		this.score;
 		this.high_score;
 		this.score_text;
@@ -37,7 +39,7 @@ class Endscreen extends Phaser.Scene {
 			this.scene.resume();
 		}, this);
 		
-		this.press_start = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .82*WINDOW_HEIGHT, 'press_start'));
+		this.press_start = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .79*WINDOW_HEIGHT, 'press_restart'));
 		this.press_start.setOrigin(0.5,1);
 		this.tweens.add({
 			targets: this.press_start,
@@ -48,28 +50,52 @@ class Endscreen extends Phaser.Scene {
 			repeat: -1,
 			yoyo: true
 		});
+		this.press_start.setInteractive();
+		this.press_start.on("pointerup", this.restart_dance, this);
 
-		this.ggr_logo = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .3*WINDOW_HEIGHT, 'ggr_logo'));
+		this.ggr_logo = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .27*WINDOW_HEIGHT, 'ggr_logo'));
 
-		this.input.on('pointerdown', this.restart_dance, this);
-
-		this.score_text = this.add_starting_visual( this.add.bitmapText(SCORE_SIZE, .55*WINDOW_HEIGHT, 'scorefont', 'SCORE:', SCORE_SIZE) );
+		this.score_text = this.add_starting_visual( this.add.bitmapText(SCORE_SIZE, .60*WINDOW_HEIGHT, 'scorefont', 'SCORE:', END_SCORE_SIZE) );
 		this.score_text.setOrigin(0,0.5);
-		this.score_number = this.add_starting_visual( this.add.bitmapText(WINDOW_WIDTH-SCORE_SIZE, .55*WINDOW_HEIGHT, 
-																		'scorefont', `${this.score}`, SCORE_SIZE) );
+		this.score_number = this.add_starting_visual( this.add.bitmapText(WINDOW_WIDTH-SCORE_SIZE, .60*WINDOW_HEIGHT, 
+																		'scorefont', `${this.score}`, END_SCORE_SIZE) );
 		this.score_number.setOrigin(1,0.5);
 
-		this.high_score_text = this.add_starting_visual( this.add.bitmapText(SCORE_SIZE, .62*WINDOW_HEIGHT, 'scorefont', 'HI-SCORE:', SCORE_SIZE) );
+		this.high_score_text = this.add_starting_visual( this.add.bitmapText(SCORE_SIZE, .67*WINDOW_HEIGHT, 'scorefont', 'HI-SCORE:', END_SCORE_SIZE) );
 		this.high_score_text.setOrigin(0,0.5);
-		this.high_score_number = this.add_starting_visual( this.add.bitmapText(WINDOW_WIDTH-SCORE_SIZE, .62*WINDOW_HEIGHT, 
-																		'scorefont', `${this.high_score}`, SCORE_SIZE) );
+		this.high_score_number = this.add_starting_visual( this.add.bitmapText(WINDOW_WIDTH-SCORE_SIZE, .67*WINDOW_HEIGHT, 
+																		'scorefont', `${this.high_score}`, END_SCORE_SIZE) );
 		this.high_score_number.setOrigin(1,0.5);
+
+		this.soundcloud_link = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .47*WINDOW_HEIGHT, 'soundcloud')).setInteractive();
+		this.soundcloud_link.on("pointerup", this.open_soundcloud, this);
+
+		this.gondolaquest_link = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .97*WINDOW_HEIGHT, 'read_gdlq')).setInteractive();
+		this.gondolaquest_link.on("pointerup", this.open_gondolaquest, this);
 
 		//this.max_combo_text = this.add_starting_visual( this.add.bitmapText(SCORE_SIZE, .5*WINDOW_HEIGHT, 'scorefont', 'HI-SCORE:', SCORE_SIZE) );
 		//this.max_combo_text.setOrigin(0,0.5);
 		//this.max_combo_number = this.add_starting_visual( this.add.bitmapText(WINDOW_WIDTH-SCORE_SIZE, .5*WINDOW_HEIGHT, 
 		//																'scorefont', `${this.max_combo}`, SCORE_SIZE) );
 		//this.max_combo_number.setOrigin(1,0.5);
+	}
+
+	open_gondolaquest() {
+		var url = "https://forum.memestudies.org/t/gondolaquest/273";
+		this.open_link(url);
+	}
+	open_soundcloud() {
+		var url = "https://soundcloud.com/superlumic";
+		this.open_link(url);
+	}
+
+	open_link(url) {
+		var s = window.open(url, '_blank');
+		if (s && s.focus) {
+			s.focus();
+		} else if (!s) {
+			window.location.href = url;
+		}
 	}
 
 	add_starting_visual(game_object, alpha=1) {
@@ -86,6 +112,8 @@ class Endscreen extends Phaser.Scene {
 			this.high_score_text.destroy();
 			this.score_number.destroy();
 			this.high_score_number.destroy();
+			this.soundcloud_link.destroy();
+			this.gondolaquest_link.destroy();
 			game.events.off('blur');
 			game.events.off('focus');
         	this.scene.transition({
@@ -102,4 +130,4 @@ class Endscreen extends Phaser.Scene {
 PRESS_START_Y = 280;
 PRESS_START_ZOOM = 0.8;
 PRESS_START_PERIOD = 500;
-END_SCORE_SIZE = 48;
+END_SCORE_SIZE = 42;
