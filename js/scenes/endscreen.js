@@ -70,8 +70,8 @@ class Endscreen extends Phaser.Scene {
 		this.soundcloud_link = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .47*WINDOW_HEIGHT, 'soundcloud')).setInteractive();
 		this.soundcloud_link.on("pointerup", this.open_soundcloud, this);
 
-		this.gondolaquest_link = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .97*WINDOW_HEIGHT, 'read_gdlq')).setInteractive();
-		this.gondolaquest_link.on("pointerup", this.open_gondolaquest, this);
+		//this.gondolaquest_link = this.add_starting_visual(this.add.image(WINDOW_WIDTH/2., .97*WINDOW_HEIGHT, 'read_gdlq')).setInteractive();
+		//this.gondolaquest_link.on("pointerup", this.open_gondolaquest, this);
 
 		//this.max_combo_text = this.add_starting_visual( this.add.bitmapText(SCORE_SIZE, .5*WINDOW_HEIGHT, 'scorefont', 'HI-SCORE:', SCORE_SIZE) );
 		//this.max_combo_text.setOrigin(0,0.5);
@@ -81,7 +81,7 @@ class Endscreen extends Phaser.Scene {
 	}
 
 	open_gondolaquest() {
-		var url = "https://forum.memestudies.org/t/gondolaquest/273";
+		var url = "https://orangeoceans.github.io/gondolaquest/index.html";
 		this.open_link(url);
 	}
 	open_soundcloud() {
@@ -113,7 +113,7 @@ class Endscreen extends Phaser.Scene {
 			this.score_number.destroy();
 			this.high_score_number.destroy();
 			this.soundcloud_link.destroy();
-			this.gondolaquest_link.destroy();
+			//this.gondolaquest_link.destroy();
 			game.events.off('blur');
 			game.events.off('focus');
         	this.scene.transition({
