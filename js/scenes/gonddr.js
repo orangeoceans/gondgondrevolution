@@ -13,7 +13,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.music;
 		this.music_started;
-		this.music_pos;
+		this.music_pos = 0; // Initialize to prevent crashing on scene resume before song starts
 		this.dance_ended;
 
 		this.video;
