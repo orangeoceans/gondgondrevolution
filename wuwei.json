@@ -93,7 +93,7 @@
       { "comments": "main dance theme",
         "config": {
           "bpm": {
-            "target": 146,
+            "target": 148,
             "duration": 0
           }
         },
@@ -508,7 +508,7 @@
       { "beat": 268,     "arrows": [ {"direction": "Left"} ],
         "config": {
           "bpm": {
-            "target": 146,
+            "target": 148,
             "duration": 14
           },
           "background": {
@@ -551,7 +551,7 @@
       { "beat": 282,     "arrows": [ {"direction": "Right"} ],
         "config": {
           "bpm": {
-            "target": 146,
+            "target": 148,
             "duration": 0
           },
           "background": {
