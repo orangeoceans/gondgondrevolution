@@ -713,7 +713,7 @@
       { "beat": 416.25,   "arrows": [ {"direction": "Right"} ] },
 
 
-      { "comments": "end", "beat": 440,   "arrows": [ ] }
+      { "comments": "end", "beat": 430,   "arrows": [ ] }
 
     ]
 }

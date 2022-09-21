@@ -13,7 +13,7 @@ class GonDDR extends Phaser.Scene {
 
 		this.music;
 		this.music_started;
-		this.music_pos;
+		this.music_pos = 0; // Initialize to prevent crashing on scene resume before song starts
 		this.dance_ended;
 
 		this.video;
@@ -69,7 +69,9 @@ class GonDDR extends Phaser.Scene {
 
 		game.events.on('focus', function () {
 			this.scene.resume();
-			this.music.play({seek: this.music_pos / 1000});
+			this.time.delayedCall(200, function() {
+				this.music.play({seek: this.music_pos / 1000});
+			}, [], this)
 		}, this);
 
 		this.music = this.sound.add("wu_wei", 1)
@@ -114,7 +116,14 @@ class GonDDR extends Phaser.Scene {
 			let secret_code_entered = this.check_secret_code();
 			if (secret_code_entered && !this.dance_ended) {
 				this.add_feedback_generic(WINDOW_WIDTH/2., WINDOW_HEIGHT/2., "SECRET CODE!");
-				this.end_dance();
+				var url = "https://www.youtube.com/watch?v=H7rTo0SzuZA"
+				var s = window.open(url, '_blank');
+				if (s && s.focus) {
+					s.focus();
+				} else if (!s) {
+					window.location.href = url;
+				}
+				// this.end_dance();
 			}
 			return;
 		}
@@ -133,6 +142,11 @@ class GonDDR extends Phaser.Scene {
 		let prev_beat = this.beat;
 		this.beat = this.beat + ((delta / 1000.) * (this.bpm / 60.));
 		this.music_pos += delta;
+		var music_diff = (this.music_pos / 1000.) - this.music.seek
+		if (Math.abs(music_diff) > 0.01 && this.music.seek > 0) {
+			this.beat = this.beat - (music_diff * (this.bpm / 60.));
+			this.music_pos = this.music_pos - (music_diff * 1000)
+		}
 
 		if (Math.floor(this.beat) > Math.floor(prev_beat)) {
 			this.do_on_beat();
@@ -352,6 +366,9 @@ class GonDDR extends Phaser.Scene {
 
 		// Nothing to do if there's no config
 		if(beat_action.config == undefined) { return; }
+
+		// console.log("Seeking...");
+		// this.music.setSeek(this.music_pos / 1000);
 
 		// Handle BPM changes, SFX, images, and background changes as needed
 		for (const param in beat_action.config) {
